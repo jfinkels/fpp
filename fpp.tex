@@ -1,0 +1,441 @@
+%% fpp.tex - fixed-parameter parallelizability
+%%
+%% Copyright 2016 Jeffrey Finkelstein.
+%%
+%% This LaTeX markup document is made available under the terms of the Creative
+%% Commons Attribution-ShareAlike 4.0 International License,
+%% https://creativecommons.org/licenses/by-sa/4.0/.
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+%% This must come before hyperref.
+\usepackage{amsthm}
+%% This is strongly recommended by biblatex.
+\usepackage[english]{babel}
+\usepackage[backend=biber]{biblatex}
+\usepackage[T1]{fontenc}
+%% This must come before csquotes.
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+%% This is strongly recommended by biblatex.
+\usepackage{csquotes}
+%% This must come before hyperref.
+\usepackage{thmtools}
+%% This must come before complexity.
+\usepackage{hyperref}
+\usepackage{complexity}
+\usepackage[firstpage]{draftwatermark}
+\usepackage{microtype}
+\usepackage{textcomp}
+
+%% Set the amount by which certain characters protrude into the margins.
+%%
+%% \LoadMicrotypeFile{cmr}
+%%
+%%     This command forces the built-in protrusion settings for the Computer
+%%     Modern Roman (cmr) font family to become available at this point, so
+%%     that we can override these settings on the next line. Even though we are
+%%     really using the Latin Modern Roman (lmr) fonts, microtype uses the cmr
+%%     configuration file.
+%%
+%% \SetProtrusion
+%%
+%%     This instructs the microtype package that we are going to modify the
+%%     protrusion settings.
+%%
+%% [load=lmr-T1]
+%%
+%%     Loads the Type 1 (T1) encoding of the lmr font family, thereby setting
+%%     the default protrusion values for all the characters. This is only
+%%     possible after the \LoadMicrotypeFile{cmr} command (microtype
+%%     essentially considers lmr to be an alias for cmr).
+%%
+%% {encoding=T1, family=lmr}
+%%
+%%     Indicates that we are going to modify the protrusion values for the T1
+%%     encoding of the lmr font family.
+%%
+%% \textquotedblright = {,1000} (and similar commands)
+%%
+%%     Force the character given by \textquotedblright to have default
+%%     protrusion on the left margin (given by an empty string before the
+%%     comma) and full protrusion (that is, protrusion value 1000) on the right
+%%     margin.
+\LoadMicrotypeFile{cmr}
+\SetProtrusion
+    [load=lmr-T1]
+    {encoding=T1, family=lmr}
+    {
+      \textquotedblright = {,1000},
+      \textquotedblleft = {1000,},
+      {'} = {,1000},
+      {,} = {,1000},
+      {:} = {,1000},
+      {;} = {,1000},
+      {.} = {,1000}
+    }
+
+%% Set the ``work-in-progress'' watermark for the first page.
+\SetWatermarkLightness{0.9}
+\SetWatermarkText{Work-in-progress}
+\SetWatermarkFontSize{3.5cm}
+
+%% Set the title and author of the PDF file.
+\hypersetup{pdftitle={Fixed-parameter parallelizability}, pdfauthor={Jeffrey Finkelstein}}
+
+%% Declare the bibliography file.
+\addbibresource{fpp.bib}
+
+%% Declare theorem-like environments.
+\declaretheorem[]{theorem}
+\declaretheorem[numberlike=theorem]{lemma}
+\declaretheorem[numberlike=theorem]{assumption}
+\declaretheorem[numberlike=theorem, style=definition]{definition}
+
+%% Custom commands are declared here.
+\newcommand{\email}[1]{\textlangle\href{mailto:#1}{\nolinkurl{#1}}\textrangle}
+\newcommand{\todo}[1]{\textbf{TODO #1}}
+\newcommand{\pncsat}{p\textnormal{-}\log\textnormal{-}\NC^d\textnormal{-}\textsc{Circuit Sat}}
+\DeclareMathOperator{\depth}{depth}
+\DeclareMathOperator{\nondet}{nondet}
+\DeclareMathOperator{\size}{size}
+
+%% Redefine the footnote environment so it has no reference and no number.
+\long\def\symbolfootnote#1{\begingroup%
+\def\thefootnote{\fnsymbol{footnote}}\footnotetext{#1}\endgroup}
+
+%% Define the author, title, and date for the document.
+\author{Jeffrey~Finkelstein\\ Computer Science Department, Boston University}
+\title{Fixed-parameter parallelizability}
+
+\begin{document}
+
+\maketitle
+
+\symbolfootnote{%
+  Copyright 2016 Jeffrey~Finkelstein \email{jeffreyf@bu.edu}.
+
+  This document is licensed under the Creative Commons Attribution-ShareAlike 4.0 International License, which is available at \mbox{\url{https://creativecommons.org/licenses/by-sa/4.0/}}.
+  The \LaTeX{} markup that generated this document can be downloaded from its website at \mbox{\url{https://github.com/jfinkels/fpp}}.
+  The markup is distributed under the same license.
+}
+
+%% Document content goes here.
+%
+% Global components at each level must follow this structure.
+%
+% % Foreword %
+%
+% %% Context (anyone - why now?) %%
+%
+% What is the current situation, and why is the need so important?
+%
+%
+% %% Need (readers - why you?) %%
+%
+% Why is this relevant to the reader, and why does something need to be done?
+% (Also reference relevant existing work.)
+%
+%
+% %% Task (author - why me?) %%
+%
+% What was undertaken to address the need?
+%
+%
+% %% Object (document - why this document?) %%
+%
+% What does this document cover?
+%
+%
+% % Summary %
+%
+% %% Findings (author - what?)
+%
+% What did the work reveal when performing the task?
+%
+%
+% %% Conclusion (readers - so what?)
+%
+% What did the findings mean for the audience?
+%
+%
+% %% Perspective (anyone - what now?)
+%
+% What should be done next?
+
+\begin{definition}
+  A \emph{Boolean circuit}, or simply a \emph{circuit}, $C$, is an directed acyclic graph.
+  The \emph{size of a circuit}, denoted $\size(C)$, is the number of vertices in the underlying graph.
+  The \emph{depth of a circuit}, denoted $\depth(C)$, is the length of a longest path from the root to a sink.
+\end{definition}
+
+\begin{definition}
+  A function $f$ is \emph{circuit-computable} if there is a nonuniform family of Boolean circuits $\{C_n\}_{n \in \mathbb{N}}$ such that for each $x$ we have $f(x) = C_n(x)$, where $n = |x|$.
+
+  A language is \emph{circuit-decidable} if its characteristic function is circuit-computable.
+  We may also require that the size and depth of each circuit $C_n$ in the family be circuit-computable from just $n$, the length of the input.
+  In this case, we say the language is \emph{circuit-decidable with uniform size and depth}.
+\end{definition}
+
+Nonuniformity is required in \autoref{thm:eventually} and \autoref{thm:rmparam}, for example, in which the size of the input relative to the size of the parameter for an instance of the parameterized problem selects which of two circuits to use.
+If the circuits were uniform, we would need to include both alternatives, thereby making the circuits too deep to meet the required circuit depth bounds.
+
+\begin{definition}
+  TODO Parameterized problem
+\end{definition}
+
+\begin{definition}
+  TODO NC, NNC, WP[P], FPP, etc.
+\end{definition}
+
+\begin{definition}
+  Suppose $d$ is a natural number and $(Q, \kappa)$ is a parameterized problem.
+  The problem $(Q, \kappa)$ is \emph{eventually in $\NC^d$} if there is a circuit-computable function $h$ and a $\NC^d$ family of circuits $\{C_n\}_{n \in \mathbb{N}}$ such that for each $x$ of length $n$, if $n \geq h(\kappa(x))$, then $x \in Q$ if and only if $C_n(x) = 1$.
+\end{definition}
+
+Throughout we will often assume without loss of generality that functions like circuit size and depth bounds, nondeterministism bounds, and polynomials, are increasing
+
+This theorem is a characterization of parameterized problems in the class $\FPP^d$ as problems for which the parameter suggests an input size threshold, below which it suffices to perform an exhaustive search to solve the problem and after which we require an efficient algorithm.
+
+\begin{theorem}[Theorem~1.37]\label{thm:eventually}
+  Suppose $d$ is a natural number and $(Q, \kappa)$ is a parameterized problem.
+  If $Q$ is circuit-decidable with uniform size and depth and $(Q, \kappa)$ is eventually in $\NC^d$, then $(Q, \kappa)$ is in $\FPP^d$.
+\end{theorem}
+\begin{proof}
+  Let $h$ be the function that defines the lower bound on the length after which $(Q, \kappa)$ is in $\NC^d$.
+  The nonuniform family of circuits $\{A_{n, k}\}$ that decides $(Q, \kappa)$ is defined by
+  \[
+  A_{n, k} =
+  \begin{cases}
+    C^1_n & \text{if } n < h(k) \\
+    C^2_n & otherwise,
+  \end{cases}
+  \]
+  where $\{C^1_n\}$ is the family of circuits that decides $Q$ and $\{C^2_n\}$ is the family of $\NC^d$ circuits that eventually decides $(Q, \kappa)$.
+  The correctness of $A_{n, k}$ follows from the correctness of $C^1_n$ and $C^2_n$.
+
+  Let $S$ and $D$ be the circuit-computable function that give the size and depth, respectively, of $C^1_n$ from $n$.
+  If $n < h(k)$, then
+  \begin{align*}
+    \size(A_{n, k}) & = \size(C^1_n) = S(n) \leq S(h(k)), \\
+    \depth(A_{n, k}) & = \depth(C^1_n) = D(n) \leq D(h(k)).
+  \end{align*}
+  If $n \geq h(k)$, then
+  \begin{align*}
+    \size(A_{n, k}) & = \size(C^2_n) = n^{O(1)}, \\
+    \depth(A_{n, k}) & = \depth(C^2_n) = O(\log^d n).
+  \end{align*}
+  An upper bound for the size of $A_{n, k}$ in either case is $S(h(k)) n^{O(1)}$ and for the depth $O(D(h(k)) \log^d n)$.
+  Since $S$ and $D$ are computable, composing each with $h$ yields another computable function, so these size and depth bounds meet the requirements of the definition of $\FPP^d$.
+\end{proof}
+
+The next theorem is similar in that it is a characterization of $\WP^d[P]$, a nondeterministic extension of $\FPP^d$.
+The parameterized problems in $\WP^d[P]$ of most interest to us are those for which there is a nondeterministic $\NC$ algorithm with nondeterminism limited by a function of the parameter.
+
+\todo{
+  There's some wiggle room with this theorem: if we change the definition of $\WP^d[P]$ to have depth $g(k) + \log^d n$, then we can get $\NNC^d$ instead of $\NNC^{d + e}$ in the conclusion.
+  This sort of depth bound appears in \autocite{bst15}.
+}
+
+\begin{theorem}[Proposition~3.7]\label{thm:rmparam}
+  Suppose $d$ is a natural number, $e$ is a positive integer, and $(Q, \kappa)$ is a parameterized problem.
+  %% If e = 0, then we get a divide-by-zero error.
+  If $(Q, \kappa) \in \WP^d[P]$ and $Q \in \NNC^d[\poly]$, then there is a nondeterministic $\NC^{d + e}$ circuit family $\{C_{n, k}\}$ and a circuit-computable function $h$ such that $\{C_{n, k}\}$ decides $Q$ and $\nondet(C_{n, k}) \leq h(k) \log n$.
+  %% The converse holds when $e = 0$.
+\end{theorem}
+\begin{proof}
+  Assume $(Q, \kappa) \in \WP^d[P]$ and $Q \in \NNC^d[\poly]$.
+  Define the circuit family $\{A_{n, k}\}$ by
+  \[
+  A_{n, k} =
+  \begin{cases}
+    C^1_{n, k} & \text{if } f_1(k) \leq n \text{ and } g_1(k) \leq \log^e n \\
+    C^2_n & \text{otherwise},
+  \end{cases}
+  \]
+  where
+  \begin{itemize}
+  \item $\{C^1_{n, k}\}$ is the $\WP^d[P]$ circuit family,
+  \item $f_1$ and $g_1$ are the circuit-computable functions on the parameter that appear in the size and depth bounds, respectively, for $C^1_{n, k}$,
+  \item $\{C^2_n\}$ is the $\NNC^d[\poly]$ circuit family.
+  \end{itemize}
+  The fact that $A_{n, k}$ correctly decides $Q$ follows from the correctness of the circuits $C^1_{n, k}$ and $C^2_n$.
+  It remains to show that $A_{n, k}$ has the required size, depth, and nondeterminism bounds.
+
+  If $f_1(k) \leq n$ and $g_1(k) \leq \log^e n$, then
+  \begin{align*}
+    \size(A_{n, k}) & \leq \size(C^1_{n, k}) \leq f_1(k) n^{O(1)} \leq n^{O(1)} \\
+    \depth(A_{n, k}) & \leq \depth(C^1_{n, k}) \leq g_1(k) \log^d n \leq \log^{d + e} n,
+  \end{align*}
+  and otherwise
+  \begin{align*}
+    \size(A_{n, k}) & \leq \size(C^2_n) \leq n^{O(1)} \\
+    \depth(A_{n, k}) & \leq \depth(C^2_n) \leq \log^d n.
+  \end{align*}
+  The overall size and depth upper bounds for $A_{n, k}$ are thus $n^{O(1)}$ and $O(\log^{d + e} n)$, respectively.
+
+  For the nondeterminism, there are three cases.
+  First, if $f_1(k) \leq n$ and $g_1(k) \leq \log^e n$, then
+  \[
+  \nondet(A_{n, k}) \leq \nondet(C^1_{n, k}) \leq h_1(k) \log n,
+  \]
+  where $h_1$ is the circuit-computable of the parameter that appears in the nondeterminism bound for $C^1_{n, k}$.
+  Second, if $f_1(k) > n$, then
+  \[
+  \nondet(A_{n, k}) \leq \nondet(C^2_n) \leq n^{O(1)} \leq f_1(k)^{O(1)}.
+  \]
+  Finally, if $g_1(k) > \log^e n$, then $2^{(g_1(k))^{1 / e}} > n$, which implies
+  \[
+  \nondet(A_{n, k}) \leq \nondet(C^2_n) \leq n^{O(1)} \leq 2^{O((g_1(k))^{1 / e})}.
+  \]
+  If we choose $h(k) = \max\{ h_1(k), f_1(k)^O(1), 2^{O((g_1(k))^{1 / e})} \}$, then we can conclude $\nondet(A_{n, k}) \leq h(k) \log n$.
+\end{proof}
+
+\begin{assumption}\label{ass:complete}
+  There is a parameterized problem $(Q, \kappa)$ complete for $\WP^d[\P]$ under $\FPP^d$ many-one reductions such that $Q \in \NNC^d[\poly]$.
+\end{assumption}
+
+\begin{theorem}[Theorem~3.29, part i]
+  Assume \autoref{ass:complete}.
+  Suppose $d$ is a natural number and $e$ is a positive integer.
+  If there is a circuit-computable, nondecreasing, unbounded function $i$ such that $\NC^d = \NNC^{d + e}[i(n) \log n]$, then $\FPP^d = \WP^d[P]$.
+  \todo{Does $i$ need to be computable here?}
+\end{theorem}
+\begin{proof}
+  Assume $\NC^d = \NNC^{d + e}[i(n) \log n]$.
+  By \autoref{ass:complete}, let $(Q, \kappa)$ be a parameterized problem complete for $\WP^d[P]$ with $Q \in \NNC^d[\poly]$.
+  By \autoref{thm:rmparam}, there is a circuit-computable function $h$ and an $\NNC^{d + e}$ circuit family $\{C_{n, k}\}$ such that $\nondet(C_{n, k}) \leq h(k) \log n$.
+
+  Let $f$ be a circuit-computable function such that $n \geq f(k)$ implies $h(k) \leq i(n)$.
+  \todo{Explain why such an $f$ must exist.}
+  Now consider the set $Q^+$, defined by
+  \[
+  Q^+ = Q \cap \left\{ x \, \middle| \, |x| \geq f(\kappa(x)) \right\}.
+  \]
+  Since $|x| \geq f(\kappa(x))$ for each $x \in Q^+$, we have $h(\kappa(x)) \leq i(|x|)$.
+  Thus $Q^+$ is in $\NNC^{d + e}[i(n) \log n]$.
+  By assumption, $Q^+$ is therefore also in $\NC^d$.
+  This means $Q$ is eventually in $\NC^d$, so we have $Q \in \FPP^d$ by \autoref{thm:eventually}.
+\end{proof}
+
+\begin{lemma}[Lemma~3.24]\label{lem:i}
+  Suppose $e$ is a positive integer and $f$ and $g$ are increasing, circuit-computable functions.
+  %% If e is 0, then i_{g, e} is not unbounded.
+  There are functions $i_f$ and $i_{g, e}$ such that
+  \begin{itemize}
+  \item $f(i_f(n)) \leq n$ for each $n \geq f(1)$,
+  \item $g(i_{g, e}(n)) \leq \log^e n$ for each $n \geq g(1)$.
+  \end{itemize}
+  Furthermore, these functions are nondecreasing, unbounded, and circuit-computable.
+\end{lemma}
+\begin{proof}
+  Define $i_f$ by
+  \[
+  i_f(n) = \begin{cases}
+    \max\{ j \in \mathbb{N} \, | \, f(j) \leq n\} & \text{if } n \geq f(1) \\
+    1 & \text{otherwise},
+  \end{cases}
+  \]
+  and $i_{g, e}$ by
+  \[
+  i_{g, e}(n) = \begin{cases}
+    \max\{ j \in \mathbb{N} \, | \, g(j) \leq \log^e n\} & \text{if } n \geq g(1) \\
+    1 & \text{otherwise}.
+  \end{cases}
+  \]
+  It is straightforward to prove that these functions are nondecreasing and unbounded.
+  To compute $i_f$ (computing $i_{g, e}$ is similar), we compute $f(1), \dotsc, f(n)$ in parallel, filter by only those values that are at most $n$, and choosing the index of the rightmost value that passes the filter.
+\end{proof}
+
+\begin{definition}[$\pncsat$]
+  \mbox{} \\
+  \begin{tabular}{r p{9.5cm}}
+    \textbf{Instance:} & Boolean circuit $C$ of on $n$ inputs, with size $m$ and depth $O(\log^d n)$. \\
+    \textbf{Parameter:} & $n / \log m$. \\
+    \textbf{Question:} & Is $C$ satisfiable?
+  \end{tabular}
+\end{definition}
+
+\begin{lemma}
+  $\pncsat$ is in $\WP^d[P]$.
+\end{lemma}
+\begin{proof}
+  The depth-universal circuit of \autocite{ch85} proves membership of this problem in $\WP^d[P]$.
+  The number of nondeterministic bits required by the universal circuit is simply $n$, the size of the input to the circuit $C$, which is of the form $h(k) \log m$ if we choose $h(k) = k = n / \log m$.
+\end{proof}
+
+\todo{
+  Ideally, it should be complete for it too (this would prove the assumption above), but the problem comes in the reduction from an arbitrary paramterized problem to this one: the circuit depth needs to be polylogarithmic, but it may be larger.
+  Perhaps we can use the other complete problems from \autocite{cc97} here?
+}
+
+\begin{theorem}[Theorem~3.29 part ii]
+  Suppose $e$ is a positive integer.
+  If $\FPP^d = \WP^d[P]$, then there is a circuit-computable, nondecreasing, unbounded function $i$ such that $\NC^{d + e} = \NNC^d[i(n) \log n]$.
+\end{theorem}
+\begin{proof}
+  Assume $\FPP^d = \WP^d[P]$.
+  Since $\pncsat$ is in $\WP^d[P]$, it is now in $\FPP^d$ as well.
+  Thus there is a deterministic circuit family $\{C_{m, k'}\}$ and circuit-computable functions $f$ and $g$ such that
+  \begin{itemize}
+  \item for each instance $D$, we have $D \in \NC^d\textnormal{-}\textsc{Circuit Sat}$ if and only if $C_{m, k'}(D) = 1$,
+  \item $\size(C_{m, k'}) \leq f(k') m^{O(1)}$,
+  \item $\depth(C_{m, k'}) \leq g(k') \log^d m$.
+  \end{itemize}
+  Assume without loss of generality that $f$ and $g$ are increasing.
+  Let $i_f$ and $i_{g, e}$ be the functions corresponding to $f$ and $g$, respectively, guaranteed by \autoref{lem:i}.
+  Let $i(n) = \min(i_f(n), i_{g, e}(n))$, for each natural number $n$.
+
+  Let $Q \in \NNC^d[i(n) \log n]$
+  Suppose $\{D_n\}$ is the family of $\NNC^d[i(n) \log n]$ circuits that decides $Q$.
+  For each input $x$, let $D_x$ denote $D_n$ with $x$ hardcoded.
+
+  Let $R_n$ be the circuit-computable function $x \mapsto D_x$, where $n$ denotes the length of $x$.
+  Then
+  \begin{itemize}
+  \item for each $x$, we have $x \in Q$ if and only if $D_x$ is satisfiable,
+  \item $\size(R_n) \leq O(\size(D_x)) = O(\size(D_n)) = n^{O(1)}$,
+  \item $\depth(R_n) \leq O(1)$.
+  \end{itemize}
+  If $\kappa$ denotes the parameter function for $\pncsat$, we can now define the family $\{A_n\}$ as $A_n = C_{m, k'} \circ R_n$, where
+  \[
+  m = |R_n(x)| = O(\size(R_n)) = n^{O(1)},
+  \]
+  and
+  \[
+  k' = \kappa(R_n(x)).
+  \]
+  We claim that $\{A_n\}$ is the $\NC^{d + e}$ circuit family that decides $Q$.
+
+  The correctness of $A_n$ follows from the correctness of both $R_n$ and $C_{m, k'}$.
+  The size of $R_n$ is $n^{O(1)}$ and the size of $C_{m, k'}$ is $f(k') m^{O(1)}$.
+  Assuming $n \leq m \leq n^{O(1)}$,
+  \begin{align*}
+    \size(A_n) & = n^{O(1)} + f(k') m^{O(1)} \\
+    & \leq f(k') n^{O(1)} \\
+    & = f\left(\frac{i(n) \log n}{\log m}\right) n^{O(1)} \\
+    & \leq f\left(\frac{i_f(n) \log n}{\log n}\right) n^{O(1)} \\
+    & \leq f(i_f(n)) n^{O(1)} \\
+    & \leq n^{O(1)}.
+  \end{align*}
+  The depth of $R_n$ is $O(1)$ and the depth of $C_{m, k'}$ is $g(k') \log^d m$.
+  Thus,
+  \begin{align*}
+    \depth(A_n) & = O(1) + g(k') \log^d m \\
+    & \leq O(g(k') \log^d n) \\
+    & = O(g\left(\frac{i(n) \log n}{\log m}\right) \log^d n) \\
+    & \leq O(g\left(\frac{i_{g, e}(n) \log n}{\log n}\right) \log^d n) \\
+    & \leq O(g(i_{g, e}(n)) \log^d n) \\
+    & \leq O((\log^e n)(\log^d n)) \\
+    & \leq O(\log^{d + e} n).
+  \end{align*}
+
+  We have shown that $\{A_n\}$ is a $\NC^{d + e}$ circuit family that decides $Q$, thus $Q \in \NC^{d + e}$.
+  Since $Q$ was an arbitrary element of $\NNC^d[i(n) \log n]$, we conclude that $\NC^{d + e} = \NNC^d[i(n) \log n]$.
+\end{proof}
+
+%% Print the bibliography section here.
+\printbibliography
+
+\end{document}
