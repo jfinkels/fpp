@@ -5,7 +5,7 @@
 %% This LaTeX markup document is made available under the terms of the Creative
 %% Commons Attribution-ShareAlike 4.0 International License,
 %% https://creativecommons.org/licenses/by-sa/4.0/.
-\documentclass{article}
+\documentclass[draft]{article}
 
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -26,7 +26,7 @@
 \usepackage{hyperref}
 \usepackage{complexity}
 \usepackage[firstpage]{draftwatermark}
-\usepackage{microtype}
+\usepackage[final]{microtype}
 \usepackage{textcomp}
 
 %% Set the amount by which certain characters protrude into the margins.
@@ -173,7 +173,7 @@
 \begin{definition}
   A function $f$ is \emph{circuit-computable} if there is a nonuniform family of Boolean circuits $\{C_n\}_{n \in \mathbb{N}}$ such that for each $x$ we have $f(x) = C_n(x)$, where $n = |x|$.
 
-  A language is \emph{circuit-decidable} if its characteristic function is circuit-computable.
+  A language is \emph{circuit-decidable} if it has a circuit-computable characteristic function.
   We may also require that the size and depth of each circuit $C_n$ in the family be circuit-computable from just $n$, the length of the input.
   In this case, we say the language is \emph{circuit-decidable with uniform size and depth}.
 \end{definition}
@@ -182,23 +182,46 @@ Nonuniformity is required in \autoref{thm:eventually} and \autoref{thm:rmparam},
 If the circuits were uniform, we would need to include both alternatives, thereby making the circuits too deep to meet the required circuit depth bounds.
 
 \begin{definition}
-  TODO Parameterized problem
+  A \emph{language} is a set of binary strings.
+  A \emph{parameterization} is a computable function $\kappa$ from binary strings to natural numbers.
+  A \emph{parameterized problem} is a pair $(Q, \kappa)$, where $Q$ is a language and $\kappa$ is a parameterization.
 \end{definition}
 
-\begin{definition}
-  TODO NC, NNC, WP[P], FPP, etc.
+\begin{definition}[$\NNC^d$ and $\NC^d$]
+  Let $d$ be a natural number.
+  A language $Q$ is in the class $\NNC^d[b(n)]$ if there is a nondeterministic circuit family $\{C_n\}$ such that for each string $x$ of length $n$,
+  \begin{itemize}
+  \item $x \in Q$ if and only if $C_n(x) = 1$,
+  \item $\size(C_n) \leq n^{O(1)}$,
+  \item $\depth(C_n) \leq O(\log^d n)$,
+  \item $\nondet(C_n) \leq b(n)$.
+  \end{itemize}
+  If $b$ is the zero function, then the language is in the class $\NC^d$.
+\end{definition}
+
+\begin{definition}[{$\WP^d[P]$ and $\FPP^d$}]
+  Let $d$ be a natural number.
+  A parameterized problem $(Q, \kappa)$ is in the class $\WP[P]^d$ if there are circuit-computable functions $f$, $g$, and $h$, and a nondeterministic circuit family $\{C_{n, k}\}$ such that for each string $x$,
+  \begin{itemize}
+  \item $x \in Q$ if and only if $C_{n, k}(x) = 1$, where $n = |x|$ and $k = \kappa(x)$,
+  \item $\size(C_{n, k}) \leq f(k) n^{O(1)}$,
+  \item $\depth(C_{n, k}) \leq g(k) \log^d n$,
+  \item $\nondet(C_{n, k}) \leq h(k) \log n$.
+  \end{itemize}
+  If $h$ is the zero function, then the parameterized problem is in the class $\FPP^d$.
 \end{definition}
 
 \begin{definition}
   Suppose $d$ is a natural number and $(Q, \kappa)$ is a parameterized problem.
-  The problem $(Q, \kappa)$ is \emph{eventually in $\NC^d$} if there is a circuit-computable function $h$ and a $\NC^d$ family of circuits $\{C_n\}_{n \in \mathbb{N}}$ such that for each $x$ of length $n$, if $n \geq h(\kappa(x))$, then $x \in Q$ if and only if $C_n(x) = 1$.
+  We say the problem $(Q, \kappa)$ is \emph{eventually in $\NC^d$} if there is a circuit-computable function $h$ and a $\NC^d$ family of circuits $\{C_n\}_{n \in \mathbb{N}}$ such that for each $x$ of length $n$, if $n \geq h(\kappa(x))$, then $x \in Q$ if and only if $C_n(x) = 1$.
 \end{definition}
 
 Throughout we will often assume without loss of generality that functions like circuit size and depth bounds, nondeterministism bounds, and polynomials, are increasing
 
 This theorem is a characterization of parameterized problems in the class $\FPP^d$ as problems for which the parameter suggests an input size threshold, below which it suffices to perform an exhaustive search to solve the problem and after which we require an efficient algorithm.
+It is the adaptation of \autocite[Theorem~1.37]{fg06}.
 
-\begin{theorem}[Theorem~1.37]\label{thm:eventually}
+\begin{theorem}\label{thm:eventually}
   Suppose $d$ is a natural number and $(Q, \kappa)$ is a parameterized problem.
   If $Q$ is circuit-decidable with uniform size and depth and $(Q, \kappa)$ is eventually in $\NC^d$, then $(Q, \kappa)$ is in $\FPP^d$.
 \end{theorem}
@@ -231,6 +254,7 @@ This theorem is a characterization of parameterized problems in the class $\FPP^
 \end{proof}
 
 The next theorem is similar in that it is a characterization of $\WP^d[P]$, a nondeterministic extension of $\FPP^d$.
+It is the adaptation of \autocite[Proposition~3.7]{fg06}.
 The parameterized problems in $\WP^d[P]$ of most interest to us are those for which there is a nondeterministic $\NC$ algorithm with nondeterminism limited by a function of the parameter.
 
 \todo{
@@ -238,7 +262,7 @@ The parameterized problems in $\WP^d[P]$ of most interest to us are those for wh
   This sort of depth bound appears in \autocite{bst15}.
 }
 
-\begin{theorem}[Proposition~3.7]\label{thm:rmparam}
+\begin{theorem}\label{thm:rmparam}
   Suppose $d$ is a natural number, $e$ is a positive integer, and $(Q, \kappa)$ is a parameterized problem.
   %% If e = 0, then we get a divide-by-zero error.
   If $(Q, \kappa) \in \WP^d[P]$ and $Q \in \NNC^d[\poly]$, then there is a nondeterministic $\NC^{d + e}$ circuit family $\{C_{n, k}\}$ and a circuit-computable function $h$ such that $\{C_{n, k}\}$ decides $Q$ and $\nondet(C_{n, k}) \leq h(k) \log n$.
@@ -296,6 +320,8 @@ The parameterized problems in $\WP^d[P]$ of most interest to us are those for wh
   There is a parameterized problem $(Q, \kappa)$ complete for $\WP^d[\P]$ under $\FPP^d$ many-one reductions such that $Q \in \NNC^d[\poly]$.
 \end{assumption}
 
+This theorem is an adaptation of one direction of \autocite[Theorem~3.29]{fg06}.
+
 \begin{theorem}[Theorem~3.29, part i]
   Assume \autoref{ass:complete}.
   Suppose $d$ is a natural number and $e$ is a positive integer.
@@ -319,7 +345,9 @@ The parameterized problems in $\WP^d[P]$ of most interest to us are those for wh
   This means $Q$ is eventually in $\NC^d$, so we have $Q \in \FPP^d$ by \autoref{thm:eventually}.
 \end{proof}
 
-\begin{lemma}[Lemma~3.24]\label{lem:i}
+This lemma is an adaptation of \autocite[Lemma~3.24]{fg06}.
+
+\begin{lemma}\label{lem:i}
   Suppose $e$ is a positive integer and $f$ and $g$ are increasing, circuit-computable functions.
   %% If e is 0, then i_{g, e} is not unbounded.
   There are functions $i_f$ and $i_{g, e}$ such that
@@ -327,7 +355,7 @@ The parameterized problems in $\WP^d[P]$ of most interest to us are those for wh
   \item $f(i_f(n)) \leq n$ for each $n \geq f(1)$,
   \item $g(i_{g, e}(n)) \leq \log^e n$ for each $n \geq g(1)$.
   \end{itemize}
-  Furthermore, these functions are nondecreasing, unbounded, and circuit-computable.
+  Furthermore, these functions are circuit-computable, nondecreasing, unbounded.
 \end{lemma}
 \begin{proof}
   Define $i_f$ by
@@ -348,9 +376,11 @@ The parameterized problems in $\WP^d[P]$ of most interest to us are those for wh
   To compute $i_f$ (computing $i_{g, e}$ is similar), we compute $f(1), \dotsc, f(n)$ in parallel, filter by only those values that are at most $n$, and choosing the index of the rightmost value that passes the filter.
 \end{proof}
 
+This is the $\NC^d$ bounded version of the parameterized problem from \autocite[Lemma~3.26]{fg06}.
+
 \begin{definition}[$\pncsat$]
   \mbox{} \\
-  \begin{tabular}{r p{9.5cm}}
+  \begin{tabular}{r p{9.2cm}}
     \textbf{Instance:} & Boolean circuit $C$ of on $n$ inputs, with size $m$ and depth $O(\log^d n)$. \\
     \textbf{Parameter:} & $n / \log m$. \\
     \textbf{Question:} & Is $C$ satisfiable?
@@ -361,7 +391,7 @@ The parameterized problems in $\WP^d[P]$ of most interest to us are those for wh
   $\pncsat$ is in $\WP^d[P]$.
 \end{lemma}
 \begin{proof}
-  The depth-universal circuit of \autocite{ch85} proves membership of this problem in $\WP^d[P]$.
+  The depth-universal circuit $U$ of \autocite{ch85} proves membership of this problem in $\WP^d[P]$.
   The number of nondeterministic bits required by the universal circuit is simply $n$, the size of the input to the circuit $C$, which is of the form $h(k) \log m$ if we choose $h(k) = k = n / \log m$.
 \end{proof}
 
@@ -370,7 +400,9 @@ The parameterized problems in $\WP^d[P]$ of most interest to us are those for wh
   Perhaps we can use the other complete problems from \autocite{cc97} here?
 }
 
-\begin{theorem}[Theorem~3.29 part ii]
+This is an adaptation of the other direction of \autocite[Theorem~3.29]{fg06}.
+
+\begin{theorem}
   Suppose $e$ is a positive integer.
   If $\FPP^d = \WP^d[P]$, then there is a circuit-computable, nondecreasing, unbounded function $i$ such that $\NC^{d + e} = \NNC^d[i(n) \log n]$.
 \end{theorem}
