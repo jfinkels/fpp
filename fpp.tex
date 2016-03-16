@@ -88,7 +88,7 @@
 \addbibresource{fpp.bib}
 
 %% Declare theorem-like environments.
-\declaretheorem[]{theorem}
+\declaretheorem[numberwithin=section]{theorem}
 \declaretheorem[numberlike=theorem]{lemma}
 \declaretheorem[numberlike=theorem]{assumption}
 \declaretheorem[numberlike=theorem, style=definition]{definition}
@@ -97,6 +97,8 @@
 \newcommand{\email}[1]{\textlangle\href{mailto:#1}{\nolinkurl{#1}}\textrangle}
 \newcommand{\todo}[1]{\textbf{TODO #1}}
 \newcommand{\pncsat}{p\textnormal{-}\log\textnormal{-}\NC^d\textnormal{-}\textsc{Circuit Sat}}
+\newcommand{\pgrouprank}{p\textnormal{-}\textsc{Group Rank}}
+\newcommand{\gen}[1]{\langle#1\rangle}
 \DeclareMathOperator{\depth}{depth}
 \DeclareMathOperator{\nondet}{nondet}
 \DeclareMathOperator{\size}{size}
@@ -164,6 +166,8 @@
 %
 % What should be done next?
 
+\section{Definitions}
+
 \begin{definition}
   A \emph{Boolean circuit}, or simply a \emph{circuit}, $C$, is an directed acyclic graph.
   The \emph{size of a circuit}, denoted $\size(C)$, is the number of vertices in the underlying graph.
@@ -217,6 +221,9 @@ If the circuits were uniform, we would need to include both alternatives, thereb
 \end{definition}
 
 Throughout we will often assume without loss of generality that functions like circuit size and depth bounds, nondeterministism bounds, and polynomials, are increasing
+
+\section{\texorpdfstring{$\FPP$ is to $\NC$ as $\WP$ is to $\NNC$}{FPP is to NC as WP is to NNC}}
+%\section{Limited nondeterminism versus fixed-parameter parallelizability}
 
 This theorem is a characterization of parameterized problems in the class $\FPP^d$ as problems for which the parameter suggests an input size threshold, below which it suffices to perform an exhaustive search to solve the problem and after which we require an efficient algorithm.
 It is the adaptation of \autocite[Theorem~1.37]{fg06}.
@@ -466,6 +473,106 @@ This is an adaptation of the other direction of \autocite[Theorem~3.29]{fg06}.
   We have shown that $\{A_n\}$ is a $\NC^{d + e}$ circuit family that decides $Q$, thus $Q \in \NC^{d + e}$.
   Since $Q$ was an arbitrary element of $\NNC^d[i(n) \log n]$, we conclude that $\NC^{d + e} = \NNC^d[i(n) \log n]$.
 \end{proof}
+
+\section{\texorpdfstring{The $\WP$ hierarchy}{The WP hierarchy}}
+
+For the necessary background in logic, see \autocite[Chapter~4]{fg06}.
+
+\begin{definition}[$\textsc{Group Rank}$]
+  \mbox{} \\
+  \begin{tabular}{r p{9.2cm}}
+    \textbf{Instance:} & finite group $G$ given as a product table, positive integer $k$. \\
+    \textbf{Question:} & Does $G$ have a generating set of cardinality $k$?
+  \end{tabular}
+\end{definition}
+
+Let $\pgrouprank$ denote the natural parameterization of $\textsc{Group Rank}$.
+
+\begin{theorem}
+  $\pgrouprank$ is in $\WP^1[P]$.
+\end{theorem}
+\begin{proof}
+  The (unparameterized) language $\textsc{Group Rank}$ is in $\beta_2 \FOLL$ \autocite[Theorem~4.2]{grouprank}.
+  The algorithm nondeterministically chooses a set of $k$ group elements, each requiring $O(\log n)$ bits to represent, then (deterministically) verifies that the set generates the entire group.
+  Thus there is a nondeterministic circuit family that decides $\textsc{Group Rank}$ with (parameter-less) size and depth bounds of $n^{O(1)}$ and $\log \log n$, respectively, and using $O(k) \log n$ nondeterministic bits.
+  Therefore the parameterized problem is in $\WP^1[P]$.
+\end{proof}
+
+Is this problem in a fixed finite level of the $\WP$ hierarchy?
+Let us try to express this problem in first-order logic.
+
+\begin{definition}[Axiomatization of groups]
+The signature for groups has a constant symbol for the identity element denoted $e$, a unary function for the inverse denoted $x^{-1}$, and a binary function for the group operation.
+Let the group axioms be defined as first-order formulae as follows.
+\begin{align*}
+  \textsc{HasIdentity} & = \forall x\, (ex = x \land xe = x) \\
+  \textsc{HasInverses} & = \forall x\, (x^{-1} x = x x^{-1} = e) \\
+  \textsc{IsAssociative} & = \forall x \forall y \forall z\, ((x y) z = x (y z))
+\end{align*}
+Let $\textsc{IsGroup}$ be the conjunction of these three formulae.
+Now for any finite structure $\mathcal{A}$, we have $\mathcal{A} \models \textsc{IsGroup}$ if and only if $\mathcal{A}$ is a group.
+Let $\textsc{Group}$ denote the class of all finite structures that are valid groups, that is, the class of all structures that model $\textsc{IsGroup}$.
+\end{definition}
+
+Since the universal quantifiers can be placed in the beginning of the formula, $\textsc{IsGroup}$ is in $\Pi_1$.
+
+Let $\textsc{IsMember}(g, X)$ denote the formula for which $\mathcal{G} \models \textsc{IsMember}(g, X)$ exactly when $g \in \gen{S}_\mathcal{G}$.
+In \autocite[Subsection~3.3]{bklm01} the authors fail to show that this formula is in $\FO[\log \log n]$, but we do know that the problem of deciding whether $\mathcal{G} \models \textsc{IsMember}(g, X)$, given a group $\mathcal{G}$, a subset $S$ of $\mathcal{G}$, and a group element $g$, is in $\L$ \autocite[Lemma~3.5]{grouprank}.
+Since $\L = \FO(\DTC)$, our best upper bound for the definability of $\textsc{IsMember}$ is $\FO(\DTC)$.
+
+Let $\Phi$ be a class of formulas and let $\phi$ be an element of $\Phi$ with one free relation variable $X$ of arity $s$.
+Define the model checking problem and the weighted definability problems as follows.
+
+\begin{definition}[{$\MC(\Phi)$ \autocite[Section~4.3]{fg06}}]
+  \mbox{} \\
+  \begin{tabular}{r p{9.2cm}}
+    \textbf{Instance:} & structure $\mathcal{A}$, formula $\phi \in \Phi$. \\
+    \textbf{Question:} & Does $\mathcal{A} \models \phi$?
+  \end{tabular}
+\end{definition}
+
+\begin{definition}[{$\WD_\phi$ \autocite[Section~4.3]{fg06}}]
+  \mbox{} \\
+  \begin{tabular}{r p{9.2cm}}
+    \textbf{Instance:} & structure $\mathcal{A}$, natural number $k$. \\
+    \textbf{Question:} & Is there an $S \subseteq A^s$ such that $|S| = k$ and $\mathcal{A} \models \phi(S)$?
+  \end{tabular}
+\end{definition}
+
+In this setting, $\textsc{Group Rank}$ is $\WD_\phi$, where
+\[
+\phi(X) = \textsc{IsGroup} \land \forall g\, (\textsc{IsMember}(g, X)).
+\]
+Similarly, $\textsc{Group Rank}$ reduces to $\MC(\FO(\DTC))$ via the reduction $(\mathcal{G}, k) \mapsto (\mathcal{G}, \textsc{IsGenerating}_k)$, where
+\[
+\textsc{IsGenerating}_k = \textsc{IsGroup} \land \exists x_1 \dotsb \exists x_k\, (\textsc{IsMember}_k(g, x_1, \dotsc, x_k)),
+\]
+and
+\[
+\textsc{IsMember}_k(g, x_1, \dotsc, x_k) \equiv \textsc{IsMember}(g, \{x_1, \dotsc, x_k\}).
+\]
+
+Now consider the parameterized version of the model checking and weighted definability problems.
+
+\begin{definition}[{$p\textnormal{-}\MC(\Phi)$ \autocite[Section~5.2]{fg06}}]
+  \mbox{} \\
+  \begin{tabular}{r p{9.2cm}}
+    \textbf{Instance:} & structure $\mathcal{A}$, formula $\phi \in \Phi$. \\
+    \textbf{Parameter:} & $|\phi|$ \\
+    \textbf{Question:} & Does $\mathcal{A} \models \phi$?
+  \end{tabular}
+\end{definition}
+
+\begin{definition}[{$p\textnormal{-}\WD_\phi$ \autocite[Section~5.1]{fg06}}]
+  \mbox{} \\
+  \begin{tabular}{r p{9.2cm}}
+    \textbf{Instance:} & structure $\mathcal{A}$, natural number $k$. \\
+    \textbf{Parameter:} & $k$ \\
+    \textbf{Question:} & Is there an $S \subseteq A^s$ such that $|S| = k$ and $\mathcal{A} \models \phi(S)$?
+  \end{tabular}
+\end{definition}
+
+In the parameterized setting, $\pgrouprank$ is $p\textnormal{-}\WD_\phi$ and is reducible to $p\textnormal{-}\MC(\FO(\DTC))$ via the reductions given above.
 
 %% Print the bibliography section here.
 \printbibliography
