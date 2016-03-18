@@ -90,14 +90,16 @@
 %% Declare theorem-like environments.
 \declaretheorem[numberwithin=section]{theorem}
 \declaretheorem[numberlike=theorem]{lemma}
+\declaretheorem[numberlike=theorem]{proposition}
 \declaretheorem[numberlike=theorem]{assumption}
 \declaretheorem[numberlike=theorem, style=definition]{definition}
 
 %% Custom commands are declared here.
 \newcommand{\email}[1]{\textlangle\href{mailto:#1}{\nolinkurl{#1}}\textrangle}
 \newcommand{\todo}[1]{\textbf{TODO #1}}
-\newcommand{\pncsat}{p\textnormal{-}\log\textnormal{-}\NC^d\textnormal{-}\textsc{Circuit Sat}}
-\newcommand{\pgrouprank}{p\textnormal{-}\textsc{Group Rank}}
+\newcommand{\dash}{\textnormal{-}}
+\newcommand{\pncsat}{p\dash\log\dash\NC^d\dash\textsc{Circuit Sat}}
+\newcommand{\pgrouprank}{p\dash\textsc{Group Rank}}
 \newcommand{\gen}[1]{\langle#1\rangle}
 \DeclareMathOperator{\depth}{depth}
 \DeclareMathOperator{\nondet}{nondet}
@@ -226,11 +228,130 @@ Throughout we will often assume without loss of generality that functions like c
 
 \subsection{Example problem in FPP}
 
-\todo{Problems based on NP-complete problems, like vertex cover, etc.}
+The parameterized vertex cover problem is in $\FPP$ \autocite{bst15}, but the underlying decision problem is $\NP$-complete.
+We are interested in finding a problem in $\FPP$ whose underlying decision problem is $\P$-complete.
+One way to do this is to find an optimization problem whose budget problem is $\P$-complete while admitting a highly parallel approximation scheme via a ``fixed-parameter parallelizable'' algorithm.
 
-The positive linear programming is $\P$-complete, but has FNCAS, so is in FPP.
+\begin{definition}
+  An \emph{optimization problem} $O$ is a four-tuple $(I, S, m, t)$, where $I$ is the set of instances, $S$ is the set of pairs $(x, w)$ where $w$ is a solution for $x$, the function $m$ computes the \emph{measure} (or \emph{objective value}) for such a pair, and $t$ is either $\min$ or $\max$.
+\end{definition}
 
-\todo{Prove that}
+\begin{definition}
+  The \emph{standard parameterization} of a minimization problem $O$, denoted $p\dash{O}$, is $(Q, \kappa)$, where $Q = \{ (x, k) \, | \, m^*(x) \geq k \}$ and $\kappa(x, k) = k$.
+  The inequality is reversed for a maximization problem.
+\end{definition}
+
+\begin{definition}
+  Suppose $(I, S, m, t)$ is an optimization problem and $(x, y) \in S$.
+  The \emph{performance ratio} of the solution $y$ (with respect to $x$), denoted $R(x, y)$, is defined by
+  \[
+  R(x, y) = \max \left(\frac{m(x, y)}{m^*(x)}, \frac{m^*(x)}{m(x, y)}\right)
+  \]
+\end{definition}
+
+The performance ratio $R(x, y)$ is a number in the interval $[1, \infty)$.
+The closer $R(x, y)$ is to 1, the better the solution $y$ is for $x$, and the closer $R(x, y)$ to $\infty$, the worse the solution.
+
+\begin{definition}
+  An \emph{approximation scheme} for an optimization problem is a function $A$ such that for all $x$ and all positive integers $k$ we have $(x, A(x, k)) \in S$ and $R(x, A(x, k)) \leq 1 + \frac{1}{k}$.
+\end{definition}
+
+An approximation scheme induces a family of functions, $\{A_k\}_{k \in \mathbb{N}}$, that form progressively better approximations for the optimization problem.
+
+%% \begin{definition}
+%%   An optimization problem $O$ has an \emph{$\NC$ approximation scheme} if there is an approximation scheme $A$ for $O$ such that for each $k$, we have $A_k \in \FNC$, where $A_k(x) = A(x, k)$ for each $x$.
+%% \end{definition}
+
+\begin{definition}
+  Suppose $O$ is an optimization problem with $O = (I, S, m, t)$ with $I$ and $S$ in $\NC$ and $m$ in $\FNC$.
+  An optimization problem $O$ is in $\NCAS$ if there is an approximation scheme $A$ for $O$ such that for each $k$, we have $A_k \in \FNC$, where $A_k(x) = A(x, k)$ for each $x$.
+  The problem is in $\FNCAS$ if there is an approximation scheme $A$ for $O$ such that $A \in \FNC$ (i.e. on both inputs).
+\end{definition}
+
+This definition is adapted from \autocite[Definition~1.31]{fg06}
+
+\begin{definition}
+  An optimization problem $O$ is in $\ENCAS$ if there is a circuit family $\{A_{n, k}\}$ and circuit-computable functions $f$ and $g$ such that
+  \begin{itemize}
+  \item $\{A_{n, k}\}$ is an approximation scheme for $O$,
+  \item $\size(A_{n, k}) \leq f(k) n^{O(1)}$,
+  \item $\depth(A_{n, k}) \leq g(k) \log^{O(1)} n$.
+  \end{itemize}
+\end{definition}
+
+\begin{proposition}\label{prop:encas}
+  $\FNCAS \subseteq \ENCAS \subseteq \NCAS$.
+\end{proposition}
+
+\begin{theorem}\label{thm:encasfpp}
+  If $O$ is in $\ENCAS$, then $p\dash{O}$ is in $\FPP$.
+\end{theorem}
+\begin{proof}
+  Assume without loss of generality that $O$ is a minimization problem; the proof is similar if it is a maximization problem.
+  Let $\{m_n\}$ be the $\NC$ circuit family that computes the measure function.
+  Let $\{A_{n, k}\}$ be the circuit family such that
+  \begin{itemize}
+  \item $R(x, A_{n, k}(x, k)) \leq 1 + \frac{1}{k}$ for each $x$ and $k$,
+  \item $\size(A_{n, k}) \leq f(k) n^{O(1)}$,
+  \item $\depth(A_{n, k}) \leq g(k) \log^{O(1)} n$,
+  \end{itemize}
+  for some circuit-computable functions $f$ and $g$.
+  Define the circuit family $\{C_{n, k}\}$ as
+  \[
+  C_{n, k}(x, k) = 1 \iff m(x, A_{n, k + 1}(x, k + 1)) \leq k,
+  \]
+  so $C_{n, k}$ outputs 1 if and only if the approximate solution corresponding to parameter $k + 1$ measures less than $k + 1$.
+  (The function $m$ is really a circuit as well, chosen from a family of circuits depending on the number of bits in its inputs.)
+
+  The size of $C_{n, k}$ is $O(\size(m) + \size(A_{n, k + 1}))$, which is $f'(k)n^{O(1)}$ for some circuit-computable function $f'$.
+  The depth is $O(\depth(m) + \depth(A_{n, k + 1})$, which is $g'(k + 1) \log^{O(1)} n$ for some circuit-computable function $g'$.
+  It remains to show correctness of $C_{n, k}$.
+
+  Let $x$ be a string, let $k$ be a natural number, and let $y = A_{n, k + 1}(x, k + 1)$.
+  If $C_{n, k} = 1$, then $m(x, y) \leq k$, so $m^*(k) \leq k$ and therefore $(x, k) \in p \dash O$.
+  For the converse, if $C_{n, k} = 0$, then $m(x, y) \geq k + 1$, so
+  \[
+  m^*(x) \geq \frac{m(x, y)}{1 + \frac{1}{k + 1}} \geq \frac{k + 1}{1 + \frac{1}{k + 1}} = \frac{(k + 1)^2}{k + 2} > k.
+  \]
+  Thus $(x, k) \notin p \dash O$.
+  Therefore, we conclude that $p \dash O$ is in $\FPP$.
+\end{proof}
+
+The converse does not hold; the minimum vertex cover problem is in example.
+\todo{Show an example for an optimization problem whose budget problem is $\P$-complete.}
+
+Our goal now reduces to finding an optimization problem in $\ENCAS$ whose budget problem is $\P$-complete.
+%% There exist problems that are $\P$-complete and have randomized $\FNCAS$ algorithms, so under a derandomization assumption, we can show a problem that fits the requirement.
+
+\begin{definition}[\textsc{Maximum Flow}]
+  \mbox{} \\
+  \begin{tabular}{r p{9.2cm}}
+    \textbf{Instance:} & directed graph $G$, a natural number capacity $c_e$ for each edge $e$, source node $s$, and target node $t$. \\
+    \textbf{Solution:} & flow $F$, defined as a real number $F_e$ for each edge $e$ such that $F_e \leq c_e$ and at each vertex the total in-flow is at least the total out-flow. \\
+    \textbf{Measure:} & total in-flow at $t$. \\
+    \textbf{Type:} & maximization.
+  \end{tabular}
+\end{definition}
+
+%% edge flows can have weights exponential in n
+
+\begin{theorem}
+  If $\NC = \RNC$, then the budget problem for \textsc{Maximum Flow} is $\P$-complete and the standard parameterization is in $\FPP$.
+\end{theorem}
+\begin{proof}
+  The budget problem for \textsc{Maximum Flow} is $\P$-complete \autocite[Problem~A.4.4]{ghr95}.
+  The \textsc{Maximum Flow} problem is in randomized $\FNCAS$ \autocite[Theorem~4.5.2]{dsst97}.
+  \todo{Double check this.}
+  If $\NC = \RNC$, then randomized $\FNCAS$ equals deterministic $\FNCAS$.
+  Thus, the problem is in $\ENCAS$, by \autoref{prop:encas}.
+  Finally, the standard parameterization is in $\FPP$ by \autoref{thm:encasfpp}.
+\end{proof}
+
+\todo{Can the randomization part of the RNC algorithm for MaxFlow be absorbed in the fixed-parameter part of the algorithm?}
+
+\todo{Can we do this without requiring a FNCAS?}
+
+% The positive linear programming problem is only in NCAS, not FNCAS.
 
 \section{\texorpdfstring{$\FPP$ is to $\NC$ as $\WP$ is to $\NNC$}{FPP is to NC as WP is to NNC}}
 %\section{Limited nondeterminism versus fixed-parameter parallelizability}
@@ -504,7 +625,7 @@ For the necessary background in logic, see \autocite[Chapter~4]{fg06}.
   \end{tabular}
 \end{definition}
 
-Let $\pgrouprank$ denote the natural parameterization of $\textsc{Group Rank}$.
+Let $\pgrouprank$ denote the standard parameterization of $\textsc{Group Rank}$.
 
 \begin{theorem}
   $\pgrouprank$ is in $\WP^1[P]$.
