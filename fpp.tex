@@ -222,8 +222,20 @@ If the circuits were uniform, we would need to include both alternatives, thereb
 
 Throughout we will often assume without loss of generality that functions like circuit size and depth bounds, nondeterministism bounds, and polynomials, are increasing
 
+\section{Fixed-parameter parallelizability}
+
+\subsection{Example problem in FPP}
+
+\todo{Problems based on NP-complete problems, like vertex cover, etc.}
+
+The positive linear programming is $\P$-complete, but has FNCAS, so is in FPP.
+
+\todo{Prove that}
+
 \section{\texorpdfstring{$\FPP$ is to $\NC$ as $\WP$ is to $\NNC$}{FPP is to NC as WP is to NNC}}
 %\section{Limited nondeterminism versus fixed-parameter parallelizability}
+
+\subsection{Does FPP = WP[P]?}
 
 This theorem is a characterization of parameterized problems in the class $\FPP^d$ as problems for which the parameter suggests an input size threshold, below which it suffices to perform an exhaustive search to solve the problem and after which we require an efficient algorithm.
 It is the adaptation of \autocite[Theorem~1.37]{fg06}.
@@ -474,7 +486,13 @@ This is an adaptation of the other direction of \autocite[Theorem~3.29]{fg06}.
   Since $Q$ was an arbitrary element of $\NNC^d[i(n) \log n]$, we conclude that $\NC^{d + e} = \NNC^d[i(n) \log n]$.
 \end{proof}
 
+\subsection{Does WP[P] = W[P]?}
+
+\todo{I think yes, since NNC = NP; prove it.}
+
 \section{\texorpdfstring{The $\WP$ hierarchy}{The WP hierarchy}}
+
+\subsection{Example problem in the hierarchy}
 
 For the necessary background in logic, see \autocite[Chapter~4]{fg06}.
 
@@ -573,6 +591,25 @@ Now consider the parameterized version of the model checking and weighted defina
 \end{definition}
 
 In the parameterized setting, $\pgrouprank$ is $p\textnormal{-}\WD_\phi$ and is reducible to $p\textnormal{-}\MC(\FO(\DTC))$ via the reductions given above.
+
+\subsection{Definition of finite levels of the hierarchy}
+
+Let $\Phi$ be a class of first-order formulas.
+Let $p\textnormal{-}\WD(\Phi)$ be the class of all parameterized problems $p\textnormal{-}\WD_\phi$ for each $\phi \in \Phi$.
+
+This definition is adapted from \autocite[Definition~5.1]{fg06}.
+
+\begin{definition}
+  For each natural number $d$ and positive integer $t$, let $WP^d[t] = []$...
+\end{definition}
+
+\subsection{Does WP[t] = W[t]?}
+
+\todo{I think no, unless P = NC; prove it.}
+
+\subsection{WP[1] probably does not equal FPP}
+
+\todo{fill me in }
 
 %% Print the bibliography section here.
 \printbibliography
