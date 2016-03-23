@@ -102,6 +102,7 @@
 \newcommand{\pncsat}{p\dash\log\dash\NC^d\dash\textsc{Circuit Sat}}
 \newcommand{\pgrouprank}{p\dash\textsc{Group Rank}}
 \newcommand{\gen}[1]{\langle#1\rangle}
+\newcommand{\cl}[1]{\left[{#1}\right]}
 \newenvironment{justification}{\begin{proof}[Justification]}{\end{proof}}
 \DeclareMathOperator{\depth}{depth}
 \DeclareMathOperator{\nondet}{nondet}
@@ -767,6 +768,65 @@ This upper bound does not allow us to say for sure whether $\pgrouprank$ is in o
 \subsection{WP[1] probably does not equal FPP}
 
 \todo{fill me in }
+
+\section{Parameterized complexity within \texorpdfstring{\P}{P}}
+
+What we really care about is the parameterized parallel complexity of problems in $\FPP$, and specifically those with underlying decision problems that are $\P$-complete.
+The $\WP$ hierarchy does not capture this.
+
+Consider the parameterized weighted circuit satisfiability and circuit evaluation problems.
+
+\begin{definition}[{$p\dash\textsc{Weighted Circuit Satisfiability}$}]
+  \mbox{} \\
+  \begin{tabular}{r p{9.2cm}}
+    \textbf{Instance:} & Boolean circuit $C$, natural number $k$. \\
+    \textbf{Parameter:} & $k$ \\
+    \textbf{Question:} & Is there binary string $x$ such that the Hamming weight of $x$ is $k$ and $C(x) = 1$?
+  \end{tabular}
+\end{definition}
+
+The weighted evaluation problem is a littly silly, since the Hamming weight of $x$ can be computed trivially, but it is defined to be the ``verification'' problem corresponding to the satisfiability problem above.
+
+\begin{definition}[{$p\dash\textsc{Weighted Circuit Evaluation}$}]
+  \mbox{} \\
+  \begin{tabular}{r p{9.2cm}}
+    \textbf{Instance:} & Boolean circuit $C$, binary string $x$, natural number $k$. \\
+    \textbf{Parameter:} & $k$ \\
+    \textbf{Question:} & Does the Hamming weight of $x$ equal $k$ and does $C(x) = 1$?
+  \end{tabular}
+\end{definition}
+
+In the setting of decision problems, we know that $\NP$ can be characterized as the closure of the circuit satisfiability problem under polynomial-time many-one reductions,
+\[
+\NP = \cl{\textsc{Circuit Satisfiability}}^{\leq_m^\P},
+\]
+and $\P$ as the closure of the circuit evaluation problem under $\NC^1$ many-one reductions,
+\[
+\P = \cl{\textsc{Circuit Evaluation}}^{\leq_m^{\NC^1}}.
+\]
+In the setting of parameterized problems, the class $\W[P]$ can be characterized as the closure of the parameterized weighted circuit satisfiability problem under fixed-parameter tractable many-one reductions,
+\[
+\W[P] = \cl{p\dash\textsc{Weighted Circuit Satisfiability}}^{\leq_m^{\FPT}}.
+\]
+Following the above pattern, we define a new class as the closure of the parameterized weighted circuit evaluation problem under fixed-parameter parallelizable many-one reductions,
+\[
+\PW[P] = \cl{p\dash\textsc{Weighted Circuit Evaluation}}^{\leq_m^{\FPP}}.
+\]
+
+\begin{theorem}
+  $\FPP \subseteq \PW[P] \subseteq \FPT$.
+\end{theorem}
+\begin{proof}
+  For the first inclusion, suppose $(Q, \kappa)$ is an arbitrary parameterized problem in $\FPP$.
+  Let $\{C_{n, k}\}$ denote the circuit family that decides it.
+  Then the reduction $x \mapsto (C_{|x|, \kappa(x)}, x, \|x\|_1)$ proves membership in $\PW[P]$, where $\|x\|_1$ is the Hamming weight of $x$.
+  (This does \emph{not} require $\kappa$ be $\NC$-computable, since we are assuming the reduction is by a nonuniform family of circuits, so the circuit computing the reduction is $R_{n, \kappa(x)}$; if we were using uniform circuit families, then we would require $\kappa$ be $\NC$-computable.)
+
+  For the second inclusion, it suffices to show that the parameterized problem $p\dash\textsc{Weighted Circuit Evaluation}$ is in $\FPT$ (since $\FPP$ reductions compose, $\FPP$ is a subset of $\FPT$, and $\FPT$ is closed under $\FPT$ reductions).
+  The underlying decision problem is in $\P$, so the parameterized problem is trivially in $\FPT$.
+\end{proof}
+
+\todo{Is $\FPT$ in $\PW$ by the standard reduction from deterministic bounded halting problem to circuit evaluation?}
 
 %% Print the bibliography section here.
 \printbibliography
