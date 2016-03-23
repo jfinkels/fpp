@@ -90,6 +90,7 @@
 %% Declare theorem-like environments.
 \declaretheorem[numberwithin=section]{theorem}
 \declaretheorem[numberlike=theorem]{lemma}
+\declaretheorem[numberlike=theorem]{conjecture}
 \declaretheorem[numberlike=theorem]{proposition}
 \declaretheorem[numberlike=theorem]{assumption}
 \declaretheorem[numberlike=theorem, style=definition]{definition}
@@ -101,6 +102,7 @@
 \newcommand{\pncsat}{p\dash\log\dash\NC^d\dash\textsc{Circuit Sat}}
 \newcommand{\pgrouprank}{p\dash\textsc{Group Rank}}
 \newcommand{\gen}[1]{\langle#1\rangle}
+\newenvironment{justification}{\begin{proof}[Justification]}{\end{proof}}
 \DeclareMathOperator{\depth}{depth}
 \DeclareMathOperator{\nondet}{nondet}
 \DeclareMathOperator{\size}{size}
@@ -226,18 +228,29 @@ Throughout we will often assume without loss of generality that functions like c
 
 \section{Fixed-parameter parallelizability}
 
-\subsection{Example problem in FPP}
+\subsection{Example problem in \texorpdfstring{\FPP}{FPP}}
 
 The parameterized vertex cover problem is in $\FPP$ \autocite{bst15}, but the underlying decision problem is $\NP$-complete.
 We are interested in finding a problem in $\FPP$ whose underlying decision problem is $\P$-complete.
-One way to do this is to find an optimization problem whose budget problem is $\P$-complete while admitting a highly parallel approximation scheme via a ``fixed-parameter parallelizable'' algorithm.
+One way to do this is to choose $Q$ to be a $\P$-complete problem and $\kappa$ to be the ``degenerate'' parameterization function $\kappa(x) = |x|$.
+
+\begin{theorem}
+  There is a parameterized problem $(Q, \kappa)$ such that $(Q, \kappa)$ is in $\FPP$ and $Q$ is $\P$-complete.
+\end{theorem}
+\begin{proof}
+  Let $Q$ be the circuit evaluation problem (given a Boolean circuit and an input string, determine if the circuit evaluates to 1), which is $\P$-complete \autocite{ladner75}.
+  Let $\kappa(C, x) = \size(C)$.
+  By the technique of \autocite[Proposition~1.7]{fg06}, we have $(Q, \kappa)$ is in $\FPP$.
+\end{proof}
+
+Another way to do this is to find an optimization problem whose budget problem is $\P$-complete while admitting a highly parallel approximation scheme via a ``fixed-parameter parallelizable'' algorithm.
 
 \begin{definition}
   An \emph{optimization problem} $O$ is a four-tuple $(I, S, m, t)$, where $I$ is the set of instances, $S$ is the set of pairs $(x, w)$ where $w$ is a solution for $x$, the function $m$ computes the \emph{measure} (or \emph{objective value}) for such a pair, and $t$ is either $\min$ or $\max$.
 \end{definition}
 
 \begin{definition}
-  The \emph{standard parameterization} of a minimization problem $O$, denoted $p\dash{O}$, is $(Q, \kappa)$, where $Q = \{ (x, k) \, | \, m^*(x) \geq k \}$ and $\kappa(x, k) = k$.
+  The \emph{standard parameterization} of a minimization problem $O$, denoted $p\dash{O}$, is $(Q, \kappa)$, where $Q = \{ (x, k) \, | \, m^*(x) \leq k \}$ and $\kappa(x, k) = k$.
   The inequality is reversed for a maximization problem.
 \end{definition}
 
@@ -284,6 +297,7 @@ This definition is adapted from \autocite[Definition~1.31]{fg06}
 \end{proposition}
 
 \begin{theorem}\label{thm:encasfpp}
+  Let $O$ be an optimization problem.
   If $O$ is in $\ENCAS$, then $p\dash{O}$ is in $\FPP$.
 \end{theorem}
 \begin{proof}
@@ -317,7 +331,7 @@ This definition is adapted from \autocite[Definition~1.31]{fg06}
   Therefore, we conclude that $p \dash O$ is in $\FPP$.
 \end{proof}
 
-The converse does not hold; the minimum vertex cover problem is in example.
+The converse does not hold: the minimum vertex cover problem is a counterexample because it is in $\FPP$ \autocite[Theorem~4.5]{bst15}.
 \todo{Show an example for an optimization problem whose budget problem is $\P$-complete.}
 
 Our goal now reduces to finding an optimization problem in $\ENCAS$ whose budget problem is $\P$-complete.
@@ -609,9 +623,27 @@ This is an adaptation of the other direction of \autocite[Theorem~3.29]{fg06}.
 
 \subsection{Does WP[P] = W[P]?}
 
-\todo{I think yes, since NNC = NP; prove it.}
+\begin{theorem}
+  $\WP[P] \subseteq \W[P]$.
+\end{theorem}
+\begin{proof}
+  This follows from the usual simulation of a circuit by a Turing machine, which can be done in linear time with respect to the size of the circuit.
+  The number of nondeterministic bits required by the Turing machine is exactly the same as the number required by the circuit.
+\end{proof}
 
-\section{\texorpdfstring{The $\WP$ hierarchy}{The WP hierarchy}}
+Whether the converse inclusion holds is not so clear.
+
+\begin{conjecture}
+  $\WP[P] \subsetneq \W[P]$ unless $\NC = \P$.
+\end{conjecture}
+\begin{justification}
+  If we use our intuition that $\WP[P]$ is like $\NNC[\poly]$ and $\W[P]$ is like $\NP$, then we might expect $\WP[P] = \W[P]$, since $\NNC[\poly] = \NP$ \autocite[Theorem~2.2]{wolf94}.
+  However, the technique used to show $\NP \subseteq \NNC[\poly]$ requires the use of $t(n)^2$ nondeterministic bits, where $t(n)$ is the running time of the nondeterministic Turing machine (which is $f(k) n^{O(1)}$ in this case).
+  Other approaches I attempted face a similar problem.
+  I suspect instead that $\WP[P] = \W[P]$ if and only if $\NC = \P$, similar to the way $\NNCO = \NPO$ \autocite{ncapproximation} if and only if $\NC = \P$.
+\end{justification}
+
+\section{The \texorpdfstring{$\WP$}{WP} hierarchy}
 
 \subsection{Example problem in the hierarchy}
 
