@@ -101,6 +101,8 @@
 \newcommand{\dash}{\textnormal{-}}
 \newcommand{\pncsat}{p\dash\log\dash\NC^d\dash\textsc{Circuit Sat}}
 \newcommand{\pgrouprank}{p\dash\textsc{Group Rank}}
+\newcommand{\pwce}{p\dash\textsc{Weighted Circuit Evaluation}}
+\newcommand{\pcke}{p\dash\textsc{Circuit}\text{ }k\dash\textsc{Evaluation}}
 \newcommand{\gen}[1]{\langle#1\rangle}
 \newcommand{\cl}[1]{\left[{#1}\right]}
 \newenvironment{justification}{\begin{proof}[Justification]}{\end{proof}}
@@ -780,21 +782,77 @@ Consider the parameterized weighted circuit satisfiability and circuit evaluatio
   \mbox{} \\
   \begin{tabular}{r p{9.2cm}}
     \textbf{Instance:} & Boolean circuit $C$, natural number $k$. \\
-    \textbf{Parameter:} & $k$ \\
+    \textbf{Parameter:} & $k$. \\
     \textbf{Question:} & Is there binary string $x$ such that the Hamming weight of $x$ is $k$ and $C(x) = 1$?
   \end{tabular}
 \end{definition}
 
-The weighted evaluation problem is a littly silly, since the Hamming weight of $x$ can be computed trivially, but it is defined to be the ``verification'' problem corresponding to the satisfiability problem above.
+The corresponding parameterized weighted circuit evaluation problem would then be as follows.
+Let $\|x\|_1$ denote the Hamming weight (that is, the number of ones) in $x$.
 
-\begin{definition}[{$p\dash\textsc{Weighted Circuit Evaluation}$}]
+\begin{definition}[{$\pcke$}]
   \mbox{} \\
   \begin{tabular}{r p{9.2cm}}
     \textbf{Instance:} & Boolean circuit $C$, binary string $x$, natural number $k$. \\
-    \textbf{Parameter:} & $k$ \\
-    \textbf{Question:} & Does the Hamming weight of $x$ equal $k$ and does $C(x) = 1$?
+    \textbf{Parameter:} & $k$. \\
+    \textbf{Question:} & Does $\|x\|_1 = k$ and $C(x) = 1$?
   \end{tabular}
 \end{definition}
+
+This is a little silly, since the Hamming weight of $x$ can be computed trivially, but it is technically ``verification'' problem corresponding to the satisfiability problem above.
+Instead, we use a problem that is equivalent but a little less silly.
+
+\begin{definition}[{$\pwce$}]
+  \mbox{} \\
+  \begin{tabular}{r p{9.2cm}}
+    \textbf{Instance:} & Boolean circuit $C$, binary string $x$. \\
+    \textbf{Parameter:} & $\|x\|_1$. \\
+    \textbf{Question:} & Does $C(x) = 1$?
+  \end{tabular}
+\end{definition}
+
+These parameterized problems are equivalent under $\FPP$ many-one reductions because the parameterization is computable in $\NC$.
+\todo{Reference for circuit computing Hamming weight; see \url{http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=4781532}}
+
+\begin{proposition}
+  $\pcke \equiv_m^{\FPP} \pwce$.
+\end{proposition}
+%% \begin{proof}
+%%   Let $\kappa_1$ denote the parameterization of the problem on the left and $\kappa_2$ the parameterization of the problem on the right.
+%%   The right-to-left reduction is simply $(C, x) \mapsto (C, x, \|x\|_1)$.
+%%   The correctness as well as the size, depth, and parameterization bounds are straightforward to prove.
+
+%%   The circuit family computing the left-to-right reduction is $\{R_{m, k}\}$, defined by
+%%   \[
+%%   R_{m, k}(C, x, k) =
+%%   \begin{cases}
+%%     (C, x) & \text{if } \|x\|_1 = k \\
+%%     (\textsc{not}, 1) & \text{otherwise},
+%%   \end{cases}
+%%   \]
+%%   where $m$ denotes the overall size of the input and \textsc{not} is the circuit which is a single negation gate.
+
+%%   In order to prove correctness, first suppose $C(x) = 1$ and $\|x\|_1 = k$.
+%%   By construction, $R(C, x, k) = (C, x)$, and $C(x) = 1$, as required.
+%%   For the converse, there are two cases to consider.
+%%   First, if $C(x) \neq 0$, then the output of $R(C, x, k)$ will be a circuit that outputs zero regardless of the value of $\|x\|_1$.
+%%   Second, if $\|x\|_1 \neq k$, then the output of $R(C, x, k)$ will be $(\textsc{not}, 1)$, which is a circuit that outputs zero.
+%%   In either case, $R(C, x, k)$ is not in $\pwce$, as required.
+%%   Thus the reduction is correct.
+
+%%   The size and depth bounds are trivial since the circuit $R_{m, k}$ essentially just copies its input to its output.
+%%   Finally, for the bound on the parameterization in the reduced instance, there are two cases.
+%%   If $\|x\|_1 = k$, then
+%%   \[
+%%   $\kappa_2(R(C, x, k)) = \kappa_2(C, x) = \|x\|_1 = k = \kappa_1(C, x).
+%%   \]
+%%   Otherwise,
+%%   \[
+%%   \kappa_2(R(C, x, k)) = \kappa_2(\textsc{not}, 1) = 1 \leq \kappa_1(C, x).
+%%   \]
+%%   In either case, the parameterization of the reduced instance is bounded above by the parameterization of the original instance.
+%%   Therefore we have shown the left-to-right $\FPP$ reduction.
+%% \end{proof}
 
 In the setting of decision problems, we know that $\NP$ can be characterized as the closure of the circuit satisfiability problem under polynomial-time many-one reductions,
 \[
@@ -810,23 +868,25 @@ In the setting of parameterized problems, the class $\W[P]$ can be characterized
 \]
 Following the above pattern, we define a new class as the closure of the parameterized weighted circuit evaluation problem under fixed-parameter parallelizable many-one reductions,
 \[
-\PW[P] = \cl{p\dash\textsc{Weighted Circuit Evaluation}}^{\leq_m^{\FPP}}.
+\PW[P] = \cl{\pwce}^{\leq_m^{\FPP}}.
 \]
 
+Since the underlying decision problem, the problem of evaluating a circuit on a given input, is in $\P$, the parameterized problem $\pwce$ is trivially in $\FPT$.
+Since $\FPP$ reductions compose, $\FPP$ is a subset of $\FPT$, and $\FPT$ is closed under $\FPT$ reductions, we conclude that $\PW[P]$ is a subset of $\FPT$.
+
 \begin{theorem}
-  $\FPP \subseteq \PW[P] \subseteq \FPT$.
+  $\PW[P] \subseteq \FPT$.
 \end{theorem}
-\begin{proof}
-  For the first inclusion, suppose $(Q, \kappa)$ is an arbitrary parameterized problem in $\FPP$.
-  Let $\{C_{n, k}\}$ denote the circuit family that decides it.
-  Then the reduction $x \mapsto (C_{|x|, \kappa(x)}, x, \|x\|_1)$ proves membership in $\PW[P]$, where $\|x\|_1$ is the Hamming weight of $x$.
-  (This does \emph{not} require $\kappa$ be $\NC$-computable, since we are assuming the reduction is by a nonuniform family of circuits, so the circuit computing the reduction is $R_{n, \kappa(x)}$; if we were using uniform circuit families, then we would require $\kappa$ be $\NC$-computable.)
 
-  For the second inclusion, it suffices to show that the parameterized problem $p\dash\textsc{Weighted Circuit Evaluation}$ is in $\FPT$ (since $\FPP$ reductions compose, $\FPP$ is a subset of $\FPT$, and $\FPT$ is closed under $\FPT$ reductions).
-  The underlying decision problem is in $\P$, so the parameterized problem is trivially in $\FPT$.
-\end{proof}
+Is $\PW[P] = \FPT$?
+The standard simulation of a deterministic Turing machine by a circuit, as in \autocite{ladner75}, for example, fails to provide a $\FPP$ many-one reduction to the parameterized weighted circuit evaluation problem, since the natural reduction would be of the form $x \mapsto (C, x, \|x\|_1)$, but the parameter value $\|x\|_1$ is not necessarily bounded by a function of $\kappa(x)$.
+\todo{Show something bad happens if $\PW[P] = \FPT$.}
 
-\todo{Is $\FPT$ in $\PW$ by the standard reduction from deterministic bounded halting problem to circuit evaluation?}
+\todo{Define $\FPT$-completeness.}
+
+\todo{Show a problem that is known to be in $\FPT$ (for example one of the deterministic Turing machine computation problems maybe) is actually in $\PW[P]$.}
+
+The same issue prevents us from showing that $\FPP \subseteq \PW[P]$.
 
 %% Print the bibliography section here.
 \printbibliography
