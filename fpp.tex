@@ -868,25 +868,26 @@ In the setting of parameterized problems, the class $\W[P]$ can be characterized
 \]
 Following the above pattern, we define a new class as the closure of the parameterized weighted circuit evaluation problem under fixed-parameter parallelizable many-one reductions,
 \[
-\PW[P] = \cl{\pwce}^{\leq_m^{\FPP}}.
+\E[P] = \cl{\pwce}^{\leq_m^{\FPP}}
 \]
+("E" for evaluation).
 
 Since the underlying decision problem, the problem of evaluating a circuit on a given input, is in $\P$, the parameterized problem $\pwce$ is trivially in $\FPT$.
-Since $\FPP$ reductions compose, $\FPP$ is a subset of $\FPT$, and $\FPT$ is closed under $\FPT$ reductions, we conclude that $\PW[P]$ is a subset of $\FPT$.
+Since $\FPP$ reductions compose, $\FPP$ is a subset of $\FPT$, and $\FPT$ is closed under $\FPT$ reductions, we conclude that $\E[P]$ is a subset of $\FPT$.
 
 \begin{theorem}
-  $\PW[P] \subseteq \FPT$.
+  $\E[P] \subseteq \FPT$.
 \end{theorem}
 
-Is $\PW[P] = \FPT$?
+Is $\E[P] = \FPT$?
 The standard simulation of a deterministic Turing machine by a circuit, as in \autocite{ladner75}, for example, fails to provide a $\FPP$ many-one reduction to the parameterized weighted circuit evaluation problem, since the natural reduction would be of the form $x \mapsto (C, x, \|x\|_1)$, but the parameter value $\|x\|_1$ is not necessarily bounded by a function of $\kappa(x)$.
-\todo{Show something bad happens if $\PW[P] = \FPT$.}
+\todo{Show something bad happens if $\E[P] = \FPT$.}
 
 \todo{Define $\FPT$-completeness.}
 
-\todo{Show a problem that is known to be in $\FPT$ (for example one of the deterministic Turing machine computation problems maybe) is actually in $\PW[P]$.}
+\todo{Show a problem that is known to be in $\FPT$ (for example one of the deterministic Turing machine computation problems maybe) is actually in $\E[P]$.}
 
-The same issue prevents us from showing that $\FPP \subseteq \PW[P]$.
+The same issue prevents us from showing that $\FPP \subseteq \E[P]$.
 
 %% Print the bibliography section here.
 \printbibliography
