@@ -101,6 +101,7 @@
 \newcommand{\dash}{\textnormal{-}}
 \newcommand{\pncsat}{p\dash\log\dash\NC^d\dash\textsc{Circuit Sat}}
 \newcommand{\pgrouprank}{p\dash\textsc{Group Rank}}
+\newcommand{\pbsbdce}{p\dash\textsc{Bounded Size Bounded Depth Circuit Evaluation}}
 \newcommand{\pwce}{p\dash\textsc{Weighted Circuit Evaluation}}
 \newcommand{\pcke}{p\dash\textsc{Circuit}\text{ }k\dash\textsc{Evaluation}}
 \newcommand{\gen}[1]{\langle#1\rangle}
@@ -231,22 +232,55 @@ Throughout we will often assume without loss of generality that functions like c
 
 \section{Fixed-parameter parallelizability}
 
-\subsection{Example problem in \texorpdfstring{\FPP}{FPP}}
-
 The parameterized vertex cover problem is in $\FPP$ \autocite{bst15}, but the underlying decision problem is $\NP$-complete.
 We are interested in finding a problem in $\FPP$ whose underlying decision problem is $\P$-complete.
+
+\subsection{Circuit evaluation problems}
+
 One way to do this is to choose $Q$ to be a $\P$-complete problem and $\kappa$ to be the ``degenerate'' parameterization function $\kappa(x) = |x|$.
 
+\begin{definition}[$p \dash s \dash \textsc{Circuit Evaluation}$]
+  \mbox{} \\
+  \begin{tabular}{r p{9.2cm}}
+    \textbf{Instance:} & Boolean circuit $C$ on $n$ inputs, with size $m$ and depth $d$. \\
+    \textbf{Parameter:} & $m$. \\
+    \textbf{Question:} & Does $C(x) = 1$?
+  \end{tabular}
+\end{definition}
+
 \begin{theorem}
-  There is a parameterized problem $(Q, \kappa)$ such that $(Q, \kappa)$ is in $\FPP$ and $Q$ is $\P$-complete.
+  $p \dash s \dash \textsc{Circuit Evaluation}$ is in $\FPP$ and the underlying decision problem is $\P$-complete.
 \end{theorem}
 \begin{proof}
-  Let $Q$ be the circuit evaluation problem (given a Boolean circuit and an input string, determine if the circuit evaluates to 1), which is $\P$-complete \autocite{ladner75}.
-  Let $\kappa(C, x) = \size(C)$.
-  By the technique of \autocite[Proposition~1.7]{fg06}, we have $(Q, \kappa)$ is in $\FPP$.
+  The circuit evaluation problem is $\P$-complete by \autocite{ladner75}.
+  Since the parameterization is monotonically increasing with the size of the input, the problem is in $\FPP$ by the technique of \autocite[Proposition~1.7]{fg06}.
 \end{proof}
 
-Another way to do this is to find an optimization problem whose budget problem is $\P$-complete while admitting a highly parallel approximation scheme via a ``fixed-parameter parallelizable'' algorithm.
+To find a non-degenerate example, we can parameterize the circuit evaluation problem by depth instead of size.
+
+\begin{definition}[$p \dash d \dash \textsc{Circuit Evaluation}$]
+  \mbox{} \\
+  \begin{tabular}{r p{9.2cm}}
+    \textbf{Instance:} & Boolean circuit $C$ on $n$ inputs, with size $m$ and depth $d$. \\
+    \textbf{Parameter:} & $d$. \\
+    \textbf{Question:} & Does $C(x) = 1$?
+  \end{tabular}
+\end{definition}
+
+\begin{theorem}
+  $p \dash d \dash \textsc{Circuit Evaluation}$ is in $\FPP$ and the underlying decision problem is $\P$-complete.
+\end{theorem}
+\begin{proof}
+  As stated in the proof of the previous theorem, the circuit evaluation problem is $\P$-complete.
+  Evaluating the circuit $C$ of size $m$ and depth $d$ on inputs $x$ can be performed by the depth-universal circuit $U$ of \autocite{ch85}.
+  The size of $U$ is $O(m)$, which is of the form $f(d) m^{O(1)}$ as required.
+  The depth of $U$ is $O(d)$, which is of the form $g(d) \log^{O(1)} m$.
+  Therefore the circuit evaluation problem parameterized by circuit depth is in $\FPP$ (and specifically, in the class $\FPAC^{0 \uparrow}$ as defined by \autocite{bst15}, therein denoted $\para\AC^{0 \uparrow}$).
+\end{proof}
+
+\subsection{Approximable optimization problems}
+
+Yet another way to do this is to find an optimization problem whose budget problem is $\P$-complete while admitting a highly parallel approximation scheme via a ``fixed-parameter parallelizable'' algorithm.
 
 \begin{definition}
   An \emph{optimization problem} $O$ is a four-tuple $(I, S, m, t)$, where $I$ is the set of instances, $S$ is the set of pairs $(x, w)$ where $w$ is a solution for $x$, the function $m$ computes the \emph{measure} (or \emph{objective value}) for such a pair, and $t$ is either $\min$ or $\max$.
@@ -299,6 +333,8 @@ This definition is adapted from \autocite[Definition~1.31]{fg06}
   $\FNCAS \subseteq \ENCAS \subseteq \NCAS$.
 \end{proposition}
 
+This theorem is an adaptation of \autocite[Theorem~1.32]{fg06}.
+
 \begin{theorem}\label{thm:encasfpp}
   Let $O$ be an optimization problem.
   If $O$ is in $\ENCAS$, then $p\dash{O}$ is in $\FPP$.
@@ -335,7 +371,7 @@ This definition is adapted from \autocite[Definition~1.31]{fg06}
 \end{proof}
 
 The converse does not hold: the minimum vertex cover problem is a counterexample because it is in $\FPP$ \autocite[Theorem~4.5]{bst15}.
-\todo{Show an example for an optimization problem whose budget problem is $\P$-complete.}
+\todo{Show an example of an optimization problem whose budget problem is $\P$-complete and whose standard parameterization is in $\FPP$ but for which no $\ENCAS$ exists.}
 
 Our goal now reduces to finding an optimization problem in $\ENCAS$ whose budget problem is $\P$-complete.
 %% There exist problems that are $\P$-complete and have randomized $\FNCAS$ algorithms, so under a derandomization assumption, we can show a problem that fits the requirement.
@@ -358,15 +394,12 @@ Our goal now reduces to finding an optimization problem in $\ENCAS$ whose budget
 \begin{proof}
   The budget problem for \textsc{Maximum Flow} is $\P$-complete \autocite[Problem~A.4.4]{ghr95}.
   The \textsc{Maximum Flow} problem is in randomized $\FNCAS$ \autocite[Theorem~4.5.2]{dsst97}.
-  \todo{Double check this.}
   If $\NC = \RNC$, then randomized $\FNCAS$ equals deterministic $\FNCAS$.
   Thus, the problem is in $\ENCAS$, by \autoref{prop:encas}.
   Finally, the standard parameterization is in $\FPP$ by \autoref{thm:encasfpp}.
 \end{proof}
 
 \todo{Can the randomization part of the RNC algorithm for MaxFlow be absorbed in the fixed-parameter part of the algorithm?}
-
-\todo{Can we do this without requiring a FNCAS?}
 
 % The positive linear programming problem is only in NCAS, not FNCAS.
 
@@ -562,7 +595,7 @@ This is the $\NC^d$ bounded version of the parameterized problem from \autocite[
 \begin{definition}[$\pncsat$]
   \mbox{} \\
   \begin{tabular}{r p{9.2cm}}
-    \textbf{Instance:} & Boolean circuit $C$ of on $n$ inputs, with size $m$ and depth $O(\log^d n)$. \\
+    \textbf{Instance:} & Boolean circuit $C$ on $n$ inputs, with size $m$ and depth $O(\log^d n)$. \\
     \textbf{Parameter:} & $n / \log m$. \\
     \textbf{Question:} & Is $C$ satisfiable?
   \end{tabular}
@@ -776,6 +809,8 @@ This upper bound does not allow us to say for sure whether $\pgrouprank$ is in o
 What we really care about is the parameterized parallel complexity of problems in $\FPP$, and specifically those with underlying decision problems that are $\P$-complete.
 The $\WP$ hierarchy does not capture this.
 
+\subsection{Defining classes with built-in complete problems}
+
 Consider the parameterized weighted circuit satisfiability and circuit evaluation problems.
 
 \begin{definition}[{$p\dash\textsc{Weighted Circuit Satisfiability}$}]
@@ -888,6 +923,29 @@ The standard simulation of a deterministic Turing machine by a circuit, as in \a
 \todo{Show a problem that is known to be in $\FPT$ (for example one of the deterministic Turing machine computation problems maybe) is actually in $\E[P]$.}
 
 The same issue prevents us from showing that $\FPP \subseteq \E[P]$.
+
+\subsection{Constructing complete problems from existing classes}
+
+This theorem is inspired by \autocite[Corollary~2]{cd98}, which proves a related problem is complete for the class $\PNC$ (a class that lives between $\FPP$ and $\FPT$) under $\FPP$ many-one reductions.
+
+\begin{definition}[$\pbsbdce$]
+  \mbox{} \\
+  \begin{tabular}{r p{9.2cm}}
+    \textbf{Instance:} & Boolean circuit $C$ on $n$ inputs, binary string $x$, natural numbers $\alpha$ and $\beta$, circuit-computable functions $f$ and $g$, positive integer $k$, where $\size(C) \leq f(k) n^\alpha$ and $\depth(C) \leq g(k) n^\beta$. \\
+    \textbf{Parameter:} & $k$. \\
+    \textbf{Question:} & Does $C(x) = 1$?
+  \end{tabular}
+\end{definition}
+
+\begin{theorem}
+  $\pbsbdce$ is complete for $\FPT$ under $\FPP$ many-one reductions.
+\end{theorem}
+\begin{proof}
+  \todo{I tested this out on paper already, it works; just need to write it up.}
+\end{proof}
+
+As a corollary, if this problem is fixed-parameter parallelizable, then $\FPP = \FPT$.
+\todo{Show negative consequences of $\FPP = \FPT$; \autocite{cd98} already basically did this, but not clearly.}
 
 %% Print the bibliography section here.
 \printbibliography
