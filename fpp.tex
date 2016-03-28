@@ -98,6 +98,7 @@
 %% Custom commands are declared here.
 \newcommand{\email}[1]{\textlangle\href{mailto:#1}{\nolinkurl{#1}}\textrangle}
 \newcommand{\todo}[1]{\textbf{TODO #1}}
+\newcommand{\ceil}[1]{\lceil{#1}\rceil}
 \newcommand{\dash}{\textnormal{-}}
 \newcommand{\pncsat}{p\dash\log\dash\NC^d\dash\textsc{Circuit Sat}}
 \newcommand{\pgrouprank}{p\dash\textsc{Group Rank}}
@@ -130,6 +131,10 @@
   The \LaTeX{} markup that generated this document can be downloaded from its website at \mbox{\url{https://github.com/jfinkels/fpp}}.
   The markup is distributed under the same license.
 }
+
+\section{Introduction}
+
+\todo{Change FPP to FPNC everywhere.}
 
 %% Document content goes here.
 %
@@ -808,8 +813,142 @@ This upper bound does not allow us to say for sure whether $\pgrouprank$ is in o
 
 What we really care about is the parameterized parallel complexity of problems in $\FPP$, and specifically those with underlying decision problems that are $\P$-complete.
 The $\WP$ hierarchy does not capture this.
+This is similar to the way $\NNC[\polylog]$ allows us to consider efficient highly parallel verification but does not capture polynomial-time decision.
 
-\subsection{Defining classes with built-in complete problems}
+\subsection{Completeness in \texorpdfstring{\FPT}{FPT}}
+
+We define $\P$-completeness so that problems that are $\P$-complete are unlikely to see a significant decrease in time complexity when parallelism is allowed, under the assumption that $\NC \neq \P$.
+Let us define $\FPT$-completeness similarly, so that $\FPT$-complete problems are unlikely to see a significant decrease in ``parameterized'' time complexity when ``parameterized'' parallelism is allowed, under the assumption that $\FPP \neq \FPT$.
+This subsection proves the existence of parameterized problems that are not in $\FPP$ (under the assumption $\FPP \neq \FPT$) and whose underlying decision problems are $\P$-complete, complementing \autoref{sec:pcompletefpp}, which proves the existence of parameterized problems in $\FPP$ whose underlying decision problems are $\P$-complete.
+\todo{Describe why the assumption $\FPP \neq \FPT$ is reasonable.}
+
+\begin{definition}[$\FPT$-completeness]
+  A parameterized problem $(Q, \kappa)$ is \emph{$\FPT$-hard} if for each parameterized problem $(R, \lambda)$, there is an $\FPP$ many-one reduction from $(R, \lambda)$ to $(Q, \kappa)$.
+  If furthermore $(Q, \kappa)$ is in $\FPT$, then it is \emph{$\FPT$-complete}.
+\end{definition}
+
+\begin{theorem}
+  If an $\FPT$-complete problem is in $\FPP$, then $\FPP = \FPT$.
+\end{theorem}
+\begin{proof}
+  Follows from the downward closure of $\FPP$ under $\FPP$ many-one reductions.
+\end{proof}
+
+\todo{Show negative consequences of $\FPP = \FPT$; \autocite{cd98} already basically did this, but not clearly.}
+
+The following problem is adapted from \textsc{Short Deterministic Turing Machine Computation} in \autocite{cesati06}.
+
+\begin{definition}[{$p\dash\textsc{Bounded Halting Problem}$}]
+  \mbox{} \\
+  \begin{tabular}{r p{9.2cm}}
+    \textbf{Instance:} & deterministic Turing machine $M$, binary string $x$ of length $n$, positive integer $t$ in unary, positive integer $c$. \\
+    \textbf{Parameter:} & $t / n^c$ \\
+    \textbf{Question:} & Does $M$ accept $x$ within $t$ steps?
+  \end{tabular}
+\end{definition}
+
+\begin{theorem}
+  $p \dash \textsc{Bounded Halting Problem}$ is $\FPT$-complete.
+\end{theorem}
+\begin{proof}
+  The underlying decision problem is in $\P$ (by a standard simulation on the deterministic universal Turing machine), so the parameterized problem is in $\FPT$.
+  To show $\FPT$-hardness, we use a generic reduction.
+  Let $(Q, \kappa)$ be an arbitrary parameterized problem in $\FPT$ and let $M$ be the deterministic Turing machine that decides $Q$ in time $f_M(k) n^c$ for some (circuit-)computable function $f_M$ and some positive integer $c$.
+  The reduction is $x \mapsto (M, x, 1^{f_M(k) n^c}, c)$.
+  This is computable by a (nonuniform) circuit family of constant depth and size $f(k) n^{O(1)}$, where $f$ is a circuit-computable function.
+  The parameter of the reduced instance is $f_M(k) n^c / n^c$, or simply $f_M(k)$, which satisfies the parameter bound required by the definition of $\FPP$ reduction.
+  Therefore we conclude that $p \dash \textsc{Bounded Halting Problem}$ is $\FPP$-complete.
+\end{proof}
+
+The following problem is a generalization of the problem \textsc{BS-BD-CVP} from \autocite{cd98}.
+
+\begin{definition}[{$p\dash\textsc{Small Circuit Evaluation}$}]
+  \mbox{} \\
+  \begin{tabular}{r p{9.2cm}}
+    \textbf{Instance:} & single-output Boolean circuit $C$ on $n$ inputs, binary string $x$ of length $n$, positive integer $k$, positive integers $\alpha$ and $\beta$, multi-output Boolean circuits $f$ and $g$ on $\ceil{\log k}$ inputs with $\size(C) \leq f(k) n^\alpha$ and $\depth(C) \leq g(k) n^\beta$. \\
+    \textbf{Parameter:} & $k$ \\
+    \textbf{Question:} & Does $C(x) = 1$?
+  \end{tabular}
+\end{definition}
+
+This theorem is related to \autocite[Corollary~2]{cd98}, where the authors prove that the \textsc{BS-BD-CVP} problem is complete for the class $\PNC$ (a class that lives between $\FPP$ and $\FPT$) under $\FPP$ many-one reductions.
+While their reduction is a generic reduction, ours is a reduction from the parameterized bounded halting problem.
+
+\begin{theorem}
+  $p \dash \textsc{Small Circuit Evaluation}$ is $\FPT$-complete.
+\end{theorem}
+\begin{proof}
+  Membership in $\FPT$ is straightforward to prove: use the natural algorithm for evaluating a circuit which can be performed in linear time with respect to the size of the circuit.
+  We must also compute $f(k) n^\alpha$ and $g(k) n^\beta$, and compare these with the size and depth of the circuit $C$.
+  Both of these are polynomial-time algorithms with respect to the size of the input, and hence the problem is in $\FPT$.
+
+%% %%%% Here we showed a generic reduction.
+%%   Now we prove $\FPT$-hardness.
+%%   Let $(Q, \kappa)$ be an arbitrary parameterized problem in $\FPT$, so there is a deterministic Turing machine $M$ that decides $Q$ in time $f(k) n^\alpha$ for some (circuit-)computable function $f$ and positive integer $\alpha$.
+%%   Let $C_{M, n}$ be the Boolean circuit that correctly simulates the action of $M$ on inputs of size $n$ with size $O(f(k) n^\alpha)^2$ and depth $O(f(k) n^\alpha)$; such a circuit exists due to \autocite{???}.
+%%   Define the circuit family $\{R_{n, k}\}$ as follows.
+%%   \[
+%%   R_{n, k}(x) = (C_{M, n}, x, 2\alpha, \alpha, f^2, f, k),
+%%   \]
+%%   where the natural number $n = |x|$, the positive integer $k = \kappa(x)$, and the function $f^2$ denotes the function $x \mapsto (f(x))^2$.
+%%   Let us confirm that the reduced instance is well-formed.
+%%   \begin{itemize}
+%%   \item $C_{M, n}$ is a Boolean circuit on $n$ inputs.
+%%   \item The size of $C_{M, n}$ is $f^2(k) n^{2 \alpha}$.
+%%   \item The depth of $C_{M, n}$ is $f(k) n^\alpha$.
+%%   \item Both $f^2$ and $f$ are circuit-computable since $f$ is circuit-computable.
+%%   \end{itemize}
+%%   (There are some constants in the size and depth bounds that we have ignored, but those can be incorporated into the circuit-computable function $f$.)
+%%   The reduction is correct because
+%%   \[
+%%   x \in Q \iff M \text{ accepts } x \iff C_{M, n}(x) = 1.
+%%   \]
+
+%%   Next, we show that $R_{n, k}$ has the appropriate size and depth bounds to be a valid $\FPP$ many-one reduction.
+%%   The only computation that needs to be done by the circuit is to compute $2 \alpha$ from $\alpha$ and to compute the circuit for $f^2$ from the circuit for $f$.
+%%   However, since both $\alpha$ and $f$ are entirely independent of $n$, the size and depth are constants with respect to $|x|$.
+%%   The remaining elements of the tuple (namely $C_{M, n}$, $\alpha$, $f$, and $k$) are hardcoded directly in the circuit $R_{n, k}$ and are output directly with no further computation.
+%%   The input $x$ is output directly as well.
+%%   The overall size of the circuit is therefore of the form $s(k) n^{O(1)}$, and the depth of the form $d(k) n^{O(1)}$.
+
+%%   Finally, for the parameter bound, the parameter of $R_{n, k}(x)$ is $k$, which is exactly $\kappa(x)$.
+%%   Therefore we have shown that the circuit family $\{R_{n, k}\}$ is a correct $\FPP$ many-one reduction from an arbitrary parameterized problem $(Q, \kappa)$ to $p \dash \textsc{Small Circuit Evaluation}$.
+%% \end{proof}
+
+%% \begin{theorem}
+%%   $\p \dash \textsc{Bounded Halting Problem} \equiv_m^{\FPP} p \dash \textsc{Short Circuit Evaluation}$.
+%% \end{theorem}
+%% \begin{proof}
+  Now we prove $\FPT$-hardness.
+  The reduction from $\p \dash \textsc{Bounded Halting Problem}$ is
+  \[
+  (M, x, 1^t, c) \mapsto (C_M, x, \alpha, \beta, f, g, k),
+  \]
+  where
+  \begin{itemize}
+  \item $C_M$ is the standard circuit of size $O(t^2)$ and depth $O(t)$ simulating $t$ steps of the action of $M$ on inputs of length $n$,
+  \item $\alpha = 2c$,
+  \item $\beta = c$,
+  \item $f$ is the function that squares the value of its input,
+  \item $g$ is the identity function,
+  \item $k = t / n^c$.
+  \end{itemize}
+  This reduction is computable in the appropriate size and depth bounds, and its correctness follows from the correctness of the standard deterministic Turing machine-to-circuit reduction.
+  To check that the reduced instance is well-formed, let us verify that the circuit $C_M$ meets the size and depth requirements.
+  The size of $C_M$ is $O(t^2)$, which is $O(((t / n^c) n^c)^2)$, or simply $f(k) n^\alpha$.
+  Similarly the depth of $C_M$ is $O(t)$, which is $O((t / n^c) n^c)$, or simply $g(k) n^\beta$.
+  (There are some constants in the size and depth bounds that we have ignored, but those can be incorporated into the circuit-computable functions $f$ and $g$.)
+  Finally, the parameter in the original instance, $t / n^c$, is exactly the parameter of the reduced instance, so this reduction meets the necessary paramater bound.
+  Therefore we have shown a correct $\FPP$ many-one reduction from an $\FPT$-complete problem.
+\end{proof}
+
+As expected, if any of these $\FPT$-complete problems are fixed-parameter parallelizable, then $\FPP = \FPT$.
+
+It seems that most $\P$-complete problems will end up being $\FPT$-complete under this notion of completeness.
+This doesn't really help us distinguish between different $\P$-complete problems based on how fixed-parameter parallelizable they are.
+In the next subsection, we try a different approach.
+
+\subsection{Parameterized complexity of efficient verification}
 
 Consider the parameterized weighted circuit satisfiability and circuit evaluation problems.
 
@@ -918,34 +1057,9 @@ Is $\E[P] = \FPT$?
 The standard simulation of a deterministic Turing machine by a circuit, as in \autocite{ladner75}, for example, fails to provide a $\FPP$ many-one reduction to the parameterized weighted circuit evaluation problem, since the natural reduction would be of the form $x \mapsto (C, x, \|x\|_1)$, but the parameter value $\|x\|_1$ is not necessarily bounded by a function of $\kappa(x)$.
 \todo{Show something bad happens if $\E[P] = \FPT$.}
 
-\todo{Define $\FPT$-completeness.}
-
 \todo{Show a problem that is known to be in $\FPT$ (for example one of the deterministic Turing machine computation problems maybe) is actually in $\E[P]$.}
 
 The same issue prevents us from showing that $\FPP \subseteq \E[P]$.
-
-\subsection{Constructing complete problems from existing classes}
-
-This theorem is inspired by \autocite[Corollary~2]{cd98}, which proves a related problem is complete for the class $\PNC$ (a class that lives between $\FPP$ and $\FPT$) under $\FPP$ many-one reductions.
-
-\begin{definition}[$\pbsbdce$]
-  \mbox{} \\
-  \begin{tabular}{r p{9.2cm}}
-    \textbf{Instance:} & Boolean circuit $C$ on $n$ inputs, binary string $x$, natural numbers $\alpha$ and $\beta$, circuit-computable functions $f$ and $g$, positive integer $k$, where $\size(C) \leq f(k) n^\alpha$ and $\depth(C) \leq g(k) n^\beta$. \\
-    \textbf{Parameter:} & $k$. \\
-    \textbf{Question:} & Does $C(x) = 1$?
-  \end{tabular}
-\end{definition}
-
-\begin{theorem}
-  $\pbsbdce$ is complete for $\FPT$ under $\FPP$ many-one reductions.
-\end{theorem}
-\begin{proof}
-  \todo{I tested this out on paper already, it works; just need to write it up.}
-\end{proof}
-
-As a corollary, if this problem is fixed-parameter parallelizable, then $\FPP = \FPT$.
-\todo{Show negative consequences of $\FPP = \FPT$; \autocite{cd98} already basically did this, but not clearly.}
 
 %% Print the bibliography section here.
 \printbibliography
