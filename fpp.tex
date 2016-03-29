@@ -168,6 +168,8 @@
 % %% Findings (author - what?)
 %
 % What did the work reveal when performing the task?
+We show the existence of a $\P$-complete problem in $\FPP$ (the circuit evaluation problem parameterized by depth \autoref{thm:cvpdepth}) and a $\P$-complete problem not $\FPT$, unless $\NC = \P$ (the ``small'' circuit evaluation problem \autoref{thm:psce}).
+We prove that $\FPP = \WP[P]$ almost exactly when $\NC = \NNC[f(n) \log n]$ \autoref{sec:fppwpp}.
 %
 %
 % %% Conclusion (readers - so what?)
@@ -280,7 +282,7 @@ To find a non-degenerate example, we can parameterize the circuit evaluation pro
   \end{tabular}
 \end{definition}
 
-\begin{theorem}
+\begin{theorem}\label{thm:cvpdepth}
   $p \dash d \dash \textsc{Circuit Evaluation}$ is in $\FPP$ and the underlying decision problem is $\P$-complete.
 \end{theorem}
 \begin{proof}
@@ -444,6 +446,7 @@ Let $\pgrouprank$ denote the standard parameterization of $\textsc{Group Rank}$.
 \end{proof}
 
 \subsection{Does FPP = WP[P]?}
+\label{sec:fppwpp}
 
 This theorem is a characterization of parameterized problems in the class $\FPP^d$ as problems for which the parameter suggests an input size threshold, below which it suffices to perform an exhaustive search to solve the problem and after which we require an efficient algorithm.
 It is the adaptation of \autocite[Theorem~1.37]{fg06}.
@@ -819,7 +822,7 @@ This upper bound does not allow us to say for sure whether $\pgrouprank$ is in o
 
 \subsection{WP[1] probably does not equal FPP}
 
-\todo{fill me in }
+\todo{Find a $\WP[1]$-hard problem; possibly by considering a restriction of a $\W[1]$-hard problem?.}
 
 \section{Parameterized complexity within \texorpdfstring{\P}{P}}
 
@@ -928,7 +931,7 @@ The following problem is a generalization of the problem \textsc{BS-BD-CVP} from
 This theorem is related to \autocite[Corollary~2]{cd98}, where the authors prove that the \textsc{BS-BD-CVP} problem is complete for the class $\PNC$ (a class that lives between $\FPP$ and $\FPT$) under $\FPP$ many-one reductions.
 While their reduction is a generic reduction, ours is a reduction from the parameterized bounded halting problem.
 
-\begin{theorem}
+\begin{theorem}\label{thm:psce}
   $p \dash \textsc{Small Circuit Evaluation}$ is $\FPT$-complete.
 \end{theorem}
 \begin{proof}
