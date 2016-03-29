@@ -198,10 +198,17 @@
 Nonuniformity is required in \autoref{thm:eventually} and \autoref{thm:rmparam}, for example, in which the size of the input relative to the size of the parameter for an instance of the parameterized problem selects which of two circuits to use.
 If the circuits were uniform, we would need to include both alternatives, thereby making the circuits too deep to meet the required circuit depth bounds.
 
-\begin{definition}
+\begin{definition}[Decision problems and parameterized problems]
   A \emph{language} is a set of binary strings.
   A \emph{parameterization} is a computable function $\kappa$ from binary strings to natural numbers.
   A \emph{parameterized problem} is a pair $(Q, \kappa)$, where $Q$ is a language and $\kappa$ is a parameterization.
+\end{definition}
+
+\begin{definition}[Slices of parameterized problems]
+  For each positive integer $k$ and each parameterized problem $(Q, \kappa)$, the \emph{$k$th slice of $Q$}, denoted $(Q, \kappa)_k$, is defined by
+  \[
+  (Q, \kappa)_k = \{(x, k) \, | \, x \in Q \text{ and } \kappa(x) = k\}.
+  \]
 \end{definition}
 
 \begin{definition}[$\NNC^d$ and $\NC^d$]
@@ -236,6 +243,7 @@ If the circuits were uniform, we would need to include both alternatives, thereb
 Throughout we will often assume without loss of generality that functions like circuit size and depth bounds, nondeterministism bounds, and polynomials, are increasing
 
 \section{Fixed-parameter parallelizability}
+\label{sec:pcompletefpp}
 
 The parameterized vertex cover problem is in $\FPP$ \autocite{bst15}, but the underlying decision problem is $\NP$-complete.
 We are interested in finding a problem in $\FPP$ whose underlying decision problem is $\P$-complete.
@@ -835,7 +843,6 @@ The underlying decision problem is in $\P$, so the parameterized problem is fixe
 \end{theorem}
 
 The first two slices of the problem are in $\NC$, whereas all other slices are $\P$-complete.
-\todo{Define slices of parameterized problem.}
 
 \begin{theorem}[{\autocite{am84}}]
   \mbox{}
@@ -855,21 +862,29 @@ We define $\P$-completeness so that problems that are $\P$-complete are unlikely
 Let us define $\FPT$-completeness similarly, so that $\FPT$-complete problems are unlikely to see a significant decrease in ``parameterized'' time complexity when ``parameterized'' parallelism is allowed, under the assumption that $\FPP \neq \FPT$.
 We already know that each $\P$-complete problem induces a $\FPT$-complete problem with a trivial parameterization \autocite[Proposition~14]{fg03}, however we are interested in natural problems with non-trivial parameterizations.
 This subsection proves the existence of nontrivial parameterized problems that are not in $\FPP$ (under the assumption $\FPP \neq \FPT$) and whose underlying decision problems are $\P$-complete, complementing \autoref{sec:pcompletefpp}, which proves the existence of parameterized problems in $\FPP$ whose underlying decision problems are $\P$-complete.
-\todo{Describe why the assumption $\FPP \neq \FPT$ is reasonable.}
+
+The assumption $\FPP \neq \FPT$ is reasonable because it is equivalent to the inequality $\NC \neq \P$.
+
+\begin{proposition}
+  $\FPP = \FPT$ if and only if $\NC = \P$.
+\end{proposition}
+\begin{proof}
+  The proof is trivial if we use the equivalent definitions of the complexity class $\FP \mathcal{C}$ as the class of all parameterized problems $(Q, \kappa)$ for which there is a language $L$ in the complexity class $\mathcal{C}$ such that $x \in Q$ if and only if $(x, 1^{f(\kappa(x))}) \in L$.
+  See \autocite{fg03}, for example.
+\end{proof}
+
 
 \begin{definition}[$\FPT$-completeness]
   A parameterized problem $(Q, \kappa)$ is \emph{$\FPT$-hard} if for each parameterized problem $(R, \lambda)$, there is an $\FPP$ many-one reduction from $(R, \lambda)$ to $(Q, \kappa)$.
   If furthermore $(Q, \kappa)$ is in $\FPT$, then it is \emph{$\FPT$-complete}.
 \end{definition}
 
-\begin{theorem}
+\begin{proposition}
   If an $\FPT$-complete problem is in $\FPP$, then $\FPP = \FPT$.
-\end{theorem}
+\end{proposition}
 \begin{proof}
   Follows from the downward closure of $\FPP$ under $\FPP$ many-one reductions.
 \end{proof}
-
-\todo{Show negative consequences of $\FPP = \FPT$; \autocite{cd98} already basically did this, but not clearly.}
 
 The following problem is adapted from \textsc{Short Deterministic Turing Machine Computation} in \autocite{cesati06}.
 
