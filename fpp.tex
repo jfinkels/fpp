@@ -815,6 +815,40 @@ What we really care about is the parameterized parallel complexity of problems i
 The $\WP$ hierarchy does not capture this.
 This is similar to the way $\NNC[\polylog]$ allows us to consider efficient highly parallel verification but does not capture polynomial-time decision.
 
+\subsection{Example problem in \texorpdfstring{\FPT}{FPT}}
+
+Consider the parameterized high degree subgraph problem.
+
+\begin{definition}[{$p\dash\textsc{High Degree Subgraph}$ ($p \dash \textsc{HDS}$)}]
+  \mbox{} \\
+  \begin{tabular}{r p{9.2cm}}
+    \textbf{Instance:} & undirected graph $G$, positive integer $d$. \\
+    \textbf{Parameter:} & $d$. \\
+    \textbf{Question:} & Does $G$ have a vertex-induced subgraph of minimum degree at least $d$?
+  \end{tabular}
+\end{definition}
+
+The underlying decision problem is in $\P$, so the parameterized problem is fixed-parameter tractable.
+
+\begin{theorem}[{\autocite{am84}}]
+  $p \dash \textsc{High Degree Subgraph}$ is in $\FPT$.
+\end{theorem}
+
+The first two slices of the problem are in $\NC$, whereas all other slices are $\P$-complete.
+\todo{Define slices of parameterized problem.}
+
+\begin{theorem}[{\autocite{am84}}]
+  \mbox{}
+  \begin{enumerate}
+  \item Both $p\dash\textsc{HDS}_1$ and $p \dash \textsc{HDS}_2$ are in $\NC$.
+  \item For each positive integer $d$ greater than two, $p \dash \textsc{HDS}_d$ is $\P$-complete.
+  \end{enumerate}
+\end{theorem}
+
+%% As a maximization problem, the problem is approximable to within a certain constant factor, but inapproximable beyond that factor (unless $\NC = \P$) \autocite{am84}.
+
+\todo{Is this problem FPT-complete? Is it in E[P]?}
+
 \subsection{Completeness in \texorpdfstring{\FPT}{FPT}}
 
 We define $\P$-completeness so that problems that are $\P$-complete are unlikely to see a significant decrease in time complexity when parallelism is allowed, under the assumption that $\NC \neq \P$.
