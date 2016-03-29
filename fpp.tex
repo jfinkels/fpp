@@ -853,7 +853,8 @@ The first two slices of the problem are in $\NC$, whereas all other slices are $
 
 We define $\P$-completeness so that problems that are $\P$-complete are unlikely to see a significant decrease in time complexity when parallelism is allowed, under the assumption that $\NC \neq \P$.
 Let us define $\FPT$-completeness similarly, so that $\FPT$-complete problems are unlikely to see a significant decrease in ``parameterized'' time complexity when ``parameterized'' parallelism is allowed, under the assumption that $\FPP \neq \FPT$.
-This subsection proves the existence of parameterized problems that are not in $\FPP$ (under the assumption $\FPP \neq \FPT$) and whose underlying decision problems are $\P$-complete, complementing \autoref{sec:pcompletefpp}, which proves the existence of parameterized problems in $\FPP$ whose underlying decision problems are $\P$-complete.
+We already know that each $\P$-complete problem induces a $\FPT$-complete problem with a trivial parameterization \autocite[Proposition~14]{fg03}, however we are interested in natural problems with non-trivial parameterizations.
+This subsection proves the existence of nontrivial parameterized problems that are not in $\FPP$ (under the assumption $\FPP \neq \FPT$) and whose underlying decision problems are $\P$-complete, complementing \autoref{sec:pcompletefpp}, which proves the existence of parameterized problems in $\FPP$ whose underlying decision problems are $\P$-complete.
 \todo{Describe why the assumption $\FPP \neq \FPT$ is reasonable.}
 
 \begin{definition}[$\FPT$-completeness]
@@ -963,8 +964,8 @@ While their reduction is a generic reduction, ours is a reduction from the param
   \item $C_M$ is the standard circuit of size $O(t^2)$ and depth $O(t)$ simulating $t$ steps of the action of $M$ on inputs of length $n$,
   \item $\alpha = 2c$,
   \item $\beta = c$,
-  \item $f$ is the function that squares the value of its input,
-  \item $g$ is the identity function,
+  \item $f$ is the function $x \mapsto x^2$,
+  \item $g$ is the function $x \mapsto x$,
   \item $k = t / n^c$.
   \end{itemize}
   This reduction is computable in the appropriate size and depth bounds, and its correctness follows from the correctness of the standard deterministic Turing machine-to-circuit reduction.
