@@ -104,9 +104,15 @@
 \newcommand{\pgrouprank}{p\dash\textsc{Group Rank}}
 \newcommand{\pbsbdce}{p\dash\textsc{Bounded Size Bounded Depth Circuit Evaluation}}
 \newcommand{\pwce}{p\dash\textsc{Weighted Circuit Evaluation}}
+\newcommand{\pcke}{p\dash\textsc{Circuit}\text{ }k\dash\textsc{Evaluation}}
+
 \newcommand{\pBHP}{p \dash \textsc{BHP}}
 \newcommand{\pSCE}{p \dash \textsc{SCE}}
-\newcommand{\pcke}{p\dash\textsc{Circuit}\text{ }k\dash\textsc{Evaluation}}
+\newcommand{\pHDS}{p \dash \textsc{HDS}}
+\newcommand{\pCkSAT}{p \dash k \dash \textsc{CSat}}
+\newcommand{\pCkE}{p \dash k \dash \textsc{CE}}
+\newcommand{\pWCE}{p \dash \textsc{WCE}}
+
 \newcommand{\gen}[1]{\langle#1\rangle}
 \newcommand{\cl}[1]{\left[{#1}\right]}
 \newenvironment{justification}{\begin{proof}[Justification]}{\end{proof}}
@@ -840,7 +846,7 @@ This is similar to the way $\NNC[\polylog]$ allows us to consider efficient high
 
 Consider the parameterized high degree subgraph problem.
 
-\begin{definition}[{$p\dash\textsc{High Degree Subgraph}$ ($p \dash \textsc{HDS}$)}]
+\begin{definition}[$p \dash \textsc{High Degree Subgraph}$, aka $\pHDS$]
   \mbox{} \\
   \begin{tabular}{r p{9.2cm}}
     \textbf{Instance:} & undirected graph $G$, positive integer $d$. \\
@@ -852,7 +858,7 @@ Consider the parameterized high degree subgraph problem.
 The underlying decision problem is in $\P$, so the parameterized problem is fixed-parameter tractable.
 
 \begin{theorem}[{\autocite{am84}}]
-  $p \dash \textsc{High Degree Subgraph}$ is in $\FPT$.
+  $\pHDS$ is in $\FPT$.
 \end{theorem}
 
 The first two slices of the problem are in $\NC$, whereas all other slices are $\P$-complete.
@@ -1014,20 +1020,21 @@ In the next subsection, we try a different approach.
 \subsection{Parameterized complexity of efficient verification}
 
 Consider the parameterized weighted circuit satisfiability and circuit evaluation problems.
+A circuit is \emph{$k$-satisfiable} if there is a satisfying assignment of Hamming weight exactly $k$.
 
-\begin{definition}[{$p\dash\textsc{Weighted Circuit Satisfiability}$}]
+\begin{definition}[$p \dash \textsc{Circuit } k \dash \textsc{Satisfiability}$, aka $\pCkSAT$]
   \mbox{} \\
   \begin{tabular}{r p{9.2cm}}
     \textbf{Instance:} & Boolean circuit $C$, natural number $k$. \\
     \textbf{Parameter:} & $k$. \\
-    \textbf{Question:} & Is there binary string $x$ such that the Hamming weight of $x$ is $k$ and $C(x) = 1$?
+    \textbf{Question:} & Is $C$ $k$-satisfiable?
   \end{tabular}
 \end{definition}
 
 The corresponding parameterized weighted circuit evaluation problem would then be as follows.
 Let $\|x\|_1$ denote the Hamming weight (that is, the number of ones) in $x$.
 
-\begin{definition}[{$\pcke$}]
+\begin{definition}[$\p \dash \textsc{Circuit } k \dash \textsc{Evaluation}$, aka $\pCkE$]
   \mbox{} \\
   \begin{tabular}{r p{9.2cm}}
     \textbf{Instance:} & Boolean circuit $C$, binary string $x$, natural number $k$. \\
@@ -1039,7 +1046,7 @@ Let $\|x\|_1$ denote the Hamming weight (that is, the number of ones) in $x$.
 This is a little silly, since the Hamming weight of $x$ can be computed trivially, but it is technically ``verification'' problem corresponding to the satisfiability problem above.
 Instead, we use a problem that is equivalent but a little less silly.
 
-\begin{definition}[{$\pwce$}]
+\begin{definition}[$p \dash \textsc{Weighted Circuit Evaluation}$, aka $\pWCE$]
   \mbox{} \\
   \begin{tabular}{r p{9.2cm}}
     \textbf{Instance:} & Boolean circuit $C$, binary string $x$. \\
@@ -1052,7 +1059,7 @@ These parameterized problems are equivalent under $\FPP$ many-one reductions bec
 \todo{Reference for circuit computing Hamming weight; see \url{http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=4781532}}
 
 \begin{proposition}
-  $\pcke \equiv_m^{\FPP} \pwce$.
+  $\pCkE \equiv_m^{\FPP} \pWCE$.
 \end{proposition}
 %% \begin{proof}
 %%   Let $\kappa_1$ denote the parameterization of the problem on the left and $\kappa_2$ the parameterization of the problem on the right.
@@ -1101,15 +1108,15 @@ and $\P$ as the closure of the circuit evaluation problem under $\NC^1$ many-one
 \]
 In the setting of parameterized problems, the class $\W[P]$ can be characterized as the closure of the parameterized weighted circuit satisfiability problem under fixed-parameter tractable many-one reductions,
 \[
-\W[P] = \cl{p\dash\textsc{Weighted Circuit Satisfiability}}^{\leq_m^{\FPT}}.
+\W[P] = \cl{\pCkSAT}^{\leq_m^{\FPT}}.
 \]
 Following the above pattern, we define a new class as the closure of the parameterized weighted circuit evaluation problem under fixed-parameter parallelizable many-one reductions,
 \[
-\E[P] = \cl{\pwce}^{\leq_m^{\FPP}}
+\E[P] = \cl{\pWCE}^{\leq_m^{\FPP}}
 \]
 ("E" for evaluation).
 
-Since the underlying decision problem, the problem of evaluating a circuit on a given input, is in $\P$, the parameterized problem $\pwce$ is trivially in $\FPT$.
+Since the underlying decision problem, the problem of evaluating a circuit on a given input, is in $\P$, the parameterized problem $\pWCE$ is trivially in $\FPT$.
 Since $\FPP$ reductions compose, $\FPP$ is a subset of $\FPT$, and $\FPT$ is closed under $\FPT$ reductions, we conclude that $\E[P]$ is a subset of $\FPT$.
 
 \begin{theorem}
