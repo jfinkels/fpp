@@ -87,25 +87,23 @@
 %% Declare the bibliography file.
 \addbibresource{fpp.bib}
 
-%% Declare theorem-like environments.
+%% Declare theorem- and proof-like environments.
 \declaretheorem[numberwithin=section]{theorem}
 \declaretheorem[numberlike=theorem]{lemma}
 \declaretheorem[numberlike=theorem]{conjecture}
 \declaretheorem[numberlike=theorem]{proposition}
 \declaretheorem[numberlike=theorem]{assumption}
 \declaretheorem[numberlike=theorem, style=definition]{definition}
+\newenvironment{justification}{\begin{proof}[Justification]}{\end{proof}}
 
 %% Custom commands are declared here.
 \newcommand{\email}[1]{\textlangle\href{mailto:#1}{\nolinkurl{#1}}\textrangle}
 \newcommand{\todo}[1]{\textbf{TODO #1}}
-\newcommand{\ceil}[1]{\lceil{#1}\rceil}
+
+%%%% Commands for parameterized problem names.
 \newcommand{\dash}{\textnormal{-}}
 \newcommand{\pncsat}{p\dash\log\dash\NC^d\dash\textsc{Circuit Sat}}
 \newcommand{\pgrouprank}{p\dash\textsc{Group Rank}}
-\newcommand{\pbsbdce}{p\dash\textsc{Bounded Size Bounded Depth Circuit Evaluation}}
-\newcommand{\pwce}{p\dash\textsc{Weighted Circuit Evaluation}}
-\newcommand{\pcke}{p\dash\textsc{Circuit}\text{ }k\dash\textsc{Evaluation}}
-
 \newcommand{\pBHP}{p \dash \textsc{BHP}}
 \newcommand{\pSCE}{p \dash \textsc{SCE}}
 \newcommand{\pHDS}{p \dash \textsc{HDS}}
@@ -113,9 +111,10 @@
 \newcommand{\pCkE}{p \dash k \dash \textsc{CE}}
 \newcommand{\pWCE}{p \dash \textsc{WCE}}
 
+%%%% Custom math commands.
+\newcommand{\ceil}[1]{\lceil{#1}\rceil}
 \newcommand{\gen}[1]{\langle#1\rangle}
 \newcommand{\cl}[1]{\left[{#1}\right]}
-\newenvironment{justification}{\begin{proof}[Justification]}{\end{proof}}
 \DeclareMathOperator{\depth}{depth}
 \DeclareMathOperator{\nondet}{nondet}
 \DeclareMathOperator{\size}{size}
