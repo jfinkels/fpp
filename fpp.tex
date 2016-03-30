@@ -104,6 +104,8 @@
 \newcommand{\pgrouprank}{p\dash\textsc{Group Rank}}
 \newcommand{\pbsbdce}{p\dash\textsc{Bounded Size Bounded Depth Circuit Evaluation}}
 \newcommand{\pwce}{p\dash\textsc{Weighted Circuit Evaluation}}
+\newcommand{\pBHP}{p \dash \textsc{BHP}}
+\newcommand{\pSCE}{p \dash \textsc{SCE}}
 \newcommand{\pcke}{p\dash\textsc{Circuit}\text{ }k\dash\textsc{Evaluation}}
 \newcommand{\gen}[1]{\langle#1\rangle}
 \newcommand{\cl}[1]{\left[{#1}\right]}
@@ -899,7 +901,7 @@ The assumption $\FPP \neq \FPT$ is reasonable because it is equivalent to the in
 
 The following problem is adapted from \textsc{Short Deterministic Turing Machine Computation} in \autocite{cesati06}.
 
-\begin{definition}[{$p\dash\textsc{Bounded Halting Problem}$}]
+\begin{definition}[$p \dash \textsc{Bounded Halting Problem}$, aka $\pBHP$]
   \mbox{} \\
   \begin{tabular}{r p{9.2cm}}
     \textbf{Instance:} & deterministic Turing machine $M$, binary string $x$ of length $n$, positive integer $t$ in unary, positive integer $c$. \\
@@ -909,7 +911,7 @@ The following problem is adapted from \textsc{Short Deterministic Turing Machine
 \end{definition}
 
 \begin{theorem}
-  $p \dash \textsc{Bounded Halting Problem}$ is $\FPT$-complete.
+  $\pBHP$ is $\FPT$-complete.
 \end{theorem}
 \begin{proof}
   The underlying decision problem is in $\P$ (by a standard simulation on the deterministic universal Turing machine), so the parameterized problem is in $\FPT$.
@@ -918,12 +920,12 @@ The following problem is adapted from \textsc{Short Deterministic Turing Machine
   The reduction is $x \mapsto (M, x, 1^{f_M(k) n^c}, c)$.
   This is computable by a (nonuniform) circuit family of constant depth and size $f(k) n^{O(1)}$, where $f$ is a circuit-computable function.
   The parameter of the reduced instance is $f_M(k) n^c / n^c$, or simply $f_M(k)$, which satisfies the parameter bound required by the definition of $\FPP$ reduction.
-  Therefore we conclude that $p \dash \textsc{Bounded Halting Problem}$ is $\FPP$-complete.
+  Therefore we conclude that $\pBHP$ is $\FPP$-complete.
 \end{proof}
 
 The following problem is a generalization of the problem \textsc{BS-BD-CVP} from \autocite{cd98}.
 
-\begin{definition}[{$p\dash\textsc{Small Circuit Evaluation}$}]
+\begin{definition}[$p\dash\textsc{Small Circuit Evaluation}$, aka $\pSCE$]
   \mbox{} \\
   \begin{tabular}{r p{9.2cm}}
     \textbf{Instance:} & single-output Boolean circuit $C$ on $n$ inputs, binary string $x$ of length $n$, positive integer $k$, positive integers $\alpha$ and $\beta$, multi-output Boolean circuits $f$ and $g$ on $\ceil{\log k}$ inputs with $\size(C) \leq f(k) n^\alpha$ and $\depth(C) \leq g(k) n^\beta$. \\
@@ -936,7 +938,7 @@ This theorem is related to \autocite[Corollary~2]{cd98}, where the authors prove
 While their reduction is a generic reduction, ours is a reduction from the parameterized bounded halting problem.
 
 \begin{theorem}\label{thm:psce}
-  $p \dash \textsc{Small Circuit Evaluation}$ is $\FPT$-complete.
+  $\pSCE$ is $\FPT$-complete.
 \end{theorem}
 \begin{proof}
   Membership in $\FPT$ is straightforward to prove: use the natural algorithm for evaluating a circuit which can be performed in linear time with respect to the size of the circuit.
@@ -973,15 +975,15 @@ While their reduction is a generic reduction, ours is a reduction from the param
 %%   The overall size of the circuit is therefore of the form $s(k) n^{O(1)}$, and the depth of the form $d(k) n^{O(1)}$.
 
 %%   Finally, for the parameter bound, the parameter of $R_{n, k}(x)$ is $k$, which is exactly $\kappa(x)$.
-%%   Therefore we have shown that the circuit family $\{R_{n, k}\}$ is a correct $\FPP$ many-one reduction from an arbitrary parameterized problem $(Q, \kappa)$ to $p \dash \textsc{Small Circuit Evaluation}$.
+%%   Therefore we have shown that the circuit family $\{R_{n, k}\}$ is a correct $\FPP$ many-one reduction from an arbitrary parameterized problem $(Q, \kappa)$ to $\pSCE$.
 %% \end{proof}
 
 %% \begin{theorem}
-%%   $\p \dash \textsc{Bounded Halting Problem} \equiv_m^{\FPP} p \dash \textsc{Short Circuit Evaluation}$.
+%%   $\pBHP \equiv_m^{\FPP} p \dash \textsc{Short Circuit Evaluation}$.
 %% \end{theorem}
 %% \begin{proof}
   Now we prove $\FPT$-hardness.
-  The reduction from $\p \dash \textsc{Bounded Halting Problem}$ is
+  The reduction from $\pBHP$ is
   \[
   (M, x, 1^t, c) \mapsto (C_M, x, \alpha, \beta, f, g, k),
   \]
