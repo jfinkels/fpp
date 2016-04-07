@@ -610,7 +610,10 @@ This lemma is an adaptation of \autocite[Lemma~3.24]{fg06}.
   \end{cases}
   \]
   It is straightforward to prove that these functions are nondecreasing and unbounded.
-  To compute $i_f$ (computing $i_{g, e}$ is similar), we compute $f(1), \dotsc, f(n)$ in parallel, filter by only those values that are at most $n$, and choosing the index of the rightmost value that passes the filter.
+
+  To compute $i_f$, we use the fact that $f$ is increasing to perform a binary search on the values $f(1), \dotsc, f(n)$ to determine the largest $j$ such that $f(j) \leq n$.
+  There will be $\log n$ comparison subcircuits, each requiring a computation of $f$, so the overall depth of the circuit computing $i_f$ is $O(\depth(f) \log n)$ and the size is $O(\size(f) \log n)$.
+  Computing $i_{g, e}$ is similar, but the multiplicative factor to the size and depth of $g$ is $O(e \log \log n)$ instead of $O(\log n)$.
 \end{proof}
 
 This is the $\NC^d$ bounded version of the parameterized problem from \autocite[Lemma~3.26]{fg06}.
