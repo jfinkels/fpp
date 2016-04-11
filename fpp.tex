@@ -91,6 +91,7 @@
 \declaretheorem[numberwithin=section]{theorem}
 \declaretheorem[numberlike=theorem]{lemma}
 \declaretheorem[numberlike=theorem]{conjecture}
+\declaretheorem[numberlike=theorem]{corollary}
 \declaretheorem[numberlike=theorem]{proposition}
 \declaretheorem[numberlike=theorem]{assumption}
 \declaretheorem[numberlike=theorem, style=definition]{definition}
@@ -110,6 +111,8 @@
 \newcommand{\pCkSAT}{p \dash k \dash \textsc{CSat}}
 \newcommand{\pCkE}{p \dash k \dash \textsc{CE}}
 \newcommand{\pWCE}{p \dash \textsc{WCE}}
+\newcommand{\pPiFSAT}{p \dash \Pi_t \textsc{FSat}}
+\newcommand{\PiCSAT}{\Pi_t \textsc{CSat}}
 
 %%%% Custom math commands.
 \newcommand{\ceil}[1]{\lceil{#1}\rceil}
@@ -244,9 +247,14 @@ If the circuits were uniform, we would need to include both alternatives, thereb
   If $h$ is the zero function, then the parameterized problem is in the class $\FPP^d$.
 \end{definition}
 
-\begin{definition}
+\begin{definition}\label{def:eventually}
   Suppose $d$ is a natural number and $(Q, \kappa)$ is a parameterized problem.
-  We say the problem $(Q, \kappa)$ is \emph{eventually in $\NC^d$} if there is a circuit-computable function $h$ and a $\NC^d$ family of circuits $\{C_n\}_{n \in \mathbb{N}}$ such that for each $x$ of length $n$, if $n \geq h(\kappa(x))$, then $x \in Q$ if and only if $C_n(x) = 1$.
+  We say the problem $(Q, \kappa)$ is \emph{eventually in $\NC^d$} if there is a circuit-computable function $h$ and an $\NC^d$ family of circuits $\{C_n\}_{n \in \mathbb{N}}$ such that for each $x$ of length $n$, if $n \geq h(\kappa(x))$, then $x \in Q$ if and only if $C_n(x) = 1$.
+\end{definition}
+
+\begin{definition}\label{def:eventuallyreduction}
+  Suppose $d$ is a natural number, $(Q, \kappa)$ is a parameterized problem, and $Q'$ is a decision problem.
+  There is \emph{eventually an $\NC^d$ many-one reduction} from $(Q, \kappa)$ to $Q'$ if there is a circuit-computable function $h$ and an $\NC^d$ family of circuits $\{R_n\}_{n \in \mathbb{N}}$ such that for each $x$ of length $n$, if $n \geq h(\kappa(x))$, then $x \in Q$ if and only if $R_n(x) \in Q'$.
 \end{definition}
 
 Throughout we will often assume without loss of generality that functions like circuit size and depth bounds, nondeterministism bounds, and polynomials, are increasing
@@ -559,7 +567,7 @@ The parameterized problems in $\WP^d[P]$ of most interest to us are those for wh
 
 This theorem is an adaptation of one direction of \autocite[Theorem~3.29]{fg06}.
 
-\begin{theorem}[Theorem~3.29, part i]
+\begin{theorem}[Theorem~3.29, part i]\label{thm:wppparti}
   Assume \autoref{ass:complete}.
   Suppose $d$ is a natural number and $e$ is a positive integer.
   If there is a circuit-computable, nondecreasing, unbounded function $i$ such that $\NC^d = \NNC^{d + e}[i(n) \log n]$, then $\FPP^d = \WP^d[P]$.
@@ -822,9 +830,63 @@ In this setting, $\textsc{Group Rank}$ is $\WD_\phi$, where
 In the parameterized setting, $\pgrouprank$ is $p\textnormal{-}\WD_\phi$ and is reducible to $p\textnormal{-}\MC(\FO(\DTC))$ via the reductions given above.
 This upper bound does not allow us to say for sure whether $\pgrouprank$ is in one of the finite levels of the $\WP$ hierarchy.
 
-\subsection{Does FPP = WP[t]?}
+\subsection{Does \texorpdfstring{\FPP}{FPP} equal \texorpdfstring{\WP[t]}{WP[t]}?}
 
-\todo{This would be the equivalent of \autocite[Theorem~4.3]{cc97npo}.}
+\todo{Move these lemmas to an earlier section?}
+
+This lemma is the ``inverse'' of \autoref{lem:i}.
+
+\begin{lemma}\label{lem:upperinverse}
+  Suppose $i$ is an unbounded, nondecreasing, circuit-computable function.
+  Then there is an unbounded, nondecreasing, circuit-computable function $f_i$ such that for each natural number $n$, we have $f_i(i(n)) \geq n$.
+  (We call $f_i$ the ``upper inverse'' of $i$.)
+  \todo{Make this look like the inverse lemma.}
+\end{lemma}
+\begin{proof}
+  \todo{Fill me in}
+\end{proof}
+
+\begin{lemma}
+  Suppose $d$ is a natural number, $(Q, \kappa)$ is a parameterized problem, and $Q'$ is a decision problem.
+  If $Q'$ is in $\NC^d$ and there is eventually an $\NC^d$ many-one reduction from $(Q, \kappa)$ to $Q'$, then $Q$ is eventually in $\NC^d$.
+\end{lemma}
+\begin{proof}
+  Let $h$ be the function and $\{R_n\}$ the reduction from \autoref{def:eventuallyreduction}.
+  Let $\{A_n\}$ be the circuit family deciding $Q'$.
+  Then the circuit family consisting of the composition of $A_{n'}$ with $R_n$, where $n'$ is the size of the output of $R_n$, correctly decides $Q$ for inputs $x$ of length at least $h(\kappa(x))$.
+  Thus $Q$ is eventually in $\NC^d$.
+\end{proof}
+
+Applying the above lemma to \autoref{thm:eventually} yields sufficient conditions for fixed-parameter parallelizability.
+
+\begin{corollary}\label{cor:eventuallyreduction}
+  Suppose $d$ is a natural number, $(Q, \kappa)$ is a parameterized problem, and $Q'$ is a decision problem.
+  If $Q$ is circuit-decidable, $Q'$ is in $\NC^d$ and there is eventually an $\NC^d$ many-one reduction from $(Q, \kappa)$ to $Q'$, then $(Q, \kappa)$ is in $\FPP^d$.
+\end{corollary}
+
+This theorem is an adaptation of one direction of \autocite[Theorem~4.3]{cc97npo}.
+It is a translation of \autoref{thm:wppparti} to the finite levels of the $\WP$ hierarchy.
+\todo{discuss that $\Pi_t \LOGTIME$ is in $\AC^0$, and therefore is strictly weaker than $\NC^1$.}
+\todo{Can the \autoref{thm:wppparti} be rephrased as an ``eventually'' reduction?}
+
+\begin{theorem}
+  Suppose $d$ is a positive integer, $e$ is a positive integer, and $t$ is a natural number.
+  If there is a circuit-computable, nondecreasing, unbounded function $i$ such that $\GC[i(n) \log n, \Pi_t \LOGTIME] \subseteq \NC^d$, then $\FPP^d = \WP^d[t]$.
+\end{theorem}
+\begin{proof}
+  Assume $\GC[i(n) \log n, \Pi_t \LOGTIME] \subseteq \NC^d$.
+  Since $\PiCSAT$ is in $\GC[i(n) \log n, \Pi_t \LOGTIME]$ by \autoref{thm:picsatgc}, it is now in $\NC^d$ as well.
+
+  Since $\pPiFSAT$ is complete for $\WP^d[t]$ under $\FPP^d$ many-one reductions, it suffices to show that $\pPiFSAT$ is in $\FPP^d$.
+  Furthermore, by \autoref{cor:eventuallyreduction}, it suffices to show that there is eventually an $\NC^d$ many-one reduction from $\pPiFSAT$ to $\PiCSAT$.
+
+  Let $f_i$ be the upper inverse of $i$, as guaranteed by \autoref{lem:upperinverse}.
+  Let $\{R_n\}$ be the family of circuits computing the function $\phi \mapsto C_\phi$, where $\phi$ is a $\Pi_t$-normalized Boolean formula and $C_\phi$ is the natural $\Pi_t$ Boolean circuit induced by that formula.
+  If we can show that $R_n$ is in $\NC^d$, then $f_i$ and $\{R_n\}$ together prove that there is eventually an $\NC^d$ many-one reduction from $\pPiFSAT$ to $\PiCSAT$.
+
+  Transforming a formula to its equivalent circuit is certainly computable in logarithmic space, so it is certainly in $\NC^2$.
+  However, we can transform a Boolean formula into an equivalent Polish notation (prefix) Boolean formula in alternating logarithmic time \autocite{buss87}, which is in $\NC^1$, and from there we can write the adjacency matrix of the tree given by the prefix Boolean formula with an $\NC^1$ algorithm.
+\end{proof}
 
 \subsection{Is WP[t] in FPT?}
 
