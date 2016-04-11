@@ -435,7 +435,11 @@ Our goal now reduces to finding an optimization problem in $\ENCAS$ whose budget
 
 \section{\texorpdfstring{$\FPP$}{FPP} is to \texorpdfstring{$\NC$}{NC} as \texorpdfstring{$\WP$}{WP} is to \texorpdfstring{$\NNC$}{NNC}}
 
-\subsection{Example problem in \texorpdfstring{$\WP$}{WP}}
+\subsection{Definition of \texorpdfstring{$\WP[P]$}{WP[P]}}
+
+\todo{Move the definition down here out of the introduction}
+
+\subsection{Example problem in \texorpdfstring{$\WP[P]$}{WP[P]}}
 \label{sec:rankinwp}
 
 What kind of problems are in the class $\WP[P]$?
@@ -460,7 +464,11 @@ Let $\pgrouprank$ denote the standard parameterization of $\textsc{Group Rank}$.
   Therefore the parameterized problem is in $\WP^1[P]$.
 \end{proof}
 
-\subsection{Does FPP = WP[P]?}
+\subsection{Example problem complete for \texorpdfstring{$\WP[P]$}{WP[P]}}
+
+\todo{If we show a complete problem here, make sure to give a corollary in the section below that it is not in FPP unless something bad happens.}
+
+\subsection{Does \texorpdfstring{$\FPP$}{FPP} equal \texorpdfstring{$\WP[P]$}{WP[P]}?}
 \label{sec:fppwpp}
 
 This theorem is a characterization of parameterized problems in the class $\FPP^d$ as problems for which the parameter suggests an input size threshold, below which it suffices to perform an exhaustive search to solve the problem and after which we require an efficient algorithm.
@@ -715,7 +723,11 @@ This is an adaptation of the other direction of \autocite[Theorem~3.29]{fg06}.
   Since $Q$ was an arbitrary element of $\NNC^d[i(n) \log n]$, we conclude that $\NC^{d + e} = \NNC^d[i(n) \log n]$.
 \end{proof}
 
-\subsection{Does WP[P] = W[P]?}
+\subsection{Is \texorpdfstring{$\WP[P]$}{WP[P]} in \texorpdfstring{$\FPT$}{FPT}?}
+
+\todo{Maybe relax the theorem above.}
+
+\subsection{Does WP[P] equal W[P]?}
 
 \begin{theorem}
   $\WP[P] \subseteq \W[P]$.
@@ -741,7 +753,7 @@ Whether the converse inclusion holds is not so clear.
 
 For the necessary background in logic, see \autocite[Chapter~4]{fg06}.
 
-\subsection{Definition of finite levels of the hierarchy}
+\subsection{Definition of \texorpdfstring{$\WP[t]$}{WP[t]}}
 
 Let $\Phi$ be a class of formulas and let $\phi$ be an element of $\Phi$ with one free relation variable $X$ of arity $s$.
 Define the weighted definability problem and the corresponding parameterized problem as follows.
@@ -788,7 +800,7 @@ This definition is adapted from \autocite[Definition~5.1]{fg06}.
 %%   \end{tabular}
 %% \end{definition}
 
-\subsection{Example problem in finite levels of the hierarchy}
+\subsection{Example problem in \texorpdfstring{$\WP[t]$}{WP[t]}}
 
 \todo{Show a natural problem that is actually in a finite level of the hierarchy here.}
 
@@ -829,6 +841,10 @@ In this setting, $\textsc{Group Rank}$ is $\WD_\phi$, where
 
 In the parameterized setting, $\pgrouprank$ is $p\textnormal{-}\WD_\phi$ and is reducible to $p\textnormal{-}\MC(\FO(\DTC))$ via the reductions given above.
 This upper bound does not allow us to say for sure whether $\pgrouprank$ is in one of the finite levels of the $\WP$ hierarchy.
+
+\subsection{Example problem complete for \texorpdfstring{$\WP[t]$}{WP[t]}}
+
+\todo{If we show a complete problem here, make sure to give a corollary in the section below that it is not in FPP unless something bad happens.}
 
 \subsection{Does \texorpdfstring{\FPP}{FPP} equal \texorpdfstring{\WP[t]}{WP[t]}?}
 
@@ -875,7 +891,7 @@ It is a translation of \autoref{thm:wppparti} to the finite levels of the $\WP$ 
 \end{theorem}
 \begin{proof}
   Assume $\GC[i(n) \log n, \Pi_t \LOGTIME] \subseteq \NC^d$.
-  Since $\PiCSAT$ is in $\GC[i(n) \log n, \Pi_t \LOGTIME]$ by \autoref{thm:picsatgc}, it is now in $\NC^d$ as well.
+  Since $\PiCSAT$ is in the class $\GC[i(n) \log n, \Pi_t \LOGTIME]$ by \autoref{thm:picsatgc}, it is now in $\NC^d$ as well.
 
   Since $\pPiFSAT$ is complete for $\WP^d[t]$ under $\FPP^d$ many-one reductions, it suffices to show that $\pPiFSAT$ is in $\FPP^d$.
   Furthermore, by \autoref{cor:eventuallyreduction}, it suffices to show that there is eventually an $\NC^d$ many-one reduction from $\pPiFSAT$ to $\PiCSAT$.
@@ -895,10 +911,6 @@ It is a translation of \autoref{thm:wppparti} to the finite levels of the $\WP$ 
 \subsection{Does WP[t] = W[t]?}
 
 \todo{I think no, unless P = NC; prove it.}
-
-\subsection{WP[1] probably does not equal FPP}
-
-\todo{Find a $\WP[1]$-hard problem; possibly by considering a restriction of a $\W[1]$-hard problem?.}
 
 \section{Parameterized complexity within \texorpdfstring{\P}{P}}
 
