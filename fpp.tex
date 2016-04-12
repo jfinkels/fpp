@@ -658,7 +658,7 @@ This is the $\NC^d$ bounded version of the parameterized problem from \autocite[
 
 This is an adaptation of the other direction of \autocite[Theorem~3.29]{fg06}.
 
-\begin{theorem}
+\begin{theorem}\label{thm:wpppartii}
   Suppose $e$ is a positive integer.
   If $\FPP^d = \WP^d[P]$, then there is a circuit-computable, nondecreasing, unbounded function $i$ such that $\NC^{d + e} = \NNC^d[i(n) \log n]$.
 \end{theorem}
@@ -675,7 +675,7 @@ This is an adaptation of the other direction of \autocite[Theorem~3.29]{fg06}.
   Let $i_f$ and $i_{g, e}$ be the functions corresponding to $f$ and $g$, respectively, guaranteed by \autoref{lem:i}.
   Let $i(n) = \min(i_f(n), i_{g, e}(n))$, for each natural number $n$.
 
-  Let $Q \in \NNC^d[i(n) \log n]$
+  Let $Q \in \NNC^d[i(n) \log n]$.
   Suppose $\{D_n\}$ is the family of $\NNC^d[i(n) \log n]$ circuits that decides $Q$.
   For each input $x$, let $D_x$ denote $D_n$ with $x$ hardcoded.
 
@@ -900,7 +900,7 @@ It is a translation of \autoref{thm:wppparti} to the finite levels of the $\WP$ 
 \todo{Can the \autoref{thm:wppparti} be rephrased as an ``eventually'' reduction?}
 
 \begin{theorem}
-  Suppose $d$ is a positive integer, $e$ is a positive integer, and $t$ is a natural number.
+  Suppose $d$ and $t$ are positive integers with $t \geq 2$.
   If there is a circuit-computable, nondecreasing, unbounded function $i$ such that $\GC[i(n) \log n, \Pi_t \LOGTIME] \subseteq \NC^d$, then $\FPP^d = \WP^d[t]$.
 \end{theorem}
 \begin{proof}
@@ -915,6 +915,30 @@ It is a translation of \autoref{thm:wppparti} to the finite levels of the $\WP$ 
 
   Transforming a formula to its equivalent circuit is certainly computable in logarithmic space, so it is certainly in $\NC^2$.
   However, we can transform a Boolean formula into an equivalent Polish notation (prefix) Boolean formula in alternating logarithmic time \autocite{buss87}, which is in $\NC^1$, and from there we can write the adjacency matrix of the tree given by the prefix Boolean formula with an $\NC^1$ algorithm.
+\end{proof}
+
+This theorem is an adaptation of the other direction of \autocite[Theorem~4.3]{cc97npo}.
+It is a translation of \autoref{thm:wpppartii} to the finite levels of the $\WP$ hierarchy.
+
+\begin{theorem}
+  Suppose $d$ and $t$ are positive integers with $t \geq 2$.
+  If $\FPP^d = \WP^d[t]$, then there is a circuit-computable, unbounded, nondecreasing function $i$ such that %% $i(n) \leq n$ and
+  $\GC[i(n) \log n, \Pi_t \LOGTIME]$.
+\end{theorem}
+\begin{proof}
+  Assume $\FPP^d = \WP^d[t]$.
+  Since ... is in $\WP^d[t]$, it is now in $\FPP^d$ as well.
+  Thus there is a deterministic circuit family $\{C_{m, k'}\}$ and circuit-computable functions $f$ and $g$ such that
+  \begin{itemize}
+  \item for each $\phi$, we have $\phi$ is satisfiable if and only $C_{m, k'}(\phi) = 1$
+  \item $\size(C_{m, k'}) \leq f(k') m^{O(1)}$,
+  \item $\depth(C_{m, k'}) \leq g(k') \log^d m$.
+  \end{itemize}
+  Assume without loss of generality that $f$ and $g$ are increasing.
+  Let $i_f$ and $i_{g, e}$ be the functions corresponding to $f$ and $g$, respectively, guaranteed by \autoref{lem:i}.
+  Let $i(n) = \min(i_f(n), i_{g, e}(n))$ for each natural number $n$.
+
+  \todo{fill me in ...}
 \end{proof}
 
 \subsection{Is WP[t] in FPT?}
