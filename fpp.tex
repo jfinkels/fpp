@@ -252,9 +252,9 @@ If the circuits were uniform, we would need to include both alternatives, thereb
   We say the problem $(Q, \kappa)$ is \emph{eventually in $\NC^d$} if there is a circuit-computable function $h$ and an $\NC^d$ family of circuits $\{C_n\}_{n \in \mathbb{N}}$ such that for each $x$ of length $n$, if $n \geq h(\kappa(x))$, then $x \in Q$ if and only if $C_n(x) = 1$.
 \end{definition}
 
-\begin{definition}\label{def:eventuallyreduction}
+\begin{definition}\label{def:spreduction}
   Suppose $d$ is a natural number, $(Q, \kappa)$ is a parameterized problem, and $Q'$ is a decision problem.
-  There is \emph{eventually an $\NC^d$ many-one reduction} from $(Q, \kappa)$ to $Q'$ if there is a circuit-computable function $h$ and an $\NC^d$ family of circuits $\{R_n\}_{n \in \mathbb{N}}$ such that for each $x$ of length $n$, if $n \geq h(\kappa(x))$, then $x \in Q$ if and only if $R_n(x) \in Q'$.
+  There is a \emph{small parameter $\NC^d$ many-one reduction} from $(Q, \kappa)$ to $Q'$ if there is a nondecreasing, unbounded, circuit-computable function $h$ and an $\NC^d$ family of circuits $\{R_n\}_{n \in \mathbb{N}}$ such that for each string $x$ of length $n$ with $\kappa(x) \leq h(n)$, we have $x \in Q$ if and only if $R_n(x) \in Q'$.
 \end{definition}
 
 Throughout we will often assume without loss of generality that functions like circuit size and depth bounds, nondeterministism bounds, and polynomials, are increasing
@@ -491,7 +491,7 @@ It is the adaptation of \autocite[Theorem~1.37]{fg06}.
   where $\{C^1_n\}$ is the family of circuits that decides $Q$ and $\{C^2_n\}$ is the family of $\NC^d$ circuits that eventually decides $(Q, \kappa)$.
   The correctness of $A_{n, k}$ follows from the correctness of $C^1_n$ and $C^2_n$.
 
-  Let $S$ and $D$ be the circuit-computable function that give the size and depth, respectively, of $C^1_n$ from $n$.
+  Let $S$ and $D$ be the circuit-computable functions that give the size and depth, respectively, of $C^1_n$ from $n$.
   If $n < h(k)$, then
   \begin{align*}
     \size(A_{n, k}) & = \size(C^1_n) = S(n) \leq S(h(k)), \\
@@ -862,27 +862,41 @@ This lemma is the ``inverse'' of \autoref{lem:i}.
   \todo{Fill me in}
 \end{proof}
 
-\begin{lemma}
+This lemma is analogous to \autoref{thm:eventually}.
+\todo{Move this up to a section on characterizations of FPP}
+
+\begin{lemma}\label{lem:spreduction}
   Suppose $d$ is a natural number, $(Q, \kappa)$ is a parameterized problem, and $Q'$ is a decision problem.
-  If $Q'$ is in $\NC^d$ and there is eventually an $\NC^d$ many-one reduction from $(Q, \kappa)$ to $Q'$, then $Q$ is eventually in $\NC^d$.
+  If $Q$ is circuit-decidable with uniform size and depth, $Q'$ is in $\NC^d$, and there is a small parameter $\NC^d$ many-one reduction from $(Q, \kappa)$ to $Q'$, then $Q$ is in $\FPP^d$
 \end{lemma}
 \begin{proof}
-  Let $h$ be the function and $\{R_n\}$ the reduction from \autoref{def:eventuallyreduction}.
-  Let $\{A_n\}$ be the circuit family deciding $Q'$.
-  Then the circuit family consisting of the composition of $A_{n'}$ with $R_n$, where $n'$ is the size of the output of $R_n$, correctly decides $Q$ for inputs $x$ of length at least $h(\kappa(x))$.
-  Thus $Q$ is eventually in $\NC^d$.
+  Let $h$ be the function that defines the upper bound on the parameter, below which there is an $\NC^d$ many-one reduction from $Q$ to $Q'$.
+  Let $\{R_n\}$ be the $\NC^d$ circuit family computing the reduction.
+  The nonuniform family of circuits $\{A_{n, k}\}$ that decides $(Q, \kappa)$ is defined by
+  \[
+  A_{n, k} =
+  \begin{cases}
+    C_n^1 & \text{if } h(n) < k \\
+    C_{n'}^2 \circ R_{n} & \text{otherwise},
+  \end{cases}
+  \]
+  where $\{C_n^1\}$ is the family of circuits that decides $Q$ with uniform size and depth, $\{C_n^2\}$ is the family of $\NC^d$ circuits that decides $Q'$, and $n'$ is the number of output bits of $R_n$.
+  The correctness of $A_{n, k}$ follows from the correctness of the subsequent circuits.
+
+  If $h(n) \geq k$, then the size and depth of the circuit are polynomial and polylogarithmic in $n$, respectively, because the size and depth of $C_{n'}^2$ and $R_n$ are.
+  For the case when $h(n) < k$, consider the upper inverse $i_h$ of $h$ guaranteed by \autoref{lem:upperinverse}.
+  By construction, $n \leq i_h(h(n)) < i_h(k)$.
+  Now
+  \begin{align*}
+    \size(A_{n, k}) & = size(C_n^1) = S(n) \leq S(i_h(k)), \\
+    \depth(A_{n, k}) & = depth(C_n^1) = D(n) \leq D(i_h(k)), \\
+  \end{align*}
+  where $S$ and $D$ are the (circuit-computable, nondecreasing) size and depth bounds for the circuit family $\{C_n^1\}$.
 \end{proof}
-
-Applying the above lemma to \autoref{thm:eventually} yields sufficient conditions for fixed-parameter parallelizability.
-
-\begin{corollary}\label{cor:eventuallyreduction}
-  Suppose $d$ is a natural number, $(Q, \kappa)$ is a parameterized problem, and $Q'$ is a decision problem.
-  If $Q$ is circuit-decidable, $Q'$ is in $\NC^d$ and there is eventually an $\NC^d$ many-one reduction from $(Q, \kappa)$ to $Q'$, then $(Q, \kappa)$ is in $\FPP^d$.
-\end{corollary}
 
 This theorem is an adaptation of one direction of \autocite[Theorem~4.3]{cc97npo}.
 It is a translation of \autoref{thm:wppparti} to the finite levels of the $\WP$ hierarchy.
-\todo{discuss that $\Pi_t \LOGTIME$ is in $\AC^0$, and therefore is strictly weaker than $\NC^1$.}
+\todo{discuss that $\Pi_t \LOGTIME$ is in $\AC^0$, and therefore is strictly weaker than $\NC^1$; see similar discussion at the end of \autocite{cc97npo}.}
 \todo{Can the \autoref{thm:wppparti} be rephrased as an ``eventually'' reduction?}
 
 \begin{theorem}
@@ -893,12 +907,11 @@ It is a translation of \autoref{thm:wppparti} to the finite levels of the $\WP$ 
   Assume $\GC[i(n) \log n, \Pi_t \LOGTIME] \subseteq \NC^d$.
   Since $\PiCSAT$ is in the class $\GC[i(n) \log n, \Pi_t \LOGTIME]$ by \autoref{thm:picsatgc}, it is now in $\NC^d$ as well.
 
-  Since $\pPiFSAT$ is complete for $\WP^d[t]$ under $\FPP^d$ many-one reductions, it suffices to show that $\pPiFSAT$ is in $\FPP^d$.
-  Furthermore, by \autoref{cor:eventuallyreduction}, it suffices to show that there is eventually an $\NC^d$ many-one reduction from $\pPiFSAT$ to $\PiCSAT$.
+  Since $\pPiFSAT$ is complete for $\WP^d[t]$ under $\FPP^d$ many-one reductions by \autoref{thm:ppifsat}, it suffices to show that $\pPiFSAT$ is in $\FPP^d$.
+  Furthermore, by \autoref{lem:spreduction}, it suffices to show that there is a small parameter $\NC^d$ many-one reduction from $\pPiFSAT$ to $\PiCSAT$.
 
-  Let $f_i$ be the upper inverse of $i$, as guaranteed by \autoref{lem:upperinverse}.
   Let $\{R_n\}$ be the family of circuits computing the function $\phi \mapsto C_\phi$, where $\phi$ is a $\Pi_t$-normalized Boolean formula and $C_\phi$ is the natural $\Pi_t$ Boolean circuit induced by that formula.
-  If we can show that $R_n$ is in $\NC^d$, then $f_i$ and $\{R_n\}$ together prove that there is eventually an $\NC^d$ many-one reduction from $\pPiFSAT$ to $\PiCSAT$.
+  If we can show that $R_n$ is in $\NC^d$, then the parameter upper bound $i$ and $\{R_n\}$ together comprise a small parameter $\NC^d$ many-one reduction from $\pPiFSAT$ to $\PiCSAT$.
 
   Transforming a formula to its equivalent circuit is certainly computable in logarithmic space, so it is certainly in $\NC^2$.
   However, we can transform a Boolean formula into an equivalent Polish notation (prefix) Boolean formula in alternating logarithmic time \autocite{buss87}, which is in $\NC^1$, and from there we can write the adjacency matrix of the tree given by the prefix Boolean formula with an $\NC^1$ algorithm.
