@@ -656,6 +656,42 @@ This is the $\NC^d$ bounded version of the parameterized problem from \autocite[
   Perhaps we can use the other complete problems from \autocite{cc97lim} here?
 }
 
+\todo{move this lemma up to a section on connections between FPP and NC}
+
+This lemma shows that a many-one reduction to a fixed-parameter parallelizable problem can sometimes induce a highly parallel algorithm, if the parameter functions are bounded for the reduced instance.
+
+\begin{lemma}\label{lem:reducetonc}
+  Suppose $d$ and $e$ are positive integers.
+  Suppose $Q$ is a decision problem and $(Q', \kappa')$ is a parameterized problem.
+  Suppose there is an $\NC^d$ many-one reduction from $Q$ to $Q'$, given by the circuit family $\{R_n\}$, and $(Q', \kappa')$ is in $\FPP^d$ by a circuit family $\{C_{m, k}\}$ of size $f(k) m^{O(1)}$ and depth $g(k) \log^d m$ on inputs of length $m$.
+  If $f(\kappa'(R_n(x))) \leq n^{O(1)}$ and $g(\kappa'(R_n(x))) \leq O(\log^e n)$, then $Q$ is in $\NC^{d + e}$.
+\end{lemma}
+\begin{proof}
+  The circuit family that decides $Q$ is $\{A_n\}$, defined by $A_n = C_{m, k} \circ R_n$, where $m$ is the size of the output of $R_n$ and $k = \kappa'(R_n(x))$.
+  Since $\size(R_n) = n^{O(1)}$, we have $m = n^{O(1)}$ as well.
+  For correctness,
+  \[
+  x \in Q \iff R_n(x) \in Q' \iff C_{m, k}(R_n(x)) = 1.
+  \]
+  For size and depth bounds,
+  \begin{align*}
+    \size(A_n) & = \size(C_{m, k}) + \size(R_n) \\
+    & = f(k) m^{O(1)} + n^{O(1)} \\
+    & = f(k) n^{O(1)} + n^{O(1)} \\
+    & = n^{O(1)} n^{O(1)} + n^{O(1)} \\
+    & = n^{O(1)},
+  \end{align*}
+  and
+  \begin{align*}
+    \depth(A_n) & = \depth(C_{m, k}) + \depth(R_n) \\
+    & = g(k) \log^d m + O(\log^d m) \\
+    & = O(g(k) \log^d m + \log^d m) \\
+    & = O(g(k) \log^d n + \log^d n) \\
+    & = O(\log^e n \log^d n + \log^d n) \\
+    & = O(\log^{d + e} n). \qedhere
+  \end{align*}
+\end{proof}
+
 This is an adaptation of the other direction of \autocite[Theorem~3.29]{fg06}.
 
 \begin{theorem}\label{thm:wpppartii}
@@ -665,7 +701,10 @@ This is an adaptation of the other direction of \autocite[Theorem~3.29]{fg06}.
 \begin{proof}
   Assume $\FPP^d = \WP^d[P]$.
   Since $\pncsat$ is in $\WP^d[P]$, it is now in $\FPP^d$ as well.
-  Thus there is a deterministic circuit family $\{C_{m, k'}\}$ and circuit-computable functions $f$ and $g$ such that
+  We will use \autoref{lem:reducetonc} to show a reduction meeting the criteria from an arbitrary decision problem $Q$ in $\NNC^d[i(n) \log n]$ to $\pncsat$.
+  \todo{Could we use a complete problem here instead of an arbitrary problem?}
+
+  Let $\{C_{m, k'}\}$ be the deterministic circuit family, and $f$ and $g$ the circuit-computable functions such that
   \begin{itemize}
   \item for each instance $D$, we have $D \in \NC^d\textnormal{-}\textsc{Circuit Sat}$ if and only if $C_{m, k'}(D) = 1$,
   \item $\size(C_{m, k'}) \leq f(k') m^{O(1)}$,
@@ -678,49 +717,34 @@ This is an adaptation of the other direction of \autocite[Theorem~3.29]{fg06}.
   Let $Q \in \NNC^d[i(n) \log n]$.
   Suppose $\{D_n\}$ is the family of $\NNC^d[i(n) \log n]$ circuits that decides $Q$.
   For each input $x$, let $D_x$ denote $D_n$ with $x$ hardcoded.
+  Whereas the circuit $D_n$ has $n + \i(n) \log n$ inputs, the circuit $D_x$ has $i(n) \log n$ inputs.
 
   Let $R_n$ be the circuit-computable function $x \mapsto D_x$, where $n$ denotes the length of $x$.
+  The circuit family $\{R_n\}$ is an $\NC^d$ many-one reduction
   Then
   \begin{itemize}
   \item for each $x$, we have $x \in Q$ if and only if $D_x$ is satisfiable,
   \item $\size(R_n) \leq O(\size(D_x)) = O(\size(D_n)) = n^{O(1)}$,
   \item $\depth(R_n) \leq O(1)$.
   \end{itemize}
-  If $\kappa$ denotes the parameter function for $\pncsat$, we can now define the family $\{A_n\}$ as $A_n = C_{m, k'} \circ R_n$, where
-  \[
-  m = |R_n(x)| = O(\size(R_n)) = n^{O(1)},
-  \]
+  Now we have the two main ingredients required for \autoref{lem:reducetonc}, an $\NC^d$ many-one reduction and an $\FPP^d$ algorithm.
+  It remains to show $f(\kappa'(R_n(x))) \leq n^{O(1)}$ and $g(\kappa'(R_n(x))) \leq O(\log^e n)$.
+  This is true because
+  \begin{align*}
+    f(\kappa'(R_n(x))) & = f(\kappa'(D_x)) \\
+    & = f\left(\frac{i(n) \log n}{\log m}\right) \\
+    & \leq f\left(\frac{i_f(n) \log n}{\log n}\right) \\
+    & \leq f(i_f(n)) \\
+    & \leq n,
+  \end{align*}
   and
-  \[
-  k' = \kappa(R_n(x)).
-  \]
-  We claim that $\{A_n\}$ is the $\NC^{d + e}$ circuit family that decides $Q$.
-
-  The correctness of $A_n$ follows from the correctness of both $R_n$ and $C_{m, k'}$.
-  The size of $R_n$ is $n^{O(1)}$ and the size of $C_{m, k'}$ is $f(k') m^{O(1)}$.
-  Assuming $n \leq m \leq n^{O(1)}$,
   \begin{align*}
-    \size(A_n) & = n^{O(1)} + f(k') m^{O(1)} \\
-    & \leq f(k') n^{O(1)} \\
-    & = f\left(\frac{i(n) \log n}{\log m}\right) n^{O(1)} \\
-    & \leq f\left(\frac{i_f(n) \log n}{\log n}\right) n^{O(1)} \\
-    & \leq f(i_f(n)) n^{O(1)} \\
-    & \leq n^{O(1)}.
+    g(\kappa'(R_n(x))) & = g(\kappa'(D_x)) \\
+    & = g\left(\frac{i(n) \log n}{\log m}\right) \\
+    & \leq g\left(\frac{i_{g, e}(n) \log n}{\log n}\right) \\
+    & \leq g(i_{g, e}(n)) \\
+    & \leq \log^e n. \qedhere
   \end{align*}
-  The depth of $R_n$ is $O(1)$ and the depth of $C_{m, k'}$ is $g(k') \log^d m$.
-  Thus,
-  \begin{align*}
-    \depth(A_n) & = O(1) + g(k') \log^d m \\
-    & \leq O(g(k') \log^d n) \\
-    & = O(g\left(\frac{i(n) \log n}{\log m}\right) \log^d n) \\
-    & \leq O(g\left(\frac{i_{g, e}(n) \log n}{\log n}\right) \log^d n) \\
-    & \leq O(g(i_{g, e}(n)) \log^d n) \\
-    & \leq O((\log^e n)(\log^d n)) \\
-    & \leq O(\log^{d + e} n).
-  \end{align*}
-
-  We have shown that $\{A_n\}$ is a $\NC^{d + e}$ circuit family that decides $Q$, thus $Q \in \NC^{d + e}$.
-  Since $Q$ was an arbitrary element of $\NNC^d[i(n) \log n]$, we conclude that $\NC^{d + e} = \NNC^d[i(n) \log n]$.
 \end{proof}
 
 \subsection{Is \texorpdfstring{$\WP[P]$}{WP[P]} in \texorpdfstring{$\FPT$}{FPT}?}
