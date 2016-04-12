@@ -950,7 +950,7 @@ This theorem is an adaptation of one direction of \autocite[Theorem~4.3]{cc97npo
 It is a translation of \autoref{thm:wppparti} to the finite levels of the $\WP$ hierarchy.
 \todo{discuss that $\Pi_t \LOGTIME$ is in $\AC^0$, and therefore is strictly weaker than $\NC^1$; see similar discussion at the end of \autocite{cc97npo}.}
 
-\begin{theorem}
+\begin{theorem}\label{thm:wptparti}
   Suppose $d$ and $t$ are positive integers with $t \geq 2$.
   If there is a circuit-computable, nondecreasing, unbounded function $i$ such that
   \[
@@ -972,6 +972,18 @@ It is a translation of \autoref{thm:wppparti} to the finite levels of the $\WP$ 
   However, we can transform a Boolean formula into an equivalent Polish notation (prefix) Boolean formula in alternating logarithmic time \autocite{buss87}, which is in $\NC^1$, and from there we can write the adjacency matrix of the tree given by the prefix Boolean formula with an $\NC^1$ algorithm.
 \end{proof}
 
+Compare this corollary with \autoref{thm:wppparti}.
+
+\begin{corollary}
+  Suppose $d$ and $t$ are positive integers with $t \geq 2$.
+  If there is a circuit-computable, nondecreasing, unbounded function $i$ such that $\NC^d = \NNC^d[i(n) \log n]$, then $\FPP^d = \WP^d[t]$.
+\end{corollary}
+\begin{proof}
+  The class $\Pi_t \LOGTIME$ is a subclass of $\AC^0$, which is a subclass of $\NC^1$.
+  Thus $\GC[i(n) \log n, \Pi_t \LOGTIME] \subset \NNC^1[i(n) \log n]$.
+  Therefore, the inclusion $\NNC^1[i(n) \log n] \subseteq \NC^d$ implies \autoref{thm:wptparti}.
+\end{proof}
+
 \begin{lemma}\label{lem:circuittoformula}
   Suppose $t$ is a positive integer.
   There is an $\NC^2$ many-one reduction from $\PiCSAT$ to $\PiFSAT$.
@@ -979,24 +991,25 @@ It is a translation of \autoref{thm:wppparti} to the finite levels of the $\WP$ 
   For each circuit $C$, if $\phi$ is the image of $C$ under the reduction, then $\Var(C) = \Var(\phi)$ and for each input vector $x$, we have $C(x) = 1$ if and only if $\phi(x) = 1$.
 \end{lemma}
 \begin{proof}
-  The reduction operates as follows on input circuit $C$ of size $m$ and depth $t$.
-  Construct a trie (also known as a prefix tree) from the $O(m^t)$ possible paths from output gate to input gate, then output the Boolean formula $\phi$ represented by the constructed trie.
+  The reduction operates as follows on input $(C, k)$, where $C$ is a Boolean circuit of size $m$ and depth $t$ and $k$ is a positive integer.
+  Construct a trie (also known as a prefix tree) from the $O(m^t)$ possible paths from output gate to input gate, then output $(\phi, k)$, where $\phi$ is the Boolean formula represented by the constructed trie.
   The output gate is the root of the trie, the internal gates are the internal nodes of the tree, and the input gates are the leaf nodes of the trie (one leaf node for each input gate).
+  By construction, the formula has the same set of variables as the circuit, and any path from output gate to input gate in the circuit has the same labels as the corresponding path in the trie, so for any input $x$, we have $C(x) = \phi(x)$.
+  This also implies that $C$ has a satisfying assignment of weight $k$ if and only if $\phi$ has a satisfying assignment of weight $k$.
+
   Constructing a trie from $O(m^t)$ binary strings can be done by a circuit with $O(\log m^t)$ time and $O(m^{2t})$ size \autocite{lv86} (\todo{someone needs to verify this}).
   Since each ``character'' in our ``strings'' is really an element of $\{1, \dotsc, m\}$, there is an extra $O(\log m)$ depth penalty for reducing an alphabet of size $m$ to the binary alphabet.
   Thus the overall depth is $O(t \log^2 m)$ and the size $O(m^{2t} \log m)$.
   Since $t$ is a constant with respect to the size of the input $C$, this is an $\NC^d$ circuit.
-
-  By construction, the formula has the same set of variables as the circuit, and any path from output gate to input gate in the circuit has the same labels as the corresponding path in the trie, so for any input $x$, we have $C(x) = \phi(x)$.
 \end{proof}
 
 This theorem is an adaptation of the other direction of \autocite[Theorem~4.3]{cc97npo}.
 It is a translation of \autoref{thm:wpppartii} to the finite levels of the $\WP$ hierarchy.
 
 \begin{theorem}
-  Suppose $d$ and $t$ are positive integers with $t \geq 2$.
-  If $\FPP^d = \WP^d[t]$, then there is a circuit-computable, unbounded, nondecreasing function $i$ such that %% $i(n) \leq n$ and
-  $\GC[i(n) \log n, \Pi_t \LOGTIME] \subseteq \NC^d$.
+  Suppose $d$, $e$, and $t$ are positive integers with $t \geq 2$.
+  If $\FPP^d = \WP^d[t]$, then there is a circuit-computable, unbounded, nondecreasing function $i$ (that depends on $e$) such that %% $i(n) \leq n$ and
+  $\GC[i(n) \log n, \Pi_t \LOGTIME] \subseteq \NC^{d + e}$.
 \end{theorem}
 \begin{proof}
   Assume $\FPP^d = \WP^d[t]$.
@@ -1013,9 +1026,26 @@ It is a translation of \autoref{thm:wpppartii} to the finite levels of the $\WP$
   Let $i_f$ and $i_{g, e}$ be the functions corresponding to $f$ and $g$, respectively, guaranteed by \autoref{lem:i}.
   Let $i(n) = \min(i_f(n), i_{g, e}(n))$ for each natural number $n$.
 
+  For the chosen function $i$, consider the problem $\PiCSAT$.
   By \autoref{lem:circuittoformula}, there is an $\NC^d$ reduction, $\{R_n\}$, from $\PiCSAT$ to $\PiFSAT$, the decision problem underlying the parameterized problem $\pPiFSAT$.
-  
-  \todo{fill me in ...}
+  Furthermore, since the variables and the satisfying assignments are identical, we have
+  \begin{align*}
+    f(\kappa'(R_n(C, k))) & = f(\kappa'(\phi, k)) \\
+    & \leq f(k) \\
+    & \leq f(i(n)) \\
+    & \leq f(i_f(n)) \\
+    & \leq n,
+  \end{align*}
+  and
+  \begin{align*}
+    g(\kappa'(R_n(C, k))) & = g(\kappa'(\phi, k)) \\
+    & \leq g(k) \\
+    & \leq g(i(n)) \\
+    & \leq g(i_{g, e}(n)) \\
+    & \leq O(\log^e n).
+  \end{align*}
+  Thus the many-one reduction from \autoref{lem:circuittoformula} and the $\FPP^d$ algorithm for $\pPiFSAT$ meet the conditions in the premise of \autoref{lem:reducetonc}.
+  We conclude that $\PiCSAT$ is in $\NC^{d + e}$.
 \end{proof}
 
 \subsection{Is WP[t] in FPT?}
