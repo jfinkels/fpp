@@ -106,6 +106,7 @@
 \newcommand{\pncsat}{p\dash\log\dash\NC^d\dash\textsc{Circuit Sat}}
 \newcommand{\pgrouprank}{p\dash\textsc{Group Rank}}
 \newcommand{\pMC}{p\dash\MC}
+\newcommand{\pWD}{p\dash\WD}
 \newcommand{\pBHP}{p \dash \textsc{BHP}}
 \newcommand{\pSCE}{p \dash \textsc{SCE}}
 \newcommand{\pHDS}{p \dash \textsc{HDS}}
@@ -1191,17 +1192,26 @@ Let us try to express this problem in first-order logic.
 
 In \autocite[Lemma~3.5]{nt16}, the authors prove that there is a $\Sigma_1$ formula, %% (of size $O(k + \log^2 n)$)
 denoted $\textsc{IsMember}_k(g, x_1, \dotsc, x_k)$, such that $\mathcal{G} \models \textsc{IsMember}_k(g, x_1, \dotsc, x_k)$ if and only if $g \in \gen{x_1, \dotsc, x_k}$, for each positive integer $k$ and each group $\mathcal{G}$ of order $n$.
+The only parts of that formula that involve the variables $x_i$ are checking that another variable is a member of the set $\{x_1, \dotsc, x_k\}$.
+In this situation, the variables $x_1, \dotsc, x_k$ can be replaced by a unary relation variable (that is, a set variable) $X$.
+This is item two in the lemma below.
 
 \begin{lemma}[{\autocite[Lemma~3.5]{nt16}}]
   Let $n$ and $k$ be positive integers.
   \begin{enumerate}
-  \item There is a $\Sigma_1$ formula $\textsc{IsMember}_k$ on the free variables $g$ and $x_1, \dotsc, x_k$ such that for each finite group $\mathcal{G}$ of order $n$,
+  \item
+    There is a $\Sigma_1$ formula $\textsc{IsMember}_k$ on the free variables $g$ and $x_1, \dotsc, x_k$ such that for each finite group $\mathcal{G}$ of order $n$,
     \[
     \mathcal{G} \models \textsc{IsMember}_k(g, x_1, \dotsc, x_k) \text{ if and only if } g \in \gen{x_1, \dotsc, x_k}.
     \]
-  \item  \todo{Extend this to work as a formula with a single free unary relation variable instead of $k$ individual variables.}
+  \item
+    There is a $\Sigma_1$ formula $\textsc{IsMember}$ on the free variable $g$ and free unary relation symbol $X$ such that for each finite group $\mathcal{G}$ of order $n$,
+    \[
+    \mathcal{G} \models \textsc{IsMember}(g, X) \text{ if and only if } g \in \gen{X}.
+    \]
   \end{enumerate}
 \end{lemma}
+\todo{Double-check that I understand these formulas correctly.}
 %% \begin{proof}
 %%   Let $s = \log^2 n$.
 %%   Let $\textsc{IsSLP}_k$ be the quantifier-free formula on the free variables $x_1, \dotsc, x_k$ and $z_1, \dotsc, z_s$ such that
@@ -1220,17 +1230,29 @@ denoted $\textsc{IsMember}_k(g, x_1, \dotsc, x_k)$, such that $\mathcal{G} \mode
 %%   \todo{Explain why this is correct.}
 %% \end{proof}
 
-We can use this formula expressing subgroup membership to give a formula expressing whether a set of group elements is a generating set in the natural way, namely by defining $\textsc{IsGenerating}_k(x_1, \dotsc, x_k)$ as
+We can use this formula expressing subgroup membership to give a formula expressing whether a set of group elements is a generating set in the natural way, namely by defining
 \[
-\forall g \colon \textsc{IsMember}_k(g, x_1, \dotsc, x_k).
+\textsc{IsGenerating}_k(x_1, \dotsc, x_k) = \forall g \colon \textsc{IsMember}_k(g, x_1, \dotsc, x_k).
+\]
+Similarly,
+\[
+\textsc{IsGenerating}(X) = \forall g \colon \textsc{IsMember}(g, X).
 \]
 
 \begin{lemma}
   Let $n$ and $k$ be positive integers.
-  There is a $\Pi_2$ formula denoted $\textsc{IsGenerating}_k$ on the free variables $x_1, \dotsc, x_k$ such that for each finite group $\mathcal{G}$ of order $n$,
-  \[
-  \mathcal{G} \models \textsc{IsGenerating}_k(x_1, \dotsc, x_k) \text{ if and only if } \gen{x_1, \dotsc, x_k} = G.
-  \]
+  \begin{enumerate}
+  \item
+    There is a $\Pi_2$ formula denoted $\textsc{IsGenerating}_k$ on the free variables $x_1, \dotsc, x_k$ such that for each finite group $\mathcal{G}$ of order $n$,
+    \[
+    \mathcal{G} \models \textsc{IsGenerating}_k(x_1, \dotsc, x_k) \text{ if and only if } \gen{x_1, \dotsc, x_k} = G.
+    \]
+  \item
+    There is a $\Pi_2$ formula denoted $\textsc{IsGenerating}$ on the free unary relation variables $X$ such that for each finite group $\mathcal{G}$ of order $n$,
+    \[
+    \mathcal{G} \models \textsc{IsGenerating}(X) \text{ if and only if } \gen{X}= G.
+    \]
+  \end{enumerate}
 \end{lemma}
 
 Since we wish to compute the rank of a group, we need to decide if there exists any generating set of cardinality $k$.
@@ -1248,17 +1270,19 @@ Now the $\textsc{Group Rank}$ decision problem, that is the problem of deciding 
 (\mathcal{G}, k) \mapsto (\mathcal{G}, \textsc{IsGroup} \land \textsc{HasRank}_k).
 \]
 In the parameterized setting, this proves that $\pgrouprank$ reduces to $\pMC(\\Sigma_3)$ via a first-order reduction.
-\todo{define first-order reduction, show that it implies an $\NC$ reduction.}
-By the definition of $\ANC^d[\Sigma_t]$, this gives the following complexity upper bound.
+\todo{define first-order reduction, show that it implies an $\NC^1$ reduction.}
+Similarly, $\textsc{Group Rank}$ equals $\WD_{\textsc{IsGenerating}}(\textsc{GROUP})$, so $\pgrouprank$ is $\pWD_{\textsc{IsGenerating}}$.
+By the definitions of $\WP^d[t]$ and $\ANC^d[t]$, this gives the following complexity upper bounds.
 
 \begin{theorem}
-  $\pgrouprank$ is in $\ANC^1[3]$.
+  \mbox{}
+  \begin{enumerate}
+  \item $\pgrouprank$ is in $\ANC^1[3]$.
+  \item $\pgrouprank$ is in $\WP^1[2]$.
+  \end{enumerate}
 \end{theorem}
 
-\todo{
-  What about the WD version of the problem?
-  We'll need to adapt \autocite{nt16} to show that there is a $\Sigma_1$ formula with one free unary relation $X$ representing $g \in \gen{X}$.
-}
+\todo{We don't need to include the first item in the above theorem, since the second implies it.}
 
 \subsection{Example problem complete for \texorpdfstring{$\WP[t]$}{WP[t]}}
 
