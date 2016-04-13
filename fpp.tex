@@ -1176,7 +1176,7 @@ Is this problem in a fixed finite level of the $\WP$ hierarchy?
 Let us try to express this problem in first-order logic.
 
 \begin{definition}[Axiomatization of groups]
-  The signature for groups has a constant symbol for the identity element denoted $e$, a unary function for the inverse denoted $x^{-1}$, and a binary function for the group operation.
+  The signature for groups has a constant symbol for the identity element denoted $e$, a unary function for the inverse denoted $x^{-1}$, and a binary function for the group operation (denoted by concatenation).
   Let the group axioms be defined as first-order formulae as follows.
   \begin{align*}
     \textsc{HasIdentity} & = \forall x\, (ex = x \land xe = x) \\
@@ -1186,28 +1186,74 @@ Let us try to express this problem in first-order logic.
   Let $\textsc{IsGroup}$ be the conjunction of these three formulae.
   Now for any finite structure $\mathcal{A}$, we have $\mathcal{A} \models \textsc{IsGroup}$ if and only if $\mathcal{A}$ is a group.
   Let $\textsc{Group}$ denote the class of all finite structures that are valid groups, that is, the class of all structures that model $\textsc{IsGroup}$.
-  (Since the universal quantifiers can be placed in the beginning of the formula, $\textsc{IsGroup}$ is in $\Pi_1$.)
+  (Since the universal quantifiers can be placed in the beginning of the formula, $\textsc{IsGroup}$ is a $\Pi_1$ formula.)
 \end{definition}
 
-%% In \autocite[Lemma~2.4]{nt16}, the authors prove that for each $k$ there is a first-order formula $\textsc{IsMember}_k(g, x_1, \dotsc, x_k)$ such that $\mathcal{G} \models \textsc{IsMember}_k(g, x_1, \dotsc, x_k)$ if and only if $g \in \gen{x_1, \dotsc, x_k}$.
-%% The number of alternations is $O(\log n)$, where $n$ is the order of the group.
 In \autocite[Lemma~3.5]{nt16}, the authors prove that there is a $\Sigma_1$ formula, %% (of size $O(k + \log^2 n)$)
 denoted $\textsc{IsMember}_k(g, x_1, \dotsc, x_k)$, such that $\mathcal{G} \models \textsc{IsMember}_k(g, x_1, \dotsc, x_k)$ if and only if $g \in \gen{x_1, \dotsc, x_k}$, for each positive integer $k$ and each group $\mathcal{G}$ of order $n$.
-The $\textsc{Group Rank}$ problem then reduces to $\MC(\Pi_2)$ via the reduction $(\mathcal{G}, k) \mapsto (\mathcal{G}, \textsc{IsGenerating}_k)$, where
+
+\begin{lemma}[{\autocite[Lemma~3.5]{nt16}}]
+  Let $n$ and $k$ be positive integers.
+  \begin{enumerate}
+  \item There is a $\Sigma_1$ formula $\textsc{IsMember}_k$ on the free variables $g$ and $x_1, \dotsc, x_k$ such that for each finite group $\mathcal{G}$ of order $n$,
+    \[
+    \mathcal{G} \models \textsc{IsMember}_k(g, x_1, \dotsc, x_k) \text{ if and only if } g \in \gen{x_1, \dotsc, x_k}.
+    \]
+  \item  \todo{Extend this to work as a formula with a single free unary relation variable instead of $k$ individual variables.}
+  \end{enumerate}
+\end{lemma}
+%% \begin{proof}
+%%   Let $s = \log^2 n$.
+%%   Let $\textsc{IsSLP}_k$ be the quantifier-free formula on the free variables $x_1, \dotsc, x_k$ and $z_1, \dotsc, z_s$ such that
+%%   \begin{gather*}
+%%     \mathcal{G} \models \textsc{IsSLP}_k(x_1, \dotsc, x_k, z_1, \dotsc, z_s) \\
+%%     \text{ if and only if } \\
+%%     (z_1, \dotsc, z_s) \text{ is a straight-line program over } \{x_1, \dotsc, x_k\},
+%%   \end{gather*}
+%%   which can be defined by translating the conditions for a straight-line program over $\{x_1, \dotsc, x_k\}$ to a logical formula in a straightforward manner.
+%%   Define $\textsc{IsMember}_k$ by
+%%   \begin{multline*}
+%%     \textsc{IsMember}_k = \exists z_1 \cdots \exists z_s \colon \textsc{IsSLP}(z_1, \ldots, z_s, x_1, \dotsc, x_k) \\
+%%     \land \exists p_1 \cdots \exists p_s \exists q_1 \cdots \exists q_s \colon g = \left(\prod_{i = 1}^s p_i\right)^{-1} \prod_{i = 1}^s q_i \\
+%%     \land \bigwedge_{i = 1}^s (p_i = e \lor p_i = z_i) \land (q_i = e \lor q_i = z_i).
+%%   \end{multline*}
+%%   \todo{Explain why this is correct.}
+%% \end{proof}
+
+We can use this formula expressing subgroup membership to give a formula expressing whether a set of group elements is a generating set in the natural way, namely by defining $\textsc{IsGenerating}_k(x_1, \dotsc, x_k)$ as
 \[
-\textsc{IsGenerating}_k = \textsc{IsGroup} \land \forall g \exists x_1 \dotsb \exists x_k\, (\textsc{IsMember}_k(g, x_1, \dotsc, x_k)).
+\forall g \colon \textsc{IsMember}_k(g, x_1, \dotsc, x_k).
 \]
-In the parameterized setting, this proves that $\pgrouprank$ reduces to $\pMC(\Pi_2)$ via a first-order reduction.
+
+\begin{lemma}
+  Let $n$ and $k$ be positive integers.
+  There is a $\Pi_2$ formula denoted $\textsc{IsGenerating}_k$ on the free variables $x_1, \dotsc, x_k$ such that for each finite group $\mathcal{G}$ of order $n$,
+  \[
+  \mathcal{G} \models \textsc{IsGenerating}_k(x_1, \dotsc, x_k) \text{ if and only if } \gen{x_1, \dotsc, x_k} = G.
+  \]
+\end{lemma}
+
+Since we wish to compute the rank of a group, we need to decide if there exists any generating set of cardinality $k$.
+
+\begin{lemma}
+  Let $n$ and $k$ be positive integers.
+  There is a $\Sigma_3$ formula denoted $\textsc{HasRank}_k$ such that for each finite group $\mathcal{G}$ of order $n$,
+  \[
+  \mathcal{G} \models \textsc{HasRank}_k \text{ if and only if } G \text{ has a generating set of cardinality } k.
+  \]
+\end{lemma}
+
+Now the $\textsc{Group Rank}$ decision problem, that is the problem of deciding whether a group has a generating set of cardinality $k$, reduces to $\MC(\Sigma_3)$ via the reduction
+\[
+(\mathcal{G}, k) \mapsto (\mathcal{G}, \textsc{IsGroup} \land \textsc{HasRank}_k).
+\]
+In the parameterized setting, this proves that $\pgrouprank$ reduces to $\pMC(\\Sigma_3)$ via a first-order reduction.
+\todo{define first-order reduction, show that it implies an $\NC$ reduction.}
+By the definition of $\ANC^d[\Sigma_t]$, this gives the following complexity upper bound.
 
 \begin{theorem}
-  There is an $\FPP^1$ reduction from $\pgrouprank$ to $\pMC(\Pi_2)$.
-\end{theorem}
-
-By an analog of \autocite[Corollary~5.16]{fg06} in the setting of fixed-parameter parallelizable reductions, we have $\ANC^1[3] = \cl{\pMC(\Pi_2)}^{\FPP^1}$.
-
-\begin{corollary}
   $\pgrouprank$ is in $\ANC^1[3]$.
-\end{corollary}
+\end{theorem}
 
 \todo{
   What about the WD version of the problem?
