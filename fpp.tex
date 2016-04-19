@@ -1170,119 +1170,41 @@ This definition is adapted from \autocite[Definition~5.1]{fg06}.
 
 \subsection{Example problem in \texorpdfstring{$\WP[t]$}{WP[t]}}
 
-\todo{Show a natural problem that is actually in a finite level of the hierarchy here.}
+\todo{Show a natural problem that is actually in a finite level of the hierarchy here; the group rank problem is not.}
 
 In \autoref{sec:rankinwp}, we proved that $\pgrouprank$ is in $\WP^1[P]$.
 Is this problem in a fixed finite level of the $\WP$ hierarchy?
-Let us try to express this problem in first-order logic.
-
-\begin{definition}[Axiomatization of groups]
-  The signature for groups has a constant symbol for the identity element denoted $e$, a unary function for the inverse denoted $x^{-1}$, and a binary function for the group operation (denoted by concatenation).
-  Let the group axioms be defined as first-order formulae as follows.
-  \begin{align*}
-    \textsc{HasIdentity} & = \forall x\, (ex = x \land xe = x) \\
-    \textsc{HasInverses} & = \forall x\, (x^{-1} x = x x^{-1} = e) \\
-    \textsc{IsAssociative} & = \forall x \forall y \forall z\, ((x y) z = x (y z))
-  \end{align*}
-  Let $\textsc{IsGroup}$ be the conjunction of these three formulae.
-  Now for any finite structure $\mathcal{A}$, we have $\mathcal{A} \models \textsc{IsGroup}$ if and only if $\mathcal{A}$ is a group.
-  Let $\textsc{Group}$ denote the class of all finite structures that are valid groups, that is, the class of all structures that model $\textsc{IsGroup}$.
-  (Since the universal quantifiers can be placed in the beginning of the formula, $\textsc{IsGroup}$ is a $\Pi_1$ formula.)
-\end{definition}
-
-In \autocite[Lemma~3.5]{nt16}, the authors prove that there is a $\Sigma_1$ formula, %% (of size $O(k + \log^2 n)$)
-denoted $\textsc{IsMember}_k(g, x_1, \dotsc, x_k)$, such that $\mathcal{G} \models \textsc{IsMember}_k(g, x_1, \dotsc, x_k)$ if and only if $g \in \gen{x_1, \dotsc, x_k}$, for each positive integer $k$ and each group $\mathcal{G}$ of order $n$.
-The only parts of that formula that involve the variables $x_i$ are checking that another variable is a member of the set $\{x_1, \dotsc, x_k\}$.
-In this situation, the variables $x_1, \dotsc, x_k$ can be replaced by a unary relation variable (that is, a set variable) $X$.
-This is item two in the lemma below.
-
-\begin{lemma}[{\autocite[Lemma~3.5]{nt16}}]
-  Let $n$ and $k$ be positive integers.
-  \begin{enumerate}
-  \item
-    There is a $\Sigma_1$ formula $\textsc{IsMember}_k$ on the free variables $g$ and $x_1, \dotsc, x_k$ such that for each finite group $\mathcal{G}$ of order $n$,
-    \[
-    \mathcal{G} \models \textsc{IsMember}_k(g, x_1, \dotsc, x_k) \text{ if and only if } g \in \gen{x_1, \dotsc, x_k}.
-    \]
-  \item
-    There is a $\Sigma_1$ formula $\textsc{IsMember}$ on the free variable $g$ and free unary relation symbol $X$ such that for each finite group $\mathcal{G}$ of order $n$,
-    \[
-    \mathcal{G} \models \textsc{IsMember}(g, X) \text{ if and only if } g \in \gen{X}.
-    \]
-  \end{enumerate}
-\end{lemma}
-\todo{Double-check that I understand these formulas correctly.}
-%% \begin{proof}
-%%   Let $s = \log^2 n$.
-%%   Let $\textsc{IsSLP}_k$ be the quantifier-free formula on the free variables $x_1, \dotsc, x_k$ and $z_1, \dotsc, z_s$ such that
-%%   \begin{gather*}
-%%     \mathcal{G} \models \textsc{IsSLP}_k(x_1, \dotsc, x_k, z_1, \dotsc, z_s) \\
-%%     \text{ if and only if } \\
-%%     (z_1, \dotsc, z_s) \text{ is a straight-line program over } \{x_1, \dotsc, x_k\},
-%%   \end{gather*}
-%%   which can be defined by translating the conditions for a straight-line program over $\{x_1, \dotsc, x_k\}$ to a logical formula in a straightforward manner.
-%%   Define $\textsc{IsMember}_k$ by
-%%   \begin{multline*}
-%%     \textsc{IsMember}_k = \exists z_1 \cdots \exists z_s \colon \textsc{IsSLP}(z_1, \ldots, z_s, x_1, \dotsc, x_k) \\
-%%     \land \exists p_1 \cdots \exists p_s \exists q_1 \cdots \exists q_s \colon g = \left(\prod_{i = 1}^s p_i\right)^{-1} \prod_{i = 1}^s q_i \\
-%%     \land \bigwedge_{i = 1}^s (p_i = e \lor p_i = z_i) \land (q_i = e \lor q_i = z_i).
-%%   \end{multline*}
-%%   \todo{Explain why this is correct.}
-%% \end{proof}
-
-We can use this formula expressing subgroup membership to give a formula expressing whether a set of group elements is a generating set in the natural way, namely by defining
-\[
-\textsc{IsGenerating}_k(x_1, \dotsc, x_k) = \forall g \colon \textsc{IsMember}_k(g, x_1, \dotsc, x_k).
-\]
-Similarly,
-\[
-\textsc{IsGenerating}(X) = \forall g \colon \textsc{IsMember}(g, X).
-\]
-
-\begin{lemma}
-  Let $n$ and $k$ be positive integers.
-  \begin{enumerate}
-  \item
-    There is a $\Pi_2$ formula denoted $\textsc{IsGenerating}_k$ on the free variables $x_1, \dotsc, x_k$ such that for each finite group $\mathcal{G}$ of order $n$,
-    \[
-    \mathcal{G} \models \textsc{IsGenerating}_k(x_1, \dotsc, x_k) \text{ if and only if } \gen{x_1, \dotsc, x_k} = G.
-    \]
-  \item
-    There is a $\Pi_2$ formula denoted $\textsc{IsGenerating}$ on the free unary relation variables $X$ such that for each finite group $\mathcal{G}$ of order $n$,
-    \[
-    \mathcal{G} \models \textsc{IsGenerating}(X) \text{ if and only if } \gen{X}= G.
-    \]
-  \end{enumerate}
-\end{lemma}
-
-Since we wish to compute the rank of a group, we need to decide if there exists any generating set of cardinality $k$.
-
-\begin{lemma}
-  Let $n$ and $k$ be positive integers.
-  There is a $\Sigma_3$ formula denoted $\textsc{HasRank}_k$ such that for each finite group $\mathcal{G}$ of order $n$,
-  \[
-  \mathcal{G} \models \textsc{HasRank}_k \text{ if and only if } G \text{ has a generating set of cardinality } k.
-  \]
-\end{lemma}
-
-Now the $\textsc{Group Rank}$ decision problem, that is the problem of deciding whether a group has a generating set of cardinality $k$, reduces to $\MC(\Sigma_3)$ via the reduction
-\[
-(\mathcal{G}, k) \mapsto (\mathcal{G}, \textsc{IsGroup} \land \textsc{HasRank}_k).
-\]
-In the parameterized setting, this proves that $\pgrouprank$ reduces to $\pMC(\\Sigma_3)$ via a first-order reduction.
-\todo{define first-order reduction, show that it implies an $\NC^1$ reduction.}
-Similarly, $\textsc{Group Rank}$ equals $\WD_{\textsc{IsGenerating}}(\textsc{GROUP})$, so $\pgrouprank$ is $\pWD_{\textsc{IsGenerating}}$.
-By the definitions of $\WP^d[t]$ and $\ANC^d[t]$, this gives the following complexity upper bounds.
-
-\begin{theorem}
-  \mbox{}
-  \begin{enumerate}
-  \item $\pgrouprank$ is in $\ANC^1[3]$.
-  \item $\pgrouprank$ is in $\WP^1[2]$.
-  \end{enumerate}
-\end{theorem}
-
-\todo{We don't need to include the first item in the above theorem, since the second implies it.}
+%% Let us try to express this problem in first-order logic.
+%%
+%% \begin{definition}[Axiomatization of groups]
+%%   The signature for groups has a constant symbol for the identity element denoted $e$, a unary function for the inverse denoted $x^{-1}$, and a binary function for the group operation (denoted by concatenation).
+%%   Let the group axioms be defined as first-order formulae as follows.
+%%   \begin{align*}
+%%     \textsc{HasIdentity} & = \forall x\, (ex = x \land xe = x) \\
+%%     \textsc{HasInverses} & = \forall x\, (x^{-1} x = x x^{-1} = e) \\
+%%     \textsc{IsAssociative} & = \forall x \forall y \forall z\, ((x y) z = x (y z))
+%%   \end{align*}
+%%   Let $\textsc{IsGroup}$ be the conjunction of these three formulae.
+%%   Now for any finite structure $\mathcal{A}$, we have $\mathcal{A} \models \textsc{IsGroup}$ if and only if $\mathcal{A}$ is a group.
+%%   Let $\textsc{Group}$ denote the class of all finite structures that are valid groups, that is, the class of all structures that model $\textsc{IsGroup}$.
+%%   (Since the universal quantifiers can be placed in the beginning of the formula, $\textsc{IsGroup}$ is a $\Pi_1$ formula.)
+%% \end{definition}
+Unfortunately, the best first-order formulas that describe this problem are not of the form $\Sigma_k$ for some finite natural number $k$.
+In general, the number of variables grows with the order of the group.
+\begin{itemize}
+\item
+  There is a first-order formula that has $O(1)$ variables, but $O(\log n)$ quantifier alternations, using the strategy from the $\PSPACE$-completeness of $\textsc{TQBF}$ \autocite[Lemma~2.3]{nt16}.
+  This places the problem in $\FO[\log n]$, which is $\AC^1$, but doesn't provide placement in any finite level of the $\WP$ hierarchy.
+\item
+  The authors of \autocite{bklm01} were not able to show membership in $\FO[\log \log n]$, which would have slightly improved the above membership, but still wouldn't place the problem in a finite level of the $\WP$ hierarchy.
+\item
+  There is a first-order formula that has two alternations (beginning with $\forall$), but $O(\log n)$ variables \autocite[Lemma~3.5]{nt16}.
+  The fact that the number of variables grows with the size of the input means this does not place the problem in any descriptive complexity class, nor any parameterized complexity class.
+\item
+  There is a $\FO[\DTC]$ formula for the problem, since group membership is in $\L$, which equals $\FO[\DTC]$.
+  Although this subsumes the membership in $\FO[\log n]$ given in the first item above, this does not help us place the problem in a parameterized complexity class.
+\end{itemize}
+This basically means that the problem is in $\WP[\log n]$.
 
 \subsection{Example problem complete for \texorpdfstring{$\WP[t]$}{WP[t]}}
 
