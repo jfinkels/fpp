@@ -433,7 +433,7 @@ This lemma shows that a many-one reduction to a fixed-parameter parallelizable p
 
 \subsection{Approximable optimization problems}
 
-Yet another way to do this is to find an optimization problem whose budget problem is $\P$-complete while admitting a highly parallel approximation scheme via a ``fixed-parameter parallelizable'' algorithm.
+Yet another way to do this is to find an optimization problem whose budget problem is $\P$-complete while admitting a highly parallel approximation scheme.
 
 \begin{definition}
   An \emph{optimization problem} $O$ is a four-tuple $(I, S, m, t)$, where $I$ is the set of instances, $S$ is the set of pairs $(x, w)$ where $w$ is a solution for $x$, the function $m$ computes the \emph{measure} (or \emph{objective value}) for such a pair, and $t$ is either $\min$ or $\max$.
@@ -490,7 +490,7 @@ This theorem is an adaptation of \autocite[Theorem~1.32]{fg06}.
 
 \begin{theorem}\label{thm:encasfpp}
   Let $O$ be an optimization problem.
-  If $O$ is in $\ENCAS$, then $p\dash{O}$ is in $\FPP$.
+  If $O$ is in $\ENCAS$, then $p\dash{O}$ is in $\para \NC$.
 \end{theorem}
 \begin{proof}
   Assume without loss of generality that $O$ is a minimization problem; the proof is similar if it is a maximization problem.
@@ -499,9 +499,9 @@ This theorem is an adaptation of \autocite[Theorem~1.32]{fg06}.
   \begin{itemize}
   \item $R(x, A_{n, k}(x, k)) \leq 1 + \frac{1}{k}$ for each $x$ and $k$,
   \item $\size(A_{n, k}) \leq f(k) n^{O(1)}$,
-  \item $\depth(A_{n, k}) \leq g(k) \log^{O(1)} n$,
+  \item $\depth(A_{n, k}) \leq f(k) + O(\log^{O(1)} n)$,
   \end{itemize}
-  for some circuit-computable functions $f$ and $g$.
+  for some circuit-computable function $f$.
   Define the circuit family $\{C_{n, k}\}$ as
   \[
   C_{n, k}(x, k) = 1 \iff m(x, A_{n, k + 1}(x, k + 1)) \leq k,
@@ -509,8 +509,8 @@ This theorem is an adaptation of \autocite[Theorem~1.32]{fg06}.
   so $C_{n, k}$ outputs 1 if and only if the approximate solution corresponding to parameter $k + 1$ measures less than $k + 1$.
   (The function $m$ is really a circuit as well, chosen from a family of circuits depending on the number of bits in its inputs.)
 
-  The size of $C_{n, k}$ is $O(\size(m) + \size(A_{n, k + 1}))$, which is $f'(k)n^{O(1)}$ for some circuit-computable function $f'$.
-  The depth is $O(\depth(m) + \depth(A_{n, k + 1})$, which is $g'(k + 1) \log^{O(1)} n$ for some circuit-computable function $g'$.
+  The size of $C_{n, k}$ is $O(\size(m) + \size(A_{n, k + 1}))$ and the depth is $O(\depth(m) + \depth(A_{n, k + 1})$.
+  For some sufficiently large circuit-computable function $f'$, the size and depth bounds are $f'(k + 1) n^{O(1)}$ and $f'(k + 1) + O(\log^{O(1)} n)$, respectively.
   It remains to show correctness of $C_{n, k}$.
 
   Let $x$ be a string, let $k$ be a natural number, and let $y = A_{n, k + 1}(x, k + 1)$.
@@ -520,11 +520,11 @@ This theorem is an adaptation of \autocite[Theorem~1.32]{fg06}.
   m^*(x) \geq \frac{m(x, y)}{1 + \frac{1}{k + 1}} \geq \frac{k + 1}{1 + \frac{1}{k + 1}} = \frac{(k + 1)^2}{k + 2} > k.
   \]
   Thus $(x, k) \notin p \dash O$.
-  Therefore, we conclude that $p \dash O$ is in $\FPP$.
+  Therefore, we conclude that $p \dash O$ is in $\para \NC$.
 \end{proof}
 
-The converse does not hold: the minimum vertex cover problem is a counterexample because it is in $\FPP$ \autocite[Theorem~4.5]{bst15}.
-\todo{Show an example of an optimization problem whose budget problem is $\P$-complete and whose standard parameterization is in $\FPP$ but for which no $\ENCAS$ exists.}
+The converse does not hold: the minimum vertex cover problem is a counterexample because it is in $\para \NC$ \autocite[Theorem~4.5]{bst15}.
+\todo{Show an example of an optimization problem whose budget problem is $\P$-complete and whose standard parameterization is in $\para \NC$ but for which no $\ENCAS$ exists.}
 
 Our goal now reduces to finding an optimization problem in $\ENCAS$ whose budget problem is $\P$-complete.
 %% There exist problems that are $\P$-complete and have randomized $\FNCAS$ algorithms, so under a derandomization assumption, we can show a problem that fits the requirement.
@@ -542,14 +542,14 @@ Our goal now reduces to finding an optimization problem in $\ENCAS$ whose budget
 %% edge flows can have weights exponential in n
 
 \begin{theorem}
-  If $\NC = \RNC$, then the budget problem for \textsc{Maximum Flow} is $\P$-complete and the standard parameterization is in $\FPP$.
+  If $\NC = \RNC$, then the budget problem for \textsc{Maximum Flow} is $\P$-complete and the standard parameterization is in $\para \NC$.
 \end{theorem}
 \begin{proof}
   The budget problem for \textsc{Maximum Flow} is $\P$-complete \autocite[Problem~A.4.4]{ghr95}.
   The \textsc{Maximum Flow} problem is in randomized $\FNCAS$ \autocite[Theorem~4.5.2]{dsst97}.
   If $\NC = \RNC$, then randomized $\FNCAS$ equals deterministic $\FNCAS$.
   Thus, the problem is in $\ENCAS$, by \autoref{prop:encas}.
-  Finally, the standard parameterization is in $\FPP$ by \autoref{thm:encasfpp}.
+  Finally, the standard parameterization is in $\para \NC$ by \autoref{thm:encasfpp}.
 \end{proof}
 
 \todo{Can the randomization part of the RNC algorithm for MaxFlow be absorbed in the fixed-parameter part of the algorithm?}
@@ -558,11 +558,11 @@ Our goal now reduces to finding an optimization problem in $\ENCAS$ whose budget
 
 \section{Fixed-parameter tractability}
 
-What we really care about is the parameterized parallel complexity of problems in $\FPP$, and specifically those with underlying decision problems that are $\P$-complete.
-The $\WP$ hierarchy does not capture this.
-This is similar to the way $\NNC[\polylog]$ allows us to consider efficient highly parallel verification but does not capture polynomial-time decision.
+%% What we really care about is the parameterized parallel complexity of problems in $\para \NC$, and specifically those with underlying decision problems that are $\P$-complete.
+%% The $\WP$ hierarchy does not capture this.
+%% This is similar to the way $\NNC[\polylog]$ allows us to consider efficient highly parallel verification but does not capture polynomial-time decision.
 
-\subsection{Example problem in \texorpdfstring{\FPT}{FPT}}
+\subsection{Example problem in \texorpdfstring{$\para \P$}{paraP}}
 
 Consider the parameterized high degree subgraph problem.
 
@@ -578,7 +578,7 @@ Consider the parameterized high degree subgraph problem.
 The underlying decision problem is in $\P$, so the parameterized problem is fixed-parameter tractable.
 
 \begin{theorem}[{\autocite{am84}}]
-  $\pHDS$ is in $\FPT$.
+  $\pHDS$ is in $\para \P$.
 \end{theorem}
 
 The first two slices of the problem are in $\NC$, whereas all other slices are $\P$-complete.
@@ -593,36 +593,35 @@ The first two slices of the problem are in $\NC$, whereas all other slices are $
 
 %% As a maximization problem, the problem is approximable to within a certain constant factor, but inapproximable beyond that factor (unless $\NC = \P$) \autocite{am84}.
 
-\todo{Is this problem FPT-complete? Is it in E[P]?}
+\todo{Is this problem $\para \P$-complete? Is it in $\para \EP$?}
 
-\subsection{Completeness in \texorpdfstring{\FPT}{FPT}}
+\subsection{Completeness in \texorpdfstring{$\para \P$}{paraP}}
 
 We define $\P$-completeness so that problems that are $\P$-complete are unlikely to see a significant decrease in time complexity when parallelism is allowed, under the assumption that $\NC \neq \P$.
-Let us define $\FPT$-completeness similarly, so that $\FPT$-complete problems are unlikely to see a significant decrease in ``parameterized'' time complexity when ``parameterized'' parallelism is allowed, under the assumption that $\FPP \neq \FPT$.
-We already know that each $\P$-complete problem induces a $\FPT$-complete problem with a trivial parameterization \autocite[Proposition~14]{fg03}, however we are interested in natural problems with non-trivial parameterizations.
-This subsection proves the existence of nontrivial parameterized problems that are not in $\FPP$ (under the assumption $\FPP \neq \FPT$) and whose underlying decision problems are $\P$-complete, complementing \autoref{sec:pcompletefpp}, which proves the existence of parameterized problems in $\FPP$ whose underlying decision problems are $\P$-complete.
+Let us define $\para \P$-completeness similarly, so that $\para \P$-complete problems are unlikely to see a significant decrease in ``parameterized'' time complexity when ``parameterized'' parallelism is allowed, under the assumption that $\para \NC \neq \para \P$.
+We already know that each $\P$-complete problem induces a $\para \P$-complete problem with a trivial parameterization \autocite[Proposition~14]{fg03}, however we are interested in natural problems with non-trivial parameterizations.
+This subsection proves the existence of nontrivial parameterized problems that are not in $\para \P$ (under the assumption $\para \NC \neq \para \P$) and whose underlying decision problems are $\P$-complete, complementing \autoref{sec:pcompletefpp}, which proves the existence of parameterized problems in $\para \NC$ whose underlying decision problems are $\P$-complete.
 
-The assumption $\FPP \neq \FPT$ is reasonable because it is equivalent to the inequality $\NC \neq \P$.
+The assumption $\para \NC \neq \para \P$ is reasonable because it is equivalent to the inequality $\NC \neq \P$.
 
 \begin{proposition}
-  $\FPP = \FPT$ if and only if $\NC = \P$.
+  $\para \NC = \para \P$ if and only if $\NC = \P$.
 \end{proposition}
 \begin{proof}
-  The proof is trivial if we use the equivalent definitions of the complexity class $\FP \mathcal{C}$ as the class of all parameterized problems $(Q, \kappa)$ for which there is a language $L$ in the complexity class $\mathcal{C}$ such that $x \in Q$ if and only if $(x, 1^{f(\kappa(x))}) \in L$.
-  See \autocite{fg03}, for example.
+  The proof is trivial if we use the definitions of the complexity class $\para \mathcal{C}$ as the class of all parameterized problems $(Q, \kappa)$ for which there is a language $L$ in the complexity class $\mathcal{C}$ such that $x \in Q$ if and only if $(x, 1^{f(\kappa(x))}) \in L$.
+  See \autocite{fg03} or \autocite{est15}, for example.
 \end{proof}
 
-
-\begin{definition}[$\FPT$-completeness]
-  A parameterized problem $(Q, \kappa)$ is \emph{$\FPT$-hard} if for each parameterized problem $(R, \lambda)$, there is an $\FPP$ many-one reduction from $(R, \lambda)$ to $(Q, \kappa)$.
-  If furthermore $(Q, \kappa)$ is in $\FPT$, then it is \emph{$\FPT$-complete}.
+\begin{definition}[$\para \P$-completeness]
+  A parameterized problem $(Q, \kappa)$ is \emph{$\para \P$-hard} if for each parameterized problem $(R, \lambda)$, there is a $\para \NC$ many-one reduction from $(R, \lambda)$ to $(Q, \kappa)$.
+  If furthermore $(Q, \kappa)$ is in $\para \P$, then it is \emph{$\para \P$-complete}.
 \end{definition}
 
 \begin{proposition}
-  If an $\FPT$-complete problem is in $\FPP$, then $\FPP = \FPT$.
+  If a $\para \P$-complete problem is in $\para \NC$, then $\para \NC = \para \P$.
 \end{proposition}
 \begin{proof}
-  Follows from the downward closure of $\FPP$ under $\FPP$ many-one reductions.
+  Follows from the downward closure of $\para \NC$ under $\para \NC$ many-one reductions.
 \end{proof}
 
 The following problem is adapted from \textsc{Short Deterministic Turing Machine Computation} in \autocite{cesati06}.
@@ -637,16 +636,16 @@ The following problem is adapted from \textsc{Short Deterministic Turing Machine
 \end{definition}
 
 \begin{theorem}
-  $\pBHP$ is $\FPT$-complete.
+  $\pBHP$ is $\para \P$-complete.
 \end{theorem}
 \begin{proof}
   The underlying decision problem is in $\P$ (by a standard simulation on the deterministic universal Turing machine), so the parameterized problem is in $\FPT$.
-  To show $\FPT$-hardness, we use a generic reduction.
-  Let $(Q, \kappa)$ be an arbitrary parameterized problem in $\FPT$ and let $M$ be the deterministic Turing machine that decides $Q$ in time $f_M(k) n^c$ for some (circuit-)computable function $f_M$ and some positive integer $c$.
+  To show $\para \P$-hardness, we use a generic reduction.
+  Let $(Q, \kappa)$ be an arbitrary parameterized problem in $\para \P$ and let $M$ be the deterministic Turing machine that decides $Q$ in time $f_M(k) n^c$ for some (circuit-)computable function $f_M$ and some positive integer $c$.
   The reduction is $x \mapsto (M, x, 1^{f_M(k) n^c}, c)$.
   This is computable by a (nonuniform) circuit family of constant depth and size $f(k) n^{O(1)}$, where $f$ is a circuit-computable function.
-  The parameter of the reduced instance is $f_M(k) n^c / n^c$, or simply $f_M(k)$, which satisfies the parameter bound required by the definition of $\FPP$ reduction.
-  Therefore we conclude that $\pBHP$ is $\FPP$-complete.
+  The parameter of the reduced instance is $f_M(k) n^c / n^c$, or simply $f_M(k)$, which satisfies the parameter bound required by the definition of $\para \NC$ many-one reduction.
+  Therefore we conclude that $\pBHP$ is $\para \P$-complete.
 \end{proof}
 
 The following problem is a generalization of the problem \textsc{BS-BD-CVP} from \autocite{cd98}.
@@ -660,16 +659,16 @@ The following problem is a generalization of the problem \textsc{BS-BD-CVP} from
   \end{tabular}
 \end{definition}
 
-This theorem is related to \autocite[Corollary~2]{cd98}, where the authors prove that the \textsc{BS-BD-CVP} problem is complete for the class $\PNC$ (a class that lives between $\FPP$ and $\FPT$) under $\FPP$ many-one reductions.
+This theorem is related to \autocite[Corollary~2]{cd98}, where the authors prove that the \textsc{BS-BD-CVP} problem is complete for the class $\PNC$ (a class that exists between $\para \NC$ and $\para \P$) under $\para \NC$ many-one reductions.
 While their reduction is a generic reduction, ours is a reduction from the parameterized bounded halting problem.
 
 \begin{theorem}\label{thm:psce}
-  $\pSCE$ is $\FPT$-complete.
+  $\pSCE$ is $\para \P$-complete.
 \end{theorem}
 \begin{proof}
-  Membership in $\FPT$ is straightforward to prove: use the natural algorithm for evaluating a circuit which can be performed in linear time with respect to the size of the circuit.
+  Membership in $\para \P$ is straightforward to prove: use the natural algorithm for evaluating a circuit which can be performed in linear time with respect to the size of the circuit.
   We must also compute $f(k) n^\alpha$ and $g(k) n^\beta$, and compare these with the size and depth of the circuit $C$.
-  Both of these are polynomial-time algorithms with respect to the size of the input, and hence the problem is in $\FPT$.
+  Both of these are polynomial-time algorithms with respect to the size of the input, and hence the problem is in $\para \P$.
 
 %% %%%% Here we showed a generic reduction.
 %%   Now we prove $\FPT$-hardness.
@@ -708,7 +707,7 @@ While their reduction is a generic reduction, ours is a reduction from the param
 %%   $\pBHP \equiv_m^{\FPP} p \dash \textsc{Short Circuit Evaluation}$.
 %% \end{theorem}
 %% \begin{proof}
-  Now we prove $\FPT$-hardness.
+  Now we prove $\para \P$-hardness.
   The reduction from $\pBHP$ is
   \[
   (M, x, 1^t, c) \mapsto (C_M, x, \alpha, \beta, f, g, k),
@@ -728,12 +727,12 @@ While their reduction is a generic reduction, ours is a reduction from the param
   Similarly the depth of $C_M$ is $O(t)$, which is $O((t / n^c) n^c)$, or simply $g(k) n^\beta$.
   (There are some constants in the size and depth bounds that we have ignored, but those can be incorporated into the circuit-computable functions $f$ and $g$.)
   Finally, the parameter in the original instance, $t / n^c$, is exactly the parameter of the reduced instance, so this reduction meets the necessary paramater bound.
-  Therefore we have shown a correct $\FPP$ many-one reduction from an $\FPT$-complete problem.
+  Therefore we have shown a correct $\para \NC$ many-one reduction from a $\para \P$-complete problem.
 \end{proof}
 
-As expected, if any of these $\FPT$-complete problems are fixed-parameter parallelizable, then $\FPP = \FPT$.
+As expected, if any of these $\para \P$-complete problems are fixed-parameter parallelizable, then $\para \NC = \para \P$.
 
-It seems that most $\P$-complete problems will end up being $\FPT$-complete under this notion of completeness.
+It seems that most $\P$-complete problems will end up being $\para \P$-complete under this notion of completeness.
 This doesn't really help us distinguish between different $\P$-complete problems based on how fixed-parameter parallelizable they are.
 In the next subsection, we try a different approach.
 
@@ -754,7 +753,7 @@ A circuit is \emph{$k$-satisfiable} if there is a satisfying assignment of Hammi
 The corresponding parameterized weighted circuit evaluation problem would then be as follows.
 Let $\|x\|_1$ denote the Hamming weight (that is, the number of ones) in $x$.
 
-\begin{definition}[$\p \dash \textsc{Circuit } k \dash \textsc{Evaluation}$, aka $\pCkE$]
+\begin{definition}[$p \dash \textsc{Circuit } k \dash \textsc{Evaluation}$, aka $\pCkE$]
   \mbox{} \\
   \begin{tabular}{r p{9.2cm}}
     \textbf{Instance:} & Boolean circuit $C$, binary string $x$, natural number $k$. \\
@@ -763,7 +762,7 @@ Let $\|x\|_1$ denote the Hamming weight (that is, the number of ones) in $x$.
   \end{tabular}
 \end{definition}
 
-This is a little silly, since the Hamming weight of $x$ can be computed trivially, but it is technically ``verification'' problem corresponding to the satisfiability problem above.
+This is a little silly, since the Hamming weight of $x$ can be computed easily (in $\NC^1$, but not in $\AC^0$), but it is technically the ``verification'' problem corresponding to the satisfiability problem above.
 Instead, we use a problem that is equivalent but a little less silly.
 
 \begin{definition}[$p \dash \textsc{Weighted Circuit Evaluation}$, aka $\pWCE$]
@@ -775,11 +774,11 @@ Instead, we use a problem that is equivalent but a little less silly.
   \end{tabular}
 \end{definition}
 
-These parameterized problems are equivalent under $\FPP$ many-one reductions because the parameterization is computable in $\NC$.
+These parameterized problems are equivalent under $\para \NC^1$ many-one reductions because the parameterization is computable in $\NC^1$.
 \todo{Reference for circuit computing Hamming weight; see \url{http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=4781532}}
 
 \begin{proposition}
-  $\pCkE \equiv_m^{\FPP} \pWCE$.
+  $\pCkE \equiv_m^{\para \NC^1} \pWCE$.
 \end{proposition}
 %% \begin{proof}
 %%   Let $\kappa_1$ denote the parameterization of the problem on the left and $\kappa_2$ the parameterization of the problem on the right.
@@ -826,30 +825,31 @@ and $\P$ as the closure of the circuit evaluation problem under $\NC^1$ many-one
 \[
 \P = \cl{\textsc{Circuit Evaluation}}^{\leq_m^{\NC^1}}.
 \]
-In the setting of parameterized problems, the class $\W[P]$ can be characterized as the closure of the parameterized weighted circuit satisfiability problem under fixed-parameter tractable many-one reductions,
+In the setting of parameterized problems, the class $\para \WP$ can be characterized as the closure of the parameterized weighted circuit satisfiability problem under fixed-parameter tractable many-one reductions,
 \[
-\W[P] = \cl{\pCkSAT}^{\leq_m^{\FPT}}.
+\para \WP = \cl{\pCkSAT}^{\leq_m^{\para \P}}.
 \]
 Following the above pattern, we define a new class as the closure of the parameterized weighted circuit evaluation problem under fixed-parameter parallelizable many-one reductions,
 \[
-\E[P] = \cl{\pWCE}^{\leq_m^{\FPP}}
+\para \EP = \cl{\pWCE}^{\leq_m^{\para \NC}}
 \]
 ("E" for evaluation).
+\todo{This is a name conflict with an existing class called $\EP$.}
 
-Since the underlying decision problem, the problem of evaluating a circuit on a given input, is in $\P$, the parameterized problem $\pWCE$ is trivially in $\FPT$.
-Since $\FPP$ reductions compose, $\FPP$ is a subset of $\FPT$, and $\FPT$ is closed under $\FPT$ reductions, we conclude that $\E[P]$ is a subset of $\FPT$.
+Since the underlying decision problem, the problem of evaluating a circuit on a given input, is in $\P$, the parameterized problem $\pWCE$ is trivially in $\para \P$.
+Since $\para \NC$ reductions compose, $\para \NC$ is a subset of $\para \P$, and $\para \P$ is closed under $\para \P$ reductions, we conclude that $\para \EP$ is a subset of $\para \P$.
 
 \begin{theorem}
-  $\E[P] \subseteq \FPT$.
+  $\para \EP \subseteq \para \P$.
 \end{theorem}
 
-Is $\E[P] = \FPT$?
-The standard simulation of a deterministic Turing machine by a circuit, as in \autocite{ladner75}, for example, fails to provide a $\FPP$ many-one reduction to the parameterized weighted circuit evaluation problem, since the natural reduction would be of the form $x \mapsto (C, x, \|x\|_1)$, but the parameter value $\|x\|_1$ is not necessarily bounded by a function of $\kappa(x)$.
+Is $\para \EP = \para \P$?
+The standard simulation of a deterministic Turing machine by a circuit, as in \autocite{ladner75}, for example, fails to provide a $\para \NC$ many-one reduction to the parameterized weighted circuit evaluation problem, since the natural reduction would be of the form $x \mapsto (C, x, \|x\|_1)$, but the parameter value $\|x\|_1$ is not necessarily bounded by a function of $\kappa(x)$.
 \todo{Show something bad happens if $\E[P] = \FPT$.}
 
-\todo{Show a problem that is known to be in $\FPT$ (for example one of the deterministic Turing machine computation problems maybe) is actually in $\E[P]$.}
+\todo{Show a problem that is known to be in $\para \P$ (for example one of the deterministic Turing machine computation problems maybe) is actually in $\para \EP$.}
 
-The same issue prevents us from showing that $\FPP \subseteq \E[P]$.
+The same issue prevents us from showing that $\para \NC \subseteq \para \EP$.
 
 \section{\texorpdfstring{$\FPP$}{FPP} is to \texorpdfstring{$\NC$}{NC} as \texorpdfstring{$\WP$}{WP} is to \texorpdfstring{$\NNC$}{NNC}}
 
