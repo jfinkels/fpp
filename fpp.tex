@@ -150,8 +150,6 @@
 
 \section{Introduction}
 
-\todo{Change FPP to FPNC everywhere.}
-
 %% Document content goes here.
 %
 % Global components at each level must follow this structure.
@@ -184,8 +182,8 @@
 % %% Findings (author - what?)
 %
 % What did the work reveal when performing the task?
-We show the existence of a $\P$-complete problem in $\FPP$ (the circuit evaluation problem parameterized by depth \autoref{thm:cvpdepth}) and a $\P$-complete problem not $\FPT$, unless $\NC = \P$ (the ``small'' circuit evaluation problem \autoref{thm:psce}).
-We prove that $\FPP = \WP[P]$ almost exactly when $\NC = \NNC[f(n) \log n]$ \autoref{sec:fppwpp}.
+We show the existence of a $\P$-complete problem in $\para \NC$ (the circuit evaluation problem parameterized by depth \autoref{thm:cvpdepth}) and a $\P$-complete problem not in $\para \P$, unless $\NC = \P$ (the ``small'' circuit evaluation problem \autoref{thm:psce}).
+We prove that $\para \NC = \para \WNC$ almost exactly when $\NC = \NNC[i(n) \log n]$ \autoref{sec:fppwpp}.
 %
 %
 % %% Conclusion (readers - so what?)
@@ -246,22 +244,30 @@ Throughout we will often assume without loss of generality that functions like c
 \section{Fixed-parameter parallelizability}
 \label{sec:pcompletefpp}
 
-\subsection{Definition of \texorpdfstring{$\FPP$}{FPP}}
+The $\P$-complete problems are considered tractable but inherently sequential; adding more processors does not provide any significant reduction in the time required to find a solution, even thought they can be solved in polynomial time.
+But can the lack of parallelizability for these problems depend on a parameterization of the problem, thereby isolating some of the ``sequential-ness'' of the problem in the value of the parameter?
 
-\begin{definition}[$\FPP^d$]
+\subsection{Definition of \texorpdfstring{$\para \NC$}{paraNC}}
+
+\begin{definition}[$\para \NC^d$]
   Let $d$ be a natural number.
-  A parameterized problem $(Q, \kappa)$ is in the class $\FPP^d$ if there are circuit-computable functions $f$ and $g$ and a circuit family $\{C_{n, k}\}$ such that for each string $x$,
+  A parameterized problem $(Q, \kappa)$ is in the class $\para \NC^d$ if there is a circuit-computable function $f$ and a nonuniform family $\{C_{n, k}\}$ of bounded fan-in Boolean circuits such that for each string $x$,
   \begin{itemize}
   \item $x \in Q$ if and only if $C_{n, k}(x) = 1$, where $n = |x|$ and $k = \kappa(x)$,
   \item $\size(C_{n, k}) \leq f(k) n^{O(1)}$,
-  \item $\depth(C_{n, k}) \leq g(k) \log^d n$.
+  \item $\depth(C_{n, k}) \leq f(k) + O(\log^d n)$.
   \end{itemize}
+  If instead the depth is bounded by $f(k) O(\log^d n)$, the class is denoted $\para \NC^{d \uparrow}$, a superclass of $\para \NC^d$.
+
+  If the circuits are of unbounded fan-in, the classes are $\para \AC^d$ and $\para \AC^{d \uparrow}$, respectively.
 \end{definition}
 
-\subsection{Example problem in \texorpdfstring{$\FPP$}{FPP}}
+The classes $\para \AC^{d \uparrow}$ were first defined in \autocite{bst15}.
 
-The parameterized vertex cover problem is in $\FPP$ \autocite{bst15}, but the underlying decision problem is $\NP$-complete.
-We are interested in finding a problem in $\FPP$ whose underlying decision problem is $\P$-complete.
+\subsection{Example problem in \texorpdfstring{$\para \NC$}{paraNC}}
+
+The parameterized vertex cover problem is in $\para \AC^0$ \autocite{bst15}, but the underlying decision problem is $\NP$-complete.
+We are interested in finding a problem in $\para \NC$ whose underlying decision problem is $\P$-complete.
 One way to do this is to choose $Q$ to be a $\P$-complete problem and $\kappa$ to be the ``degenerate'' parameterization function $\kappa(x) = |x|$.
 
 \begin{definition}[$p \dash s \dash \textsc{Circuit Evaluation}$]
@@ -274,11 +280,11 @@ One way to do this is to choose $Q$ to be a $\P$-complete problem and $\kappa$ t
 \end{definition}
 
 \begin{theorem}
-  $p \dash s \dash \textsc{Circuit Evaluation}$ is in $\FPP$ and the underlying decision problem is $\P$-complete.
+  $p \dash s \dash \textsc{Circuit Evaluation}$ is in $\para \NC$ and the underlying decision problem is $\P$-complete.
 \end{theorem}
 \begin{proof}
   The circuit evaluation problem is $\P$-complete by \autocite{ladner75}.
-  Since the parameterization is monotonically increasing with the size of the input, the problem is in $\FPP$ by the technique of \autocite[Proposition~1.7]{fg06}.
+  Since the parameterization is monotonically increasing with the size of the input, the problem is in $\para \NC$ by the technique of \autocite[Proposition~1.7]{fg06}.
 \end{proof}
 
 To find a non-degenerate example, we can parameterize the circuit evaluation problem by depth instead of size.
@@ -293,29 +299,28 @@ To find a non-degenerate example, we can parameterize the circuit evaluation pro
 \end{definition}
 
 \begin{theorem}\label{thm:cvpdepth}
-  $p \dash d \dash \textsc{Circuit Evaluation}$ is in $\FPP$ and the underlying decision problem is $\P$-complete.
+  $p \dash d \dash \textsc{Circuit Evaluation}$ is in $\para \AC^{0 \uparrow}$ and the underlying decision problem is $\P$-complete.
 \end{theorem}
 \begin{proof}
   As stated in the proof of the previous theorem, the circuit evaluation problem is $\P$-complete.
   Evaluating the circuit $C$ of size $m$ and depth $d$ on inputs $x$ can be performed by the depth-universal circuit $U$ of \autocite{ch85}.
-  The size of $U$ is $O(m)$, which is of the form $f(d) m^{O(1)}$ as required.
-  The depth of $U$ is $O(d)$, which is of the form $g(d) \log^{O(1)} m$.
-  Therefore the circuit evaluation problem parameterized by circuit depth is in $\FPP$ (and specifically, in the class $\FPAC^{0 \uparrow}$ as defined by \autocite{bst15}, therein denoted $\para\AC^{0 \uparrow}$).
+  The size of $U$ is $O(m)$ and the depth is $O(m)$, so if we choose $f$ to be sufficiently large, then the size is bounded by $f(d) m^{O(1)}$ and the depth by $f(d)$.
+  Therefore the circuit evaluation problem parameterized by circuit depth is in $\para \AC^{0 \uparrow}$.
 \end{proof}
 
-\subsection{Relationship between \texorpdfstring{$\FPP$}{FPP} and \texorpdfstring{$\NC$}{NC}}
+\subsection{Relationship between \texorpdfstring{$\para \NC$}{paraNC} and \texorpdfstring{$\NC$}{NC}}
 
 \begin{definition}\label{def:eventually}
   Suppose $d$ is a natural number and $(Q, \kappa)$ is a parameterized problem.
   We say the problem $(Q, \kappa)$ is \emph{eventually in $\NC^d$} if there is a circuit-computable function $h$ and an $\NC^d$ family of circuits $\{C_n\}_{n \in \mathbb{N}}$ such that for each $x$ of length $n$, if $n \geq h(\kappa(x))$, then $x \in Q$ if and only if $C_n(x) = 1$.
 \end{definition}
 
-This theorem is a characterization of parameterized problems in the class $\FPP^d$ as problems for which the parameter suggests an input size threshold, below which it suffices to perform an exhaustive search to solve the problem and after which we require an efficient algorithm.
+This theorem is a characterization of parameterized problems in the class $\para \NC^d$ as problems for which the parameter suggests an input size threshold, below which it suffices to perform an exhaustive search to solve the problem and after which we require an efficient algorithm.
 It is the adaptation of \autocite[Theorem~1.37]{fg06}.
 
 \begin{theorem}\label{thm:eventually}
   Suppose $d$ is a natural number and $(Q, \kappa)$ is a parameterized problem.
-  If $Q$ is circuit-decidable with uniform size and depth and $(Q, \kappa)$ is eventually in $\NC^d$, then $(Q, \kappa)$ is in $\FPP^d$.
+  If $Q$ is circuit-decidable with uniform size and depth and $(Q, \kappa)$ is eventually in $\NC^d$, then $(Q, \kappa)$ is in $\para \NC^d$.
 \end{theorem}
 \begin{proof}
   Let $h$ be the function that defines the lower bound on the length after which $(Q, \kappa)$ is in $\NC^d$.
@@ -341,8 +346,8 @@ It is the adaptation of \autocite[Theorem~1.37]{fg06}.
     \size(A_{n, k}) & = \size(C^2_n) = n^{O(1)}, \\
     \depth(A_{n, k}) & = \depth(C^2_n) = O(\log^d n).
   \end{align*}
-  An upper bound for the size of $A_{n, k}$ in either case is $S(h(k)) n^{O(1)}$ and for the depth $O(D(h(k)) \log^d n)$.
-  Since $S$ and $D$ are computable, composing each with $h$ yields another computable function, so these size and depth bounds meet the requirements of the definition of $\FPP^d$.
+  An upper bound for the size of $A_{n, k}$ in either case is $S(h(k)) n^{O(1)}$ and for the depth $D(h(k)) + O(\log^d n)$.
+  Since $S$ and $D$ are computable, composing each with $h$ yields another computable function, so these size and depth bounds meet the requirements of the definition of $\para \NC^d$.
 \end{proof}
 
 \begin{definition}\label{def:spreduction}
@@ -350,11 +355,22 @@ It is the adaptation of \autocite[Theorem~1.37]{fg06}.
   There is a \emph{small parameter $\NC^d$ many-one reduction} from $(Q, \kappa)$ to $Q'$ if there is a nondecreasing, unbounded, circuit-computable function $h$ and an $\NC^d$ family of circuits $\{R_n\}_{n \in \mathbb{N}}$ such that for each string $x$ of length $n$ with $\kappa(x) \leq h(n)$, we have $x \in Q$ if and only if $R_n(x) \in Q'$.
 \end{definition}
 
+\begin{lemma}\label{lem:upperinverse}
+  Suppose $i$ is an unbounded, nondecreasing, circuit-computable function.
+  Then there is an unbounded, nondecreasing, circuit-computable function $f_i$ such that for each natural number $n$, we have $f_i(i(n)) \geq n$.
+  (We call $f_i$ the ``upper inverse'' of $i$.)
+  \todo{Make this look like the inverse lemma.}
+\end{lemma}
+\begin{proof}
+  \todo{Fill me in}
+\end{proof}
+
 This lemma is analogous to \autoref{thm:eventually}.
+It demonstrates that the closure of $\NC$ under small parameter reductions is $\para \NC$.
 
 \begin{lemma}\label{lem:spreduction}
   Suppose $d$ is a natural number, $(Q, \kappa)$ is a parameterized problem, and $Q'$ is a decision problem.
-  If $Q$ is circuit-decidable with uniform size and depth, $Q'$ is in $\NC^d$, and there is a small parameter $\NC^d$ many-one reduction from $(Q, \kappa)$ to $Q'$, then $Q$ is in $\FPP^d$
+  If $Q$ is circuit-decidable with uniform size and depth, $Q'$ is in $\NC^d$, and there is a small parameter $\NC^d$ many-one reduction from $(Q, \kappa)$ to $Q'$, then $Q$ is in $\para \NC^d$.
 \end{lemma}
 \begin{proof}
   Let $h$ be the function that defines the upper bound on the parameter, below which there is an $\NC^d$ many-one reduction from $Q$ to $Q'$.
@@ -375,19 +391,19 @@ This lemma is analogous to \autoref{thm:eventually}.
   By construction, $n \leq i_h(h(n)) < i_h(k)$.
   Now
   \begin{align*}
-    \size(A_{n, k}) & = size(C_n^1) = S(n) \leq S(i_h(k)), \\
-    \depth(A_{n, k}) & = depth(C_n^1) = D(n) \leq D(i_h(k)), \\
+    \size(A_{n, k}) & = \size(C_n^1) = S(n) \leq S(i_h(k)), \\
+    \depth(A_{n, k}) & = \depth(C_n^1) = D(n) \leq D(i_h(k)),
   \end{align*}
   where $S$ and $D$ are the (circuit-computable, nondecreasing) size and depth bounds for the circuit family $\{C_n^1\}$.
+  Thus in either case, there is a sufficiently large circuit-computable function $f$ such the size of $A_{n, k}$ is bounded above by $f(k) n^{O(1)}$ and the depth $f(k) + O(\log^d n)$.
 \end{proof}
 
 This lemma shows that a many-one reduction to a fixed-parameter parallelizable problem can sometimes induce a highly parallel algorithm, if the parameter functions are bounded for the reduced instance.
 
 \begin{lemma}\label{lem:reducetonc}
-  Suppose $d$ and $e$ are positive integers.
-  Suppose $Q$ is a decision problem and $(Q', \kappa')$ is a parameterized problem.
-  Suppose there is an $\NC^d$ many-one reduction from $Q$ to $Q'$, given by the circuit family $\{R_n\}$, and $(Q', \kappa')$ is in $\FPP^d$ by a circuit family $\{C_{m, k}\}$ of size $f(k) m^{O(1)}$ and depth $g(k) \log^d m$ on inputs of length $m$.
-  If $f(\kappa'(R_n(x))) \leq n^{O(1)}$ and $g(\kappa'(R_n(x))) \leq O(\log^e n)$, then $Q$ is in $\NC^{d + e}$.
+  Suppose $d$ is a positive integer, $Q$ is a decision problem, and $(Q', \kappa')$ is a parameterized problem.
+  Suppose there is an $\NC^d$ many-one reduction from $Q$ to $Q'$, given by the circuit family $\{R_n\}$, and $(Q', \kappa')$ is in $\para \NC^d$ by a circuit family $\{C_{m, k}\}$ of size $f(k) m^{O(1)}$ and depth $f(k) + O(\log^d m)$ on inputs of length $m$.
+  If $f(\kappa'(R_n(x))) \leq \min(n^{O(1)}, O(\log^d n))$, then $Q$ is in $\NC^d$.
 \end{lemma}
 \begin{proof}
   The circuit family that decides $Q$ is $\{A_n\}$, defined by $A_n = C_{m, k} \circ R_n$, where $m$ is the size of the output of $R_n$ and $k = \kappa'(R_n(x))$.
@@ -407,11 +423,11 @@ This lemma shows that a many-one reduction to a fixed-parameter parallelizable p
   and
   \begin{align*}
     \depth(A_n) & = \depth(C_{m, k}) + \depth(R_n) \\
-    & = g(k) \log^d m + O(\log^d m) \\
-    & = O(g(k) \log^d m + \log^d m) \\
-    & = O(g(k) \log^d n + \log^d n) \\
-    & = O((\log^e n) (\log^d n) + \log^d n) \\
-    & = O(\log^{d + e} n). \qedhere
+    & = f(k) + O(\log^d m) + O(\log^d m) \\
+    & = f(k) + O(\log^d m) \\
+    & = f(k) + O(\log^d n) \\
+    & = O(\log^d n) + O(\log^d n) \\
+    & = O(\log^d n). \qedhere
   \end{align*}
 \end{proof}
 
@@ -999,8 +1015,9 @@ This theorem is an adaptation of one direction of \autocite[Theorem~3.29]{fg06}.
 \end{proof}
 
 This lemma is an adaptation of \autocite[Lemma~3.24]{fg06}.
+It is the ``opposite'' of \autoref{lem:upperinverse}.
 
-\begin{lemma}\label{lem:i}
+\begin{lemma}\label{lem:lowerinverse}
   Suppose $e$ is a positive integer and $f$ and $g$ are increasing, circuit-computable functions.
   %% If e is 0, then i_{g, e} is not unbounded.
   There are functions $i_f$ and $i_{g, e}$ such that
@@ -1051,7 +1068,7 @@ This is an adaptation of the other direction of \autocite[Theorem~3.29]{fg06}.
   \item $\depth(C_{m, k'}) \leq g(k') \log^d m$.
   \end{itemize}
   Assume without loss of generality that $f$ and $g$ are increasing.
-  Let $i_f$ and $i_{g, e}$ be the functions corresponding to $f$ and $g$, respectively, guaranteed by \autoref{lem:i}.
+  Let $i_f$ and $i_{g, e}$ be the functions corresponding to $f$ and $g$, respectively, guaranteed by \autoref{lem:lowerinverse}.
   Let $i(n) = \min(i_f(n), i_{g, e}(n))$, for each natural number $n$.
 
   Let $Q \in \NNC^d[i(n) \log n]$.
@@ -1226,18 +1243,6 @@ This basically means that the problem is in $\WP[\log n]$.
   \todo{Fill me in...}
 \end{proof}
 
-This lemma is the ``inverse'' of \autoref{lem:i}.
-
-\begin{lemma}\label{lem:upperinverse}
-  Suppose $i$ is an unbounded, nondecreasing, circuit-computable function.
-  Then there is an unbounded, nondecreasing, circuit-computable function $f_i$ such that for each natural number $n$, we have $f_i(i(n)) \geq n$.
-  (We call $f_i$ the ``upper inverse'' of $i$.)
-  \todo{Make this look like the inverse lemma.}
-\end{lemma}
-\begin{proof}
-  \todo{Fill me in}
-\end{proof}
-
 This theorem is an adaptation of one direction of \autocite[Theorem~4.3]{cc97npo}.
 It is a translation of \autoref{thm:wppparti} to the finite levels of the $\WP$ hierarchy.
 \todo{discuss that $\Pi_t \LOGTIME$ is in $\AC^0$, and therefore is strictly weaker than $\NC^1$; see similar discussion at the end of \autocite{cc97npo}.}
@@ -1315,8 +1320,8 @@ It is a translation of \autoref{thm:wpppartii} to the finite levels of the $\WP$
   \item $\depth(C_{m, k'}) \leq g(k') \log^d m$.
   \end{itemize}
   Assume without loss of generality that $f$ and $g$ are increasing.
-  Let $i_f$ and $i_{g, e}$ be the functions corresponding to $f$ and $g$, respectively, guaranteed by \autoref{lem:i}.
-  Let $i(n) = \min(i_f(n), i_{g, e}(n))$ for each natural number $n$.
+  Let $i_f$ and $i_{g, e}$ be the functions corresponding to $f$ and $g$, respectively, guaranteed by \autoref{lem:lowerinverse}.
+  Let $i(n) = \min(i_f(n), i_{g, e}(n))$, for each natural number $n$.
 
   For the chosen function $i$, consider the problem $\PiCSAT$.
   By \autoref{lem:circuittoformula}, there is an $\NC^d$ reduction, $\{R_n\}$, from $\PiCSAT$ to $\PiFSAT$, the decision problem underlying the parameterized problem $\pPiFSAT$.
