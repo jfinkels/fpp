@@ -239,6 +239,8 @@ If the circuits were uniform, we would need to include both alternatives as subc
   If $b$ is the zero function, then the language is in the class $\NC^d$.
 \end{definition}
 
+Here, the notion of ``acceptance'' for a circuit is a nondeterministic one: $C_n(x) = 1$ if and only if there is a binary string $w$ of length $b(n)$ such that $C_n(x, w) = 1$.
+
 Throughout we will often assume without loss of generality that functions like circuit size and depth bounds, nondeterministism bounds, and polynomials, are increasing
 
 \section{Fixed-parameter parallelizability}
@@ -851,13 +853,13 @@ The standard simulation of a deterministic Turing machine by a circuit, as in \a
 
 The same issue prevents us from showing that $\para \NC \subseteq \para \EP$.
 
-\section{\texorpdfstring{$\FPP$}{FPP} is to \texorpdfstring{$\NC$}{NC} as \texorpdfstring{$\WP$}{WP} is to \texorpdfstring{$\NNC$}{NNC}}
+\section{\texorpdfstring{$\para \NC$}{paraNC} is to \texorpdfstring{$\NC$}{NC} as \texorpdfstring{$\para \WNC$}{WNC} is to \texorpdfstring{$\NNC$}{NNC}}
 
-\subsection{Definition of \texorpdfstring{$\WP[P]$}{WP[P]}}
+\subsection{Definition of \texorpdfstring{$\para \WNC$}{paraWNC}}
 
-\begin{definition}[{$\WP^d[P]$}]
+\begin{definition}[{$\para \WNC^d$}]
   Let $d$ be a natural number.
-  A parameterized problem $(Q, \kappa)$ is in the class $\WP[P]^d$ if there are circuit-computable functions $f$, $g$, and $h$, and a nondeterministic circuit family $\{C_{n, k}\}$ such that for each string $x$,
+  A parameterized problem $(Q, \kappa)$ is in the class $\para \WNC^d$ if there are circuit-computable functions $f$, $g$, and $h$, and a nondeterministic circuit family $\{C_{n, k}\}$ such that for each string $x$,
   \begin{itemize}
   \item $x \in Q$ if and only if $C_{n, k}(x) = 1$, where $n = |x|$ and $k = \kappa(x)$,
   \item $\size(C_{n, k}) \leq f(k) n^{O(1)}$,
@@ -866,29 +868,42 @@ The same issue prevents us from showing that $\para \NC \subseteq \para \EP$.
   \end{itemize}
 \end{definition}
 
-\subsection{Example problems in \texorpdfstring{$\WP[P]$}{WP[P]}}
+\subsection{Example problems in \texorpdfstring{$\para \WNC$}{paraWNC}}
 \label{sec:rankinwp}
 
-What kind of problems are in the class $\WP[P]$?
+What kind of problems are in the class $\para \WNC$?
 
-\begin{definition}[$\textsc{Group Rank}$]
+\begin{itemize}
+\item The parameterized weighted Boolean formula satisfiability problem is in $\para \WNC^1$ \autocite[Theorem~3.6]{est15}.
+\item The parameterized feedback vertex set problem is in $\para \WL$ \autocite[??]{est15}, which is a subclass of $\para \WNC^2$.
+\item The parameterized semigroup rank problem is in $\para \WNL$ \autocite[???]{est15}, which is a subclass of $\para \WNC^2$.
+\end{itemize}
+
+Let us consider the parameterized group rank problem, a subset of the parameterized semigroup rank problem.
+
+\begin{definition}[$\pgrouprank$]
   \mbox{} \\
   \begin{tabular}{r p{9.2cm}}
     \textbf{Instance:} & finite group $G$ given as a product table, positive integer $k$. \\
+    \textbf{Parameter:} & $k$. \\
     \textbf{Question:} & Does $G$ have a generating set of cardinality $k$?
   \end{tabular}
 \end{definition}
 
-Let $\pgrouprank$ denote the standard parameterization of $\textsc{Group Rank}$.
+This problem is highly parallelizable, given that a witness of size $O(k \log n)$ is provided.
 
-\begin{theorem}
-  $\pgrouprank$ is in $\WP^1[P]$.
+\begin{theorem}\label{thm:pgrouprank}
+  $\pgrouprank$ is in $\para \WL$.
 \end{theorem}
 \begin{proof}
-  The (unparameterized) language $\textsc{Group Rank}$ is in $\beta_2 \FOLL$ \autocite[Theorem~4.2]{grouprank}.
-  The algorithm nondeterministically chooses a set of $k$ group elements, each requiring $O(\log n)$ bits to represent, then (deterministically) verifies that the set generates the entire group.
-  Thus there is a nondeterministic circuit family that decides $\textsc{Group Rank}$ with (parameter-less) size and depth bounds of $n^{O(1)}$ and $\log \log n$, respectively, and using $O(k) \log n$ nondeterministic bits.
-  Therefore the parameterized problem is in $\WP^1[P]$.
+  The Turing machine receives $G$ and $k$ as input and a subset $S$ of $k$ group elements as a witness.
+  It loops over each element $g$ in $G$ and decides whether $g \in \gen{S}$.
+  The machine accepts exactly when all of the subgroup membership tests pass.
+  Looping over $n$ elements uses $O(\log n)$ space.
+  Deciding whether $g$ is in $\gen{S}$ is the subgroup membership problem, which is in $\SL$, which in turn equals $\L$.
+  Thus the overall space usage is $O(\log n)$.
+  The size of the witness is $k \log n$, and two-way access is required, since we execute the subgroup membership procedure $n$ times.
+  We conclude that this parameterized problem is in $\para \WL$.
 \end{proof}
 
 This is the $\NC^d$ bounded version of the parameterized problem from \autocite[Lemma~3.26]{fg06}.
