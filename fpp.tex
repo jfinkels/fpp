@@ -853,7 +853,7 @@ The standard simulation of a deterministic Turing machine by a circuit, as in \a
 
 The same issue prevents us from showing that $\para \NC \subseteq \para \EP$.
 
-\section{\texorpdfstring{$\para \NC$}{paraNC} is to \texorpdfstring{$\NC$}{NC} as \texorpdfstring{$\para \WNC$}{WNC} is to \texorpdfstring{$\NNC$}{NNC}}
+\section{\texorpdfstring{$\para \NC$}{paraNC} is to \texorpdfstring{$\NC$}{NC} as \texorpdfstring{$\para \WNC$}{paraWNC} is to \texorpdfstring{$\NNC$}{NNC}}
 
 \subsection{Definition of \texorpdfstring{$\para \WNC$}{paraWNC}}
 
@@ -928,10 +928,10 @@ This is the $\NC^d$ bounded version of the parameterized problem from \autocite[
 
 \subsection{Example problem complete for \texorpdfstring{$\para \WNC$}{paraWNC}}
 
-Let $p \dash k \dash \textsc{FSat}$ denote the weighted Boolean formula satisfiability problem.
+Let $p \dash \textsc{FSat}$ denote the weighted Boolean formula satisfiability problem.
 
 \begin{theorem}[{\autocite[Theorem~3.6]{est15}}]\label{thm:parawnc1complete}
-  $p \dash k \dash \textsc{FSat}$ is complete for $\para \WNC^1$ under $\para \FO$ many-one reductions.
+  $p \dash \textsc{FSat}$ is complete for $\para \WNC^1$ under $\para \FO$ many-one reductions.
 \end{theorem}
 
 \todo{Give a corollary in the section below that the complete problem is not in $\para \NC$ unless something bad happens.}
@@ -1155,46 +1155,34 @@ Here we interpolate between $\para \WNC^1$ and $\para \WP$.
   For each positive integer $d$, we have $\para \WNC^d \subseteq \para \P$ if and only if $\para \P = \W[\NC^d \SAT]$.
 \end{conjecture}
 
-\subsection{Does WP[P] equal W[P]?}
-
-\begin{theorem}
-  $\WP[P] \subseteq \W[P]$.
-\end{theorem}
-\begin{proof}
-  This follows from the usual simulation of a circuit by a Turing machine, which can be done in linear time with respect to the size of the circuit.
-  The number of nondeterministic bits required by the Turing machine is exactly the same as the number required by the circuit.
-\end{proof}
-
-Whether the converse inclusion holds is not so clear.
+\subsection{Does \texorpdfstring{$\para \WNC$}{paraWNC} equal \texorpdfstring{$\para \WP$}{paraWP}?}
 
 \begin{conjecture}
-  $\WP[P] \subsetneq \W[P]$ unless $\NC = \P$.
+  For each positive integer $d$, if $\para \WNC^d = \para \WP$, then $\NC^d = \P$.
 \end{conjecture}
 \begin{justification}
-  If we use our intuition that $\WP[P]$ is like $\NNC[\poly]$ and $\W[P]$ is like $\NP$, then we might expect $\WP[P] = \W[P]$, since $\NNC[\poly] = \NP$ \autocite[Theorem~2.2]{wolf94}.
-  However, the technique used to show $\NP \subseteq \NNC[\poly]$ requires the use of $t(n)^2$ nondeterministic bits, where $t(n)$ is the running time of the nondeterministic Turing machine (which is $f(k) n^{O(1)}$ in this case).
-  Other approaches I attempted face a similar problem.
-  I suspect instead that $\WP[P] = \W[P]$ if and only if $\NC = \P$, similar to the way $\NNCO = \NPO$ \autocite{ncapproximation} if and only if $\NC = \P$.
+  $p \dash k \dash \textsc{CSat}$ is $\para \WP$-complete and $p \dash \textsc{FSat}$ is $\para \WNC^1$-complete \autocite[Theorem~3.6]{est15}.
+  A reduction from the former to the latter would be very surprising.
 \end{justification}
 
-\section{The \texorpdfstring{$\WP$}{WP} hierarchy}
+\section{The \texorpdfstring{$\para \WNC$}{paraWNC} hierarchy}
 
 For the necessary background in logic, see \autocite[Chapter~4]{fg06}.
 
-\subsection{Definition of \texorpdfstring{$\WP[t]$}{WP[t]}}
+\subsection{Definition of \texorpdfstring{$\para \WNC[t]$}{paraWNC[t]}}
 
 Let $\Phi$ be a class of formulas and let $\phi$ be an element of $\Phi$ with one free relation variable $X$ of arity $s$.
-Define the weighted definability problem and the corresponding parameterized problem as follows.
+Define the parameterized weighted definability problem as follows.
 
-\begin{definition}[{$\WD_\phi$ \autocite[Section~4.3]{fg06}}]
-  \mbox{} \\
-  \begin{tabular}{r p{9.2cm}}
-    \textbf{Instance:} & structure $\mathcal{A}$, natural number $k$. \\
-    \textbf{Question:} & Is there an $S \subseteq A^s$ such that $|S| = k$ and $\mathcal{A} \models \phi(S)$?
-  \end{tabular}
-\end{definition}
+%% \begin{definition}[{$\WD_\phi$ \autocite[Section~4.3]{fg06}}]
+%%   \mbox{} \\
+%%   \begin{tabular}{r p{9.2cm}}
+%%     \textbf{Instance:} & structure $\mathcal{A}$, natural number $k$. \\
+%%     \textbf{Question:} & Is there an $S \subseteq A^s$ such that $|S| = k$ and $\mathcal{A} \models \phi(S)$?
+%%   \end{tabular}
+%% \end{definition}
 
-\begin{definition}[{$p\textnormal{-}\WD_\phi$ \autocite[Section~5.1]{fg06}}]
+\begin{definition}[{$p \dash \WD_\phi$ \autocite[Section~5.1]{fg06}}]
   \mbox{} \\
   \begin{tabular}{r p{9.2cm}}
     \textbf{Instance:} & structure $\mathcal{A}$, natural number $k$. \\
@@ -1203,13 +1191,24 @@ Define the weighted definability problem and the corresponding parameterized pro
   \end{tabular}
 \end{definition}
 
-This definition is adapted from \autocite[Definition~5.1]{fg06}.
+Let $p \dash \WD \dash \Phi$ be the class of all problems $p \dash \WD_\phi$ where $\phi$ is in $\Phi$.
 
-\begin{definition}
-  For each natural number $d$ and positive integer $t$, let $WP^d[t] = []$...
-\end{definition}
+\todo{
+  Using closure under $\para \NC^1$ reductions just gives the $\para \WP[t]$ classes, since $\para \WP[t]$ is probably just the closure under first-order reductions.
+  We may have to use a weft-based definition here.
+}
 
-\todo{theorem: level t is in level t + 1, and each level is in WP[P]}
+%% This definition is adapted from \autocite[Definition~5.1]{fg06}.
+
+%% \begin{definition}
+%%   For each positive integer $d$ greater than one and each positive integer $t$, let $\para \WNC^d[t] = \cl{p \dash \WD \dash \Pi_t}^{\leq_m^{\para \NC^1}}$.
+%% \end{definition}
+
+%% This theorem is adapted from \autocite[Proposition~5.3]{fg06}.
+
+%% \begin{conjecture}
+%%   For each positive integer $d$ greater than one and each positive integer $t$, we have $\para \WNC^d[t] \subseteq \para \WNC^d$.
+%% \end{conjecture}
 
 %% %% These definitions are used for the A[t] and A[P] hierarchy.
 
@@ -1230,13 +1229,12 @@ This definition is adapted from \autocite[Definition~5.1]{fg06}.
 %%   \end{tabular}
 %% \end{definition}
 
-\subsection{Example problem in \texorpdfstring{$\WP[t]$}{WP[t]}}
+\subsection{Example problem in \texorpdfstring{$\para \WNC[t]$}{paraWNC[t]}}
 
-\todo{Show a natural problem that is actually in a finite level of the hierarchy here; the group rank problem is not.}
-\todo{For the semigroup rank problem, the problem is complete for $\textnormal{para} \dash \WNL$ \autocite{est15}}.
+\todo{Show a natural problem in some $\para \WNC[t]$, perhaps a weft-restricted $\NC^d$ circuit satisfiability problem.}
 
-In \autoref{sec:rankinwp}, we proved that $\pgrouprank$ is in $\WP^1[P]$.
-Is this problem in a fixed finite level of the $\WP$ hierarchy?
+In \autoref{sec:rankinwp}, we proved that $\pgrouprank$ is in $\para \WNC^2$.
+This problem may not be in $\para \WNC^2[t]$ for some finite $t$.
 %% Let us try to express this problem in first-order logic.
 %%
 %% \begin{definition}[Axiomatization of groups]
@@ -1257,9 +1255,9 @@ In general, the number of variables grows with the order of the group.
 \begin{itemize}
 \item
   There is a first-order formula that has $O(1)$ variables, but $O(\log n)$ quantifier alternations, using the strategy from the $\PSPACE$-completeness of $\textsc{TQBF}$ \autocite[Lemma~2.3]{nt16}.
-  This places the problem in $\FO[\log n]$, which is $\AC^1$, but doesn't provide placement in any finite level of the $\WP$ hierarchy.
+  This places the problem in $\FO[\log n]$, which is $\AC^1$, but doesn't provide placement in any finite level of the $\para \WNC$ hierarchy.
 \item
-  The authors of \autocite{bklm01} were not able to show membership in $\FO[\log \log n]$, which would have slightly improved the above membership, but still wouldn't place the problem in a finite level of the $\WP$ hierarchy.
+  The authors of \autocite{bklm01} were not able to show membership in $\FO[\log \log n]$, which would have slightly improved the above membership, but still wouldn't place the problem in a finite level of the $\para \WNC$ hierarchy.
 \item
   There is a first-order formula that has two alternations (beginning with $\forall$), but $O(\log n)$ variables \autocite[Lemma~3.5]{nt16}.
   The fact that the number of variables grows with the size of the input means this does not place the problem in any descriptive complexity class, nor any parameterized complexity class.
@@ -1267,16 +1265,16 @@ In general, the number of variables grows with the order of the group.
   There is a $\FO[\DTC]$ formula for the problem, since group membership is in $\L$, which equals $\FO[\DTC]$.
   Although this subsumes the membership in $\FO[\log n]$ given in the first item above, this does not help us place the problem in a parameterized complexity class.
 \end{itemize}
-This basically means that the problem is in $\WP[\log n]$.
+This basically means that the problem is in a class like $\para \WNC^2[\log n]$, and any improvement would likely follow an improvement of the desrciptive complexity of the subgroup membership problem.
 
-\subsection{Example problem complete for \texorpdfstring{$\WP[t]$}{WP[t]}}
+\subsection{Example problem complete for \texorpdfstring{$\para \WNC[t]$}{paraWNC[t]}}
 
-\todo{If we show a complete problem here, make sure to give a corollary in the section below that it is not in FPP unless something bad happens.}
+\todo{If we show a complete problem here, make sure to give a corollary in the section below that it is not in $\para \NC$ unless something bad happens.}
 
-\subsection{Does \texorpdfstring{\FPP}{FPP} equal \texorpdfstring{\WP[t]}{WP[t]}?}
+\subsection{Does \texorpdfstring{\para \NC}{paraNC} equal \texorpdfstring{\para \WNC[t]}{paraWNC[t]}?}
 
 \begin{theorem}\label{thm:picsatgc}
-  Suppose $t$ is a positive integer with $t \geq 2$ and $i$ is a circuit-computable nondecreasing function.
+  Suppose $d$ is a positive integer, $t$ is a positive integer greater than one, and $i$ is a circuit-computable nondecreasing function.
   $\PiCSAT$ is complete for $\GC[i(n) \log n, \Pi_t]$ under $\NC^d$ many-one reductions.
 \end{theorem}
 \begin{proof}
@@ -1284,7 +1282,8 @@ This basically means that the problem is in $\WP[\log n]$.
 \end{proof}
 
 \begin{theorem}\label{thm:ppifsat}
-  $\pPiFSAT$ is complete for $\WP^d[t]$ under $\FPP^d$ many-one reductions.
+  Suppose $d$ is a positive integer and $t$ is a positive integer greater than one.
+  $\pPiFSAT$ is complete for $\para \WNC^d[t]$ under $\para \NC^d$ many-one reductions.
 \end{theorem}
 \begin{proof}
   \todo{Fill me in...}
