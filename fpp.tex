@@ -875,8 +875,8 @@ What kind of problems are in the class $\para \WNC$?
 
 \begin{itemize}
 \item The parameterized weighted Boolean formula satisfiability problem is in $\para \WNC^1$ \autocite[Theorem~3.6]{est15}.
-\item The parameterized feedback vertex set problem is in $\para \WL$ \autocite[??]{est15}, which is a subclass of $\para \WNC^2$.
-\item The parameterized semigroup rank problem is in $\para \WNL$ \autocite[???]{est15}, which is a subclass of $\para \WNC^2$.
+\item The parameterized feedback vertex set problem is in $\para \WL$ \autocite[Section~4.3]{est15}, which is a subclass of $\para \WNC^2$.
+\item The parameterized semigroup rank problem is in $\para \WNL$ \autocite[Theorem~3.12]{est15}, which is a subclass of $\para \WNC^2$.
 \end{itemize}
 
 Let us consider the parameterized group rank problem, a subset of the parameterized semigroup rank problem.
@@ -936,7 +936,7 @@ Let $p \dash \textsc{FSat}$ denote the weighted Boolean formula satisfiability p
 
 \todo{Give a corollary in the section below that the complete problem is not in $\para \NC$ unless something bad happens.}
 
-Since Boolean formulas are equivalent to Boolean circuits of logarithmic depth \autocite{??}, the above theorem can be rephrased as ``$p \dash \NC^1 \textsc{CSat}$ is complete''.
+Since Boolean formulas are equivalent to Boolean circuits of logarithmic depth \todo{add citation}, the above theorem can be rephrased as ``$p \dash \NC^1 \textsc{CSat}$ is complete''.
 We would like to generalize this to $\NC^d$ circuit satisfiability; this hierarchy interpolates between weighted Boolean formula satisfiability and weighted circuit satisfiability.
 Let $p \dash k \dash \NC^d \textsc{CSat}$ denote the weighted satisfiability problem for $\NC^d$ circuits.
 
@@ -1011,41 +1011,6 @@ The parameterized problems in $\para \WNC^d$ of most interest to us are those fo
   (Since we assume $d$ is positive, the quotient $1 / d$ is well-defined.)
 \end{proof}
 
-The following assumption is true for $d = 1$ \autoref{thm:parawnc1complete}, and we conjecture it true for all positive $d$ \autoref{con:parawncdcomplete}.
-
-\begin{assumption}\label{ass:complete}
-  There is a parameterized problem $(Q, \kappa)$ complete for $\para \WNC^d$ under $\para \NC^d$ many-one reductions such that $Q \in \NNC^d[\poly]$.
-\end{assumption}
-
-This theorem is an adaptation of one direction of \autocite[Theorem~3.29]{fg06}.
-
-\begin{theorem}[Theorem~3.29, part i]\label{thm:wppparti}
-  Assume \autoref{ass:complete}.
-  Suppose $d$ is a positive integer.
-  If there is a circuit-computable, nondecreasing, unbounded function $i$ such that $\NC^d = \NNC^d[i(n) \log n]$, then $\para \NC^d = \para \WNC^d$.
-  \todo{Does $i$ need to be computable here?}
-\end{theorem}
-\begin{proof}
-  Assume $\NC^d = \NNC^d[i(n) \log n]$.
-  By \autoref{ass:complete}, let $(Q, \kappa)$ be a parameterized problem complete for $\para \WNC^d$ with $Q \in \NNC^d[\poly]$.
-  \todo{
-    Ideally, we would use the problem from \autoref{con:parawncdcomplete}, and then we could use that problem both here and in the proof of the other direction of the theorem.
-    But the problem comes in the reduction from an arbitrary parameterized problem: the circuit depth needs to be polylogarithmic, but it may be larger.
-  }
-  By \autoref{thm:rmparam}, there is a circuit-computable function $h$ and an $\NNC^d$ circuit family $\{C_{n, k}\}$ such that $\nondet(C_{n, k}) \leq h(k) \log n$.
-
-  Let $f$ be a circuit-computable function such that $n \geq f(k)$ implies $h(k) \leq i(n)$.
-  \todo{Explain why such an $f$ must exist; using \autoref{lem:upperinverse} or \autoref{lem:lowerinverse}?}
-  Now consider the set $Q^+$, defined by
-  \[
-  Q^+ = Q \cap \left\{ x \, \middle| \, |x| \geq f(\kappa(x)) \right\}.
-  \]
-  Since $|x| \geq f(\kappa(x))$ for each $x \in Q^+$, we have $h(\kappa(x)) \leq i(|x|)$.
-  Thus $Q^+$ is in $\NNC^d[i(n) \log n]$.
-  By assumption, $Q^+$ is therefore also in $\NC^d$.
-  This means $Q$ is eventually in $\NC^d$, so we have $Q \in \para \NC^d$ by \autoref{thm:eventually}.
-\end{proof}
-
 This lemma is an adaptation of \autocite[Lemma~3.24]{fg06}.
 It is the ``opposite'' of \autoref{lem:upperinverse}.
 
@@ -1071,13 +1036,41 @@ It is the ``opposite'' of \autoref{lem:upperinverse}.
   In the worst case, there will be at most $\log n$ comparison subcircuits, each requiring a computation of $f$, so the overall depth of the circuit computing $i_{f, d}$ is $O(\depth(f) \log n)$ and the size is $O(\size(f) \log n)$.
 \end{proof}
 
-This is an adaptation of the other direction of \autocite[Theorem~3.29]{fg06}.
+The following assumption is true for $d = 1$ (\autoref{thm:parawnc1complete}), and we conjecture it true for all positive $d$ (\autoref{con:parawncdcomplete}).
 
-\begin{theorem}\label{thm:wpppartii}
+\begin{assumption}\label{ass:complete}
+  There is a parameterized problem $(Q, \kappa)$ complete for $\para \WNC^d$ under $\para \NC^d$ many-one reductions such that $Q \in \NNC^d[\poly]$.
+\end{assumption}
+
+This theorem is an adaptation of \autocite[Theorem~3.29]{fg06}.
+
+\begin{theorem}\label{thm:ncwnc}
+  Assume \autoref{ass:complete}.
   Suppose $d$ is a positive integer.
-  If $\para \NC^d = \para \WNC^d$, then there is a circuit-computable, nondecreasing, unbounded function $i$ such that $\NC^d = \NNC^d[i(n) \log n]$.
+  $\para \NC^d = \para \WNC^d$ if and only if there is a circuit-computable, nondecreasing, unbounded function $i$ such that $\NC^d = \NNC^d[i(n) \log n]$.
 \end{theorem}
 \begin{proof}
+  First we prove the reverse implication.
+  Assume $\NC^d = \NNC^d[i(n) \log n]$.
+  By \autoref{ass:complete}, let $(Q, \kappa)$ be a parameterized problem complete for $\para \WNC^d$ with $Q \in \NNC^d[\poly]$.
+  \todo{
+    Ideally, we would use the problem from \autoref{con:parawncdcomplete}, and then we could use that problem both here and in the proof of the other direction of the theorem.
+    But the problem comes in the reduction from an arbitrary parameterized problem: the circuit depth needs to be polylogarithmic, but it may be larger.
+  }
+  By \autoref{thm:rmparam}, there is a circuit-computable function $h$ and an $\NNC^d$ circuit family $\{C_{n, k}\}$ such that $\nondet(C_{n, k}) \leq h(k) \log n$.
+
+  Let $f$ be a circuit-computable function such that $n \geq f(k)$ implies $h(k) \leq i(n)$.
+  \todo{Explain why such an $f$ must exist; using \autoref{lem:upperinverse} or \autoref{lem:lowerinverse}?}
+  Now consider the set $Q^+$, defined by
+  \[
+  Q^+ = Q \cap \left\{ x \, \middle| \, |x| \geq f(\kappa(x)) \right\}.
+  \]
+  Since $|x| \geq f(\kappa(x))$ for each $x \in Q^+$, we have $h(\kappa(x)) \leq i(|x|)$.
+  Thus $Q^+$ is in $\NNC^d[i(n) \log n]$.
+  By assumption, $Q^+$ is therefore also in $\NC^d$.
+  This means $Q$ is eventually in $\NC^d$, so we have $Q \in \para \NC^d$ by \autoref{thm:eventually}.
+
+  Now we prove the forward implication
   Assume $\para \NC^d = \para \WNC^d$.
   Since $\pncsat$ is in $\para \WNC^d$ by \autoref{lem:pncsat}, it is now in $\para \NC^d$ as well.
   We will use \autoref{lem:reducetonc} to show a reduction meeting the criteria of that lemma from an arbitrary decision problem $Q$ in $\NNC^d[i(n) \log n]$ to $\pncsat$.
@@ -1123,7 +1116,7 @@ This is an adaptation of the other direction of \autocite[Theorem~3.29]{fg06}.
 
 The previous section demonstrates that it is unlikely that $\para \WNC$ is contained in $\para \NC$.
 Does the weaker inclusion of $\para \WNC$ in $\para \P$ also have negative consequences, albeit less severe ones?
-This conjecture relaxes \autoref{thm:wnccollapse}.
+This conjecture relaxes \autoref{thm:ncwnc}.
 
 \begin{conjecture}
   $\para \WNC^d \subseteq \para \P$ if and only if $\NNC^d[i(n) \log n] \subseteq \P$.
@@ -1290,7 +1283,7 @@ This basically means that the problem is in a class like $\para \WNC^2[\log n]$,
 \end{proof}
 
 This theorem is an adaptation of one direction of \autocite[Theorem~4.3]{cc97npo}.
-It is a translation of \autoref{thm:wppparti} to the finite levels of the $\WP$ hierarchy.
+It is a translation of one direction of \autoref{thm:ncwnc} to the finite levels of the $\WP$ hierarchy.
 \todo{discuss that $\Pi_t \LOGTIME$ is in $\AC^0$, and therefore is strictly weaker than $\NC^1$; see similar discussion at the end of \autocite{cc97npo}.}
 
 \begin{theorem}\label{thm:wptparti}
@@ -1315,7 +1308,7 @@ It is a translation of \autoref{thm:wppparti} to the finite levels of the $\WP$ 
   However, we can transform a Boolean formula into an equivalent Polish notation (prefix) Boolean formula in alternating logarithmic time \autocite{buss87}, which is in $\NC^1$, and from there we can write the adjacency matrix of the tree given by the prefix Boolean formula with an $\NC^1$ algorithm.
 \end{proof}
 
-Compare this corollary with \autoref{thm:wppparti}.
+Compare this corollary with one direction of \autoref{thm:ncwnc}.
 
 \begin{corollary}
   Suppose $d$ and $t$ are positive integers with $t \geq 2$.
@@ -1347,7 +1340,7 @@ Compare this corollary with \autoref{thm:wppparti}.
 \end{proof}
 
 This theorem is an adaptation of the other direction of \autocite[Theorem~4.3]{cc97npo}.
-It is a translation of \autoref{thm:wpppartii} to the finite levels of the $\WP$ hierarchy.
+It is a translation of one direction of \autoref{thm:ncwnc} to the finite levels of the $\WP$ hierarchy.
 
 \begin{theorem}
   Suppose $d$, $e$, and $t$ are positive integers with $t \geq 2$.
