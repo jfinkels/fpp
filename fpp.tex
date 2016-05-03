@@ -1284,46 +1284,8 @@ This basically means that the problem is in a class like $\para \WNC^2[\log n]$,
   \todo{Fill me in...}
 \end{proof}
 
-This theorem is an adaptation of one direction of \autocite[Theorem~4.3]{cc97npo}.
-It is a translation of one direction of \autoref{thm:ncwnc} to the finite levels of the $\WP$ hierarchy.
-\todo{
-  Discuss that $\Pi_t \LOGTIME$ is in $\AC^0$, and therefore is strictly weaker than $\NC^1$; see similar discussion at the end of \autocite{cc97npo}.
-  This is similar to how $\NC$ is probably weaker than $\P$ in \autoref{con:wncp}.
-}
-
-\begin{theorem}\label{thm:wptparti}
-  Suppose $d$ and $t$ are positive integers with $t \geq 2$.
-  If there is a circuit-computable, nondecreasing, unbounded function $i$ such that
-  \[
-  \GC[i(n) \log n, \Pi_t \LOGTIME] \subseteq \NC^d,
-  \]
-  then $\para \NC^d = \para \WNC^d[t]$.
-\end{theorem}
-\begin{proof}
-  Assume $\GC[i(n) \log n, \Pi_t \LOGTIME] \subseteq \NC^d$.
-  Since $\PiCSAT$ is in the class $\GC[i(n) \log n, \Pi_t \LOGTIME]$ by \autoref{thm:picsatgc}, it is now in $\NC^d$ as well.
-
-  Since $\pPiFSAT$ is complete for $\para \WNC^d[t]$ under $\para \NC^d$ many-one reductions by \autoref{thm:ppifsat}, it suffices to show that $\pPiFSAT$ is in $\para \NC^d$.
-  Furthermore, by \autoref{lem:spreduction}, it suffices to show that there is a small parameter $\NC^d$ many-one reduction from $\pPiFSAT$ to $\PiCSAT$.
-
-  Let $\{R_n\}$ be the family of circuits computing the function $\phi \mapsto C_\phi$, where $\phi$ is a $\Pi_t$-normalized Boolean formula and $C_\phi$ is the natural $\Pi_t$ Boolean circuit induced by that formula.
-  If we can show that $R_n$ is in $\NC^d$, then the parameter upper bound $i$ and $\{R_n\}$ together comprise a small parameter $\NC^d$ many-one reduction from $\pPiFSAT$ to $\PiCSAT$.
-
-  Transforming a formula to its equivalent circuit is certainly computable in logarithmic space, so it is certainly in $\NC^2$.
-  However, we can transform a Boolean formula into an equivalent Polish notation (prefix) Boolean formula in alternating logarithmic time \autocite{buss87}, which is in $\NC^1$, and from there we can write the adjacency matrix of the tree given by the prefix Boolean formula with an $\NC^1$ algorithm.
-\end{proof}
-
-Compare this corollary with one direction of \autoref{thm:ncwnc}.
-
-\begin{corollary}
-  Suppose $d$ and $t$ are positive integers with $t \geq 2$.
-  If there is a circuit-computable, nondecreasing, unbounded function $i$ such that $\NC^d = \NNC^d[i(n) \log n]$, then $\para \NC^d = \para \WNC^d[t]$.
-\end{corollary}
-\begin{proof}
-  The class $\Pi_t \LOGTIME$ is a subclass of $\AC^0$, which is a subclass of $\NC^1$.
-  Thus $\GC[i(n) \log n, \Pi_t \LOGTIME] \subset \NNC^1[i(n) \log n]$.
-  Therefore, the inclusion $\NNC^1[i(n) \log n] \subseteq \NC^d$ implies \autoref{thm:wptparti}.
-\end{proof}
+Since we will construct reductions between these problems, we need an efficient and highly parallel algorithm for transforming a circuit into an equivalent formula.
+The input variables must be identical in order to guarantee that the parameter values are identical.
 
 \begin{lemma}\label{lem:circuittoformula}
   Suppose $t$ is a positive integer.
@@ -1344,15 +1306,38 @@ Compare this corollary with one direction of \autoref{thm:ncwnc}.
   Since $t$ is a constant with respect to the size of the input $C$, this is an $\NC^2$ circuit.
 \end{proof}
 
-This theorem is an adaptation of the other direction of \autocite[Theorem~4.3]{cc97npo}.
-It is a translation of one direction of \autoref{thm:ncwnc} to the finite levels of the $\para \WNC$ hierarchy.
+This theorem is an adaptation of \autocite[Theorem~4.3]{cc97npo}.
+It is a translation of \autoref{thm:ncwnc} to the finite levels of the $\WP$ hierarchy:
+\begin{itemize}
+\item the collapse $\para \NC^d = \para \WNC^d[t]$ is weaker than $\para \NC^d = \para \WNC^d$,
+\item the inclusion $\GC[i(n) \log n, \Pi_t \LOGTIME] \subseteq \NC^d$ is weaker than the collapse $\NC^d = \NNC^d[i(n) \log n]$.
+\end{itemize}
+
+\todo{
+  Discuss that $\Pi_t \LOGTIME$ is in $\AC^0$, and therefore is strictly weaker than $\NC^1$; see similar discussion at the end of \autocite{cc97npo}.
+  This is similar to how $\NC$ is probably weaker than $\P$ in \autoref{con:wncp}.
+}
 
 \begin{theorem}\label{thm:ncwnct}
-  Suppose $d$ and $t$ are positive integers with $t \geq 2$.
-  If $\para \NC^d = \para \WNC^d[t]$, then there is a circuit-computable, unbounded, nondecreasing function $i$ such that %% $i(n) \leq n$ and
+  Suppose $d$ and $t$ are positive integers with $t$ greater than one.
+  $\para \NC^d = \para \WNC^d[t]$ if and only if there is a circuit-computable, unbounded, nondecreasing function $i$ such that %% $i(n) \leq n$ and
   $\GC[i(n) \log n, \Pi_t \LOGTIME] \subseteq \NC^d$.
 \end{theorem}
 \begin{proof}
+  First, we prove the reverse implication.
+  Assume there is a function $i$ such that $\GC[i(n) \log n, \Pi_t \LOGTIME] \subseteq \NC^d$.
+  Since $\PiCSAT$ is in the class $\GC[i(n) \log n, \Pi_t \LOGTIME]$ by \autoref{thm:picsatgc}, it is now in $\NC^d$ as well.
+
+  Since $\pPiFSAT$ is complete for $\para \WNC^d[t]$ under $\para \NC^d$ many-one reductions by \autoref{thm:ppifsat}, it suffices to show that $\pPiFSAT$ is in $\para \NC^d$.
+  Furthermore, by \autoref{lem:spreduction}, it suffices to show that there is a small parameter $\NC^d$ many-one reduction from $\pPiFSAT$ to $\PiCSAT$.
+
+  Let $\{R_n\}$ be the family of circuits computing the function $\phi \mapsto C_\phi$, where $\phi$ is a $\Pi_t$-normalized Boolean formula and $C_\phi$ is the natural $\Pi_t$ Boolean circuit induced by that formula.
+  If we can show that $R_n$ is in $\NC^d$, then the parameter upper bound $i$ and $\{R_n\}$ together comprise a small parameter $\NC^d$ many-one reduction from $\pPiFSAT$ to $\PiCSAT$.
+
+  Transforming a formula to its equivalent circuit is certainly computable in logarithmic space, so it is certainly in $\NC^2$.
+  However, we can transform a Boolean formula into an equivalent Polish notation (prefix) Boolean formula in alternating logarithmic time \autocite{buss87}, which is in $\NC^1$, and from there we can write the adjacency matrix of the tree given by the prefix Boolean formula with an $\NC^1$ algorithm.
+
+  Now we prove the forward implication.
   Assume $\para \NC^d = \para \WNC^d[t]$.
   Since $\pPiFSAT$ is in $\para \WNC^d[t]$ by \autoref{thm:ppifsat}, it is now in $\para \NC^d$ as well.
   We will use \autoref{lem:reducetonc} to show a reduction meeting the criteria of that lemma from $\PiCSAT$, which is complete for the class $\GC[i(n) \log n, \Pi_t \LOGTIME]$ under $\NC^d$ reductions by \autoref{thm:picsatgc}, to $\pPiFSAT$.
@@ -1379,8 +1364,6 @@ It is a translation of one direction of \autoref{thm:ncwnc} to the finite levels
   Thus the many-one reduction from \autoref{lem:circuittoformula} and the $\para \NC^d$ algorithm for $\pPiFSAT$ meet the conditions in the premise of \autoref{lem:reducetonc}.
   We conclude that $\PiCSAT$ is in $\NC^d$.
 \end{proof}
-
-\todo{Combine the two directions into a single biconditional theorem.}
 
 \subsection{Is \texorpdfstring{$\para \WNC[t]$}{paraWNC[t]} in \texorpdfstring{$\para \P$}{paraP}?}
 
