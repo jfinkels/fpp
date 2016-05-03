@@ -603,6 +603,7 @@ We define $\P$-completeness so that problems that are $\P$-complete are unlikely
 Let us define $\para \P$-completeness similarly, so that $\para \P$-complete problems are unlikely to see a significant decrease in ``parameterized'' time complexity when ``parameterized'' parallelism is allowed, under the assumption that $\para \NC \neq \para \P$.
 We already know that each $\P$-complete problem induces a $\para \P$-complete problem with a trivial parameterization \autocite[Proposition~14]{fg03}, however we are interested in natural problems with non-trivial parameterizations.
 This subsection proves the existence of nontrivial parameterized problems that are not in $\para \P$ (under the assumption $\para \NC \neq \para \P$) and whose underlying decision problems are $\P$-complete, complementing \autoref{sec:pcompletefpp}, which proves the existence of parameterized problems in $\para \NC$ whose underlying decision problems are $\P$-complete.
+Furthermore, this fills a hole left by \autocite{est15}.
 
 The assumption $\para \NC \neq \para \P$ is reasonable because it is equivalent to the inequality $\NC \neq \P$.
 
@@ -611,7 +612,7 @@ The assumption $\para \NC \neq \para \P$ is reasonable because it is equivalent 
 \end{proposition}
 \begin{proof}
   The proof is trivial if we use the definitions of the complexity class $\para \mathcal{C}$ as the class of all parameterized problems $(Q, \kappa)$ for which there is a language $L$ in the complexity class $\mathcal{C}$ such that $x \in Q$ if and only if $(x, 1^{f(\kappa(x))}) \in L$.
-  See \autocite{fg03} or \autocite{est15}, for example.
+  See \autocite[Proposition~8]{fg03}, for example.
 \end{proof}
 
 \begin{definition}[$\para \P$-completeness]
@@ -949,6 +950,13 @@ Let $p \dash k \dash \NC^d \textsc{CSat}$ denote the weighted satisfiability pro
 \subsection{Does \texorpdfstring{$\para \NC$}{paraNC} equal \texorpdfstring{$\para \WNC$}{paraWNC}?}
 \label{sec:fppwpp}
 
+The main theorem in this section, \autoref{thm:ncwnc}, provides evidence that the parameterized complexity classes $\para \NC$ and $\para \WNC$ are distinct.
+Compare it with the following similar theorems (here $\beta$ indicates one-way access to the witness as opposed to $\W$, which indicates two-way access).
+\begin{itemize}
+\item $\para \P = \para \WP$ if and only if $\P = \NP[\omega(\log n)]$ \autocite[Theorem~3.29]{fg06}.
+\item $\para \L = \para \beta \L$ if and only if $\L = \NL[\omega(\log n)]$ \autocite[Theorem~15]{cm14}.
+\end{itemize}
+
 The next theorem is similar to \autoref{thm:eventually} in that it is a characterization of $\para \WNC^d$, a nondeterministic extension of $\para \NC^d$.
 It is the adaptation of \autocite[Proposition~3.7]{fg06}.
 The parameterized problems in $\para \WNC^d$ of most interest to us are those for which there is a nondeterministic $\NC$ algorithm with nondeterminism limited by a function of the parameter.
@@ -1138,7 +1146,7 @@ As in \autoref{con:parawncdcomplete}, we wish to generalize this theorem so that
 
 An alternative approach is to demonstrate related collapses in parameterized complexity classes.
 
-\begin{theorem}[{\autocite[Corollary~3.7]{est15}}]
+\begin{theorem}[{\autocite[Corollary~3.8]{est15}}]
   $\para \WNC^1 \subseteq \para \P$ if and only if $\para \P = \W[\SAT]$.
 \end{theorem}
 
