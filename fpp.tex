@@ -930,7 +930,7 @@ This is the $\NC^d$ bounded version of the parameterized problem from \autocite[
 
 Let $p \dash k \dash \textsc{FSat}$ denote the weighted Boolean formula satisfiability problem.
 
-\begin{theorem}[{\autocite[Theorem~3.6]{est15}}]
+\begin{theorem}[{\autocite[Theorem~3.6]{est15}}]\label{thm:parawnc1complete}
   $p \dash k \dash \textsc{FSat}$ is complete for $\para \WNC^1$ under $\para \FO$ many-one reductions.
 \end{theorem}
 
@@ -940,166 +940,157 @@ Since Boolean formulas are equivalent to Boolean circuits of logarithmic depth \
 We would like to generalize this to $\NC^d$ circuit satisfiability; this hierarchy interpolates between weighted Boolean formula satisfiability and weighted circuit satisfiability.
 Let $p \dash k \dash \NC^d \textsc{CSat}$ denote the weighted satisfiability problem for $\NC^d$ circuits.
 
-\begin{conjecture}
+\begin{conjecture}\label{con:parawncdcomplete}
   For each positive integer $d$, we have $p \dash k \dash \NC^d \textsc{CSat}$ is complete for $\para \WNC^d$ under $\para \FO$ many-one reductions.
 \end{conjecture}
 
-\subsection{Does \texorpdfstring{$\FPP$}{FPP} equal \texorpdfstring{$\WP[P]$}{WP[P]}?}
+\todo{Perhaps we can adapt the complete problems from \autocite{cc97lim} here?}
+
+\subsection{Does \texorpdfstring{$\para \NC$}{paraNC} equal \texorpdfstring{$\para \WNC$}{paraWNC}?}
 \label{sec:fppwpp}
 
-The next theorem is similar to \autoref{thm:eventually} in that it is a characterization of $\WP^d[P]$, a nondeterministic extension of $\FPP^d$.
+The next theorem is similar to \autoref{thm:eventually} in that it is a characterization of $\para \WNC^d$, a nondeterministic extension of $\para \NC^d$.
 It is the adaptation of \autocite[Proposition~3.7]{fg06}.
-The parameterized problems in $\WP^d[P]$ of most interest to us are those for which there is a nondeterministic $\NC$ algorithm with nondeterminism limited by a function of the parameter.
-
-\todo{
-  There's some wiggle room with this theorem: if we change the definition of $\WP^d[P]$ to have depth $g(k) + \log^d n$, then we can get $\NNC^d$ instead of $\NNC^{d + e}$ in the conclusion.
-  This sort of depth bound appears in \autocite{bst15}.
-}
+The parameterized problems in $\para \WNC^d$ of most interest to us are those for which there is a nondeterministic $\NC$ algorithm with nondeterminism limited by a function of the parameter.
 
 \begin{theorem}\label{thm:rmparam}
-  Suppose $d$ is a natural number, $e$ is a positive integer, and $(Q, \kappa)$ is a parameterized problem.
-  %% If e = 0, then we get a divide-by-zero error.
-  If $(Q, \kappa) \in \WP^d[P]$ and $Q \in \NNC^d[\poly]$, then there is a nondeterministic $\NC^{d + e}$ circuit family $\{C_{n, k}\}$ and a circuit-computable function $h$ such that $\{C_{n, k}\}$ decides $Q$ and $\nondet(C_{n, k}) \leq h(k) \log n$.
+  Suppose $d$ is a positive integer and $(Q, \kappa)$ is a parameterized problem.
+  If $(Q, \kappa) \in \para \WNC^d$ and $Q \in \NNC^d[\poly]$, then there is a nondeterministic $\NC^d$ circuit family $\{C_{n, k}\}$ and a circuit-computable function $h$ such that $\{C_{n, k}\}$ decides $Q$ and $\nondet(C_{n, k}) \leq h(k) \log n$.
   %% The converse holds when $e = 0$.
 \end{theorem}
 \begin{proof}
-  Assume $(Q, \kappa) \in \WP^d[P]$ and $Q \in \NNC^d[\poly]$.
+  Assume $(Q, \kappa) \in \para \WNC^d$ and $Q \in \NNC^d[\poly]$.
   Define the circuit family $\{A_{n, k}\}$ by
   \[
   A_{n, k} =
   \begin{cases}
-    C^1_{n, k} & \text{if } f_1(k) \leq n \text{ and } g_1(k) \leq \log^e n \\
+    C^1_{n, k} & \text{if } f(k) \leq \min(n, \log^d n) \\
     C^2_n & \text{otherwise},
   \end{cases}
   \]
   where
   \begin{itemize}
-  \item $\{C^1_{n, k}\}$ is the $\WP^d[P]$ circuit family,
-  \item $f_1$ and $g_1$ are the circuit-computable functions on the parameter that appear in the size and depth bounds, respectively, for $C^1_{n, k}$,
+  \item $\{C^1_{n, k}\}$ is the $\para \WNC^d$ circuit family,
+  \item $f$ is the circuit-computable function on the parameter that appears in the size and depth bounds for $C^1_{n, k}$,
   \item $\{C^2_n\}$ is the $\NNC^d[\poly]$ circuit family.
   \end{itemize}
   The fact that $A_{n, k}$ correctly decides $Q$ follows from the correctness of the circuits $C^1_{n, k}$ and $C^2_n$.
   It remains to show that $A_{n, k}$ has the required size, depth, and nondeterminism bounds.
 
-  If $f_1(k) \leq n$ and $g_1(k) \leq \log^e n$, then
+  If $f(k) \leq \min(n, \log^d n)$, then
   \begin{align*}
-    \size(A_{n, k}) & \leq \size(C^1_{n, k}) \leq f_1(k) n^{O(1)} \leq n^{O(1)} \\
-    \depth(A_{n, k}) & \leq \depth(C^1_{n, k}) \leq g_1(k) \log^d n \leq \log^{d + e} n,
+    \size(A_{n, k}) & \leq \size(C^1_{n, k}) \leq f(k) n^{O(1)} \leq n^{O(1)} \\
+    \depth(A_{n, k}) & \leq \depth(C^1_{n, k}) \leq f(k) + O(\log^d n) \leq O(\log^d n),
   \end{align*}
   and otherwise
   \begin{align*}
     \size(A_{n, k}) & \leq \size(C^2_n) \leq n^{O(1)} \\
-    \depth(A_{n, k}) & \leq \depth(C^2_n) \leq \log^d n.
+    \depth(A_{n, k}) & \leq \depth(C^2_n) \leq O(\log^d n).
   \end{align*}
-  The overall size and depth upper bounds for $A_{n, k}$ are thus $n^{O(1)}$ and $O(\log^{d + e} n)$, respectively.
+  The overall size and depth upper bounds for $A_{n, k}$ are thus $n^{O(1)}$ and $O(\log^d n)$, respectively.
 
   For the nondeterminism, there are three cases.
-  First, if $f_1(k) \leq n$ and $g_1(k) \leq \log^e n$, then
+  First, if $f(k) \leq n$ and $f(k) \leq \log^d n$, then
   \[
-  \nondet(A_{n, k}) \leq \nondet(C^1_{n, k}) \leq h_1(k) \log n,
+  \nondet(A_{n, k}) \leq \nondet(C^1_{n, k}) \leq h(k) \log n,
   \]
-  where $h_1$ is the circuit-computable of the parameter that appears in the nondeterminism bound for $C^1_{n, k}$.
-  Second, if $f_1(k) > n$, then
+  where $h$ is the circuit-computable of the parameter that appears in the nondeterminism bound for $C^1_{n, k}$.
+  Second, if $f(k) > n$, then
   \[
-  \nondet(A_{n, k}) \leq \nondet(C^2_n) \leq n^{O(1)} \leq f_1(k)^{O(1)}.
+  \nondet(A_{n, k}) \leq \nondet(C^2_n) \leq n^{O(1)} \leq f(k)^{O(1)}.
   \]
-  Finally, if $g_1(k) > \log^e n$, then $2^{(g_1(k))^{1 / e}} > n$, which implies
+  Finally, if $f(k) > \log^d n$, then $2^{f(k)^{1 / d}} > n$, which implies
   \[
-  \nondet(A_{n, k}) \leq \nondet(C^2_n) \leq n^{O(1)} \leq 2^{O((g_1(k))^{1 / e})}.
+  \nondet(A_{n, k}) \leq \nondet(C^2_n) \leq n^{O(1)} \leq 2^{O\left(f(k)^{1 / d}\right)}.
   \]
-  If we choose $h(k) = \max\{ h_1(k), f_1(k)^{O(1)}, 2^{O((g_1(k))^{1 / e})} \}$, then we can conclude $\nondet(A_{n, k}) \leq h(k) \log n$.
+  If we choose $h$ to be the computable function
+  \[
+  h(k) = \max \left\{ h(k), f(k)^{O(1)}, 2^{O\left(f(k)^{1 / d}\right)} \right\},
+  \]
+  then we can conclude $\nondet(A_{n, k}) \leq h(k) \log n$.
+  (Since we assume $d$ is positive, the quotient $1 / d$ is well-defined.)
 \end{proof}
 
+The following assumption is true for $d = 1$ \autoref{thm:parawnc1complete}, and we conjecture it true for all positive $d$ \autoref{con:parawncdcomplete}.
+
 \begin{assumption}\label{ass:complete}
-  There is a parameterized problem $(Q, \kappa)$ complete for $\WP^d[\P]$ under $\FPP^d$ many-one reductions such that $Q \in \NNC^d[\poly]$.
+  There is a parameterized problem $(Q, \kappa)$ complete for $\para \WNC^d$ under $\para \NC^d$ many-one reductions such that $Q \in \NNC^d[\poly]$.
 \end{assumption}
 
 This theorem is an adaptation of one direction of \autocite[Theorem~3.29]{fg06}.
 
 \begin{theorem}[Theorem~3.29, part i]\label{thm:wppparti}
   Assume \autoref{ass:complete}.
-  Suppose $d$ is a natural number and $e$ is a positive integer.
-  If there is a circuit-computable, nondecreasing, unbounded function $i$ such that $\NC^d = \NNC^{d + e}[i(n) \log n]$, then $\FPP^d = \WP^d[P]$.
+  Suppose $d$ is a positive integer.
+  If there is a circuit-computable, nondecreasing, unbounded function $i$ such that $\NC^d = \NNC^d[i(n) \log n]$, then $\para \NC^d = \para \WNC^d$.
   \todo{Does $i$ need to be computable here?}
 \end{theorem}
 \begin{proof}
-  Assume $\NC^d = \NNC^{d + e}[i(n) \log n]$.
-  By \autoref{ass:complete}, let $(Q, \kappa)$ be a parameterized problem complete for $\WP^d[P]$ with $Q \in \NNC^d[\poly]$.
+  Assume $\NC^d = \NNC^d[i(n) \log n]$.
+  By \autoref{ass:complete}, let $(Q, \kappa)$ be a parameterized problem complete for $\para \WNC^d$ with $Q \in \NNC^d[\poly]$.
   \todo{
-    Ideally, the p-NC SAT problem should be complete for $\WP^d[P]$ too (this would prove the assumption above), and then we could use that problem both here and in the proof of the other direction of the theorem.
-    But the problem comes in the reduction from an arbitrary parameterized problem to this one: the circuit depth needs to be polylogarithmic, but it may be larger.
-    Perhaps we can use the other complete problems from \autocite{cc97lim} here?
+    Ideally, we would use the problem from \autoref{con:parawncdcomplete}, and then we could use that problem both here and in the proof of the other direction of the theorem.
+    But the problem comes in the reduction from an arbitrary parameterized problem: the circuit depth needs to be polylogarithmic, but it may be larger.
   }
-  By \autoref{thm:rmparam}, there is a circuit-computable function $h$ and an $\NNC^{d + e}$ circuit family $\{C_{n, k}\}$ such that $\nondet(C_{n, k}) \leq h(k) \log n$.
+  By \autoref{thm:rmparam}, there is a circuit-computable function $h$ and an $\NNC^d$ circuit family $\{C_{n, k}\}$ such that $\nondet(C_{n, k}) \leq h(k) \log n$.
 
   Let $f$ be a circuit-computable function such that $n \geq f(k)$ implies $h(k) \leq i(n)$.
-  \todo{Explain why such an $f$ must exist.}
+  \todo{Explain why such an $f$ must exist; using \autoref{lem:upperinverse} or \autoref{lem:lowerinverse}?}
   Now consider the set $Q^+$, defined by
   \[
   Q^+ = Q \cap \left\{ x \, \middle| \, |x| \geq f(\kappa(x)) \right\}.
   \]
   Since $|x| \geq f(\kappa(x))$ for each $x \in Q^+$, we have $h(\kappa(x)) \leq i(|x|)$.
-  Thus $Q^+$ is in $\NNC^{d + e}[i(n) \log n]$.
+  Thus $Q^+$ is in $\NNC^d[i(n) \log n]$.
   By assumption, $Q^+$ is therefore also in $\NC^d$.
-  This means $Q$ is eventually in $\NC^d$, so we have $Q \in \FPP^d$ by \autoref{thm:eventually}.
+  This means $Q$ is eventually in $\NC^d$, so we have $Q \in \para \NC^d$ by \autoref{thm:eventually}.
 \end{proof}
 
 This lemma is an adaptation of \autocite[Lemma~3.24]{fg06}.
 It is the ``opposite'' of \autoref{lem:upperinverse}.
 
 \begin{lemma}\label{lem:lowerinverse}
-  Suppose $e$ is a positive integer and $f$ and $g$ are increasing, circuit-computable functions.
-  %% If e is 0, then i_{g, e} is not unbounded.
-  There are functions $i_f$ and $i_{g, e}$ such that
-  \begin{itemize}
-  \item $f(i_f(n)) \leq n$ for each $n \geq f(1)$,
-  \item $g(i_{g, e}(n)) \leq \log^e n$ for each $n \geq g(1)$.
-  \end{itemize}
-  Furthermore, these functions are circuit-computable, nondecreasing, unbounded.
+  Suppose $d$ is a positive integer.
+  For each increasing, circuit-computable function $f$, there is a function $i_{f, d}$ such that
+  \[
+  f(i_{f, d}(n)) \leq \min(n, \log^d n)
+  \]
+  for each $n \geq f(1)$.
+  Furthermore, $i_{f, d}$ is circuit-computable, nondecreasing, unbounded.
 \end{lemma}
 \begin{proof}
-  Define $i_f$ by
+  Define $i_{f, d}$ by
   \[
-  i_f(n) = \begin{cases}
-    \max\{ j \in \mathbb{N} \, | \, f(j) \leq n\} & \text{if } n \geq f(1) \\
-    1 & \text{otherwise},
-  \end{cases}
+  i_{f, d}(n) = \max\{ j \in \mathbb{N} \, | \, f(j) \leq \min(n, \log^d n) \}.
   \]
-  and $i_{g, e}$ by
-  \[
-  i_{g, e}(n) = \begin{cases}
-    \max\{ j \in \mathbb{N} \, | \, g(j) \leq \log^e n\} & \text{if } n \geq g(1) \\
-    1 & \text{otherwise}.
-  \end{cases}
-  \]
-  It is straightforward to prove that these functions are nondecreasing and unbounded.
+  For the boundary case where $n$ is smaller than $f(1)$, define $i_{f, d}(n) = 1$.
+  It is straightforward to prove that this function is nondecreasing and unbounded.
+  (The integer $d$ must be greater than zero to guarantee $i_{f, d}$ is unbounded.)
 
-  To compute $i_f$, we use the fact that $f$ is increasing to perform a binary search on the values $f(1), \dotsc, f(n)$ to determine the largest $j$ such that $f(j) \leq n$.
-  There will be $\log n$ comparison subcircuits, each requiring a computation of $f$, so the overall depth of the circuit computing $i_f$ is $O(\depth(f) \log n)$ and the size is $O(\size(f) \log n)$.
-  Computing $i_{g, e}$ is similar, but the multiplicative factor to the size and depth of $g$ is $O(e \log \log n)$ instead of $O(\log n)$.
+  To compute $i_{f, d}$, we use the fact that $f$ is increasing to perform a binary search on the values $f(1), \dotsc, f(\min(n, \log^d n))$ and to determine the largest $j$ such that $f(j) \leq \min(n, \log^d n)$.
+  In the worst case, there will be at most $\log n$ comparison subcircuits, each requiring a computation of $f$, so the overall depth of the circuit computing $i_{f, d}$ is $O(\depth(f) \log n)$ and the size is $O(\size(f) \log n)$.
 \end{proof}
 
 This is an adaptation of the other direction of \autocite[Theorem~3.29]{fg06}.
 
 \begin{theorem}\label{thm:wpppartii}
-  Suppose $e$ is a positive integer.
-  If $\FPP^d = \WP^d[P]$, then there is a circuit-computable, nondecreasing, unbounded function $i$ such that $\NC^{d + e} = \NNC^d[i(n) \log n]$.
+  Suppose $d$ is a positive integer.
+  If $\para \NC^d = \para \WNC^d$, then there is a circuit-computable, nondecreasing, unbounded function $i$ such that $\NC^d = \NNC^d[i(n) \log n]$.
 \end{theorem}
 \begin{proof}
-  Assume $\FPP^d = \WP^d[P]$.
-  Since $\pncsat$ is in $\WP^d[P]$ by \autoref{lem:pncsat}, it is now in $\FPP^d$ as well.
+  Assume $\para \NC^d = \para \WNC^d$.
+  Since $\pncsat$ is in $\para \WNC^d$ by \autoref{lem:pncsat}, it is now in $\para \NC^d$ as well.
   We will use \autoref{lem:reducetonc} to show a reduction meeting the criteria of that lemma from an arbitrary decision problem $Q$ in $\NNC^d[i(n) \log n]$ to $\pncsat$.
-  \todo{Could we use a complete problem here instead of an arbitrary problem?}
+  \todo{It would be nice to use a complete problem for $\NNC^d[i(n) \log n]$ instead of an arbitrary problem.}
 
   Let $\{C_{m, k'}\}$ be the deterministic circuit family deciding the parameterized problem $\pncsat$ and $f$ and $g$ the circuit-computable functions such that
   \begin{itemize}
   \item for each instance $D$, we have $D \in \NC^d\textnormal{-}\textsc{Circuit Sat}$ if and only if $C_{m, k'}(D) = 1$,
   \item $\size(C_{m, k'}) \leq f(k') m^{O(1)}$,
-  \item $\depth(C_{m, k'}) \leq g(k') \log^d m$.
+  \item $\depth(C_{m, k'}) \leq f(k') + O(\log^d m)$.
   \end{itemize}
-  Assume without loss of generality that $f$ and $g$ are increasing.
-  Let $i_f$ and $i_{g, e}$ be the functions corresponding to $f$ and $g$, respectively, guaranteed by \autoref{lem:lowerinverse}.
-  Let $i(n) = \min(i_f(n), i_{g, e}(n))$, for each natural number $n$.
+  Assume without loss of generality that $f$ is increasing.
+  Choose $i$ to be the ``lower inverse'' function $i_{f, d}$ guaranteed by \autoref{lem:lowerinverse}.
 
   Let $Q \in \NNC^d[i(n) \log n]$.
   Suppose $\{D_n\}$ is the family of $\NNC^d[i(n) \log n]$ circuits that decides $Q$.
@@ -1114,29 +1105,55 @@ This is an adaptation of the other direction of \autocite[Theorem~3.29]{fg06}.
   \item $\size(R_n) \leq O(\size(D_x)) = O(\size(D_n)) = n^{O(1)}$,
   \item $\depth(R_n) \leq O(1)$.
   \end{itemize}
-  Now we have the two main ingredients required for \autoref{lem:reducetonc}, an $\NC^d$ many-one reduction and an $\FPP^d$ algorithm.
-  It remains to show $f(\kappa'(R_n(x))) \leq n^{O(1)}$ and $g(\kappa'(R_n(x))) \leq O(\log^e n)$.
+  Now we have the two main ingredients required for \autoref{lem:reducetonc}, an $\NC^d$ many-one reduction and a $\para \NC^d$ algorithm.
+  It remains to show $f(\kappa'(R_n(x))) \leq \min(n^{O(1)}, O(\log^d n))$.
   This is true because
   \begin{align*}
     f(\kappa'(R_n(x))) & = f(\kappa'(D_x)) \\
     & = f\left(\frac{i(n) \log n}{\log m}\right) \\
-    & \leq f\left(\frac{i_f(n) \log n}{\log n}\right) \\
-    & \leq f(i_f(n)) \\
-    & \leq n,
-  \end{align*}
-  and
-  \begin{align*}
-    g(\kappa'(R_n(x))) & = g(\kappa'(D_x)) \\
-    & = g\left(\frac{i(n) \log n}{\log m}\right) \\
-    & \leq g\left(\frac{i_{g, e}(n) \log n}{\log n}\right) \\
-    & \leq g(i_{g, e}(n)) \\
-    & \leq \log^e n. \qedhere
+    & = f\left(\frac{i_{f, d}(n) \log n}{\log m}\right) \\
+    & \leq f\left(\frac{i_{f, d}(n) \log n}{\log n}\right) \\
+    & \leq f(i_{f, d}(n)) \\
+    & \leq \min(n, \log^d n) \\
+    & \leq \min(n^{O(1)}, O(\log^d n)). \qedhere
   \end{align*}
 \end{proof}
 
-\subsection{Is \texorpdfstring{$\WP[P]$}{WP[P]} in \texorpdfstring{$\FPT$}{FPT}?}
+\subsection{Is \texorpdfstring{$\para \WNC$}{paraWNC} in \texorpdfstring{$\para \P$}{paraP}?}
 
-\todo{Maybe relax the theorem above.}
+The previous section demonstrates that it is unlikely that $\para \WNC$ is contained in $\para \NC$.
+Does the weaker inclusion of $\para \WNC$ in $\para \P$ also have negative consequences, albeit less severe ones?
+This conjecture relaxes \autoref{thm:wnccollapse}.
+
+\begin{conjecture}
+  $\para \WNC^d \subseteq \para \P$ if and only if $\NNC^d[i(n) \log n] \subseteq \P$.
+\end{conjecture}
+
+Here is an alternate approach that connects a collapse in parameterized complexity classes to one in classical complexity classes.
+
+\begin{theorem}[{\autocite[Corollary~3.7]{est15}}]
+  If $\NC^1 = \P$, then $\W[\SAT] = \para \WP$.
+\end{theorem}
+
+As in \autoref{con:parawncdcomplete}, we wish to generalize this theorem so that we have an interpolation between $\NC^1$ and $\P$.
+%% Writing ``$\P$'', the upper limit of the interpolation, in place of ``$\NC^d$'' on the left gives $\para \WP = \para \WP$ on the right, a tautology.
+
+\begin{conjecture}
+  For each positive integer $d$, if $\NC^d = \P$, then $\W[\NC^d \SAT] = \para \WP$.
+\end{conjecture}
+
+An alternative approach is to demonstrate related collapses in parameterized complexity classes.
+
+\begin{theorem}[{\autocite[Corollary~3.7]{est15}}]
+  $\para \WNC^1 \subseteq \para \P$ if and only if $\para \P = \W[\SAT]$.
+\end{theorem}
+
+Here we interpolate between $\para \WNC^1$ and $\para \WP$.
+%% Writing ``$\para \WP$'' in place of ``$\para \WNC^d$'' on the left, the upper limit of the interpolation, gives $\para \P = \para \WP$ on the right, a tautology.
+
+\begin{conjecture}
+  For each positive integer $d$, we have $\para \WNC^d \subseteq \para \P$ if and only if $\para \P = \W[\NC^d \SAT]$.
+\end{conjecture}
 
 \subsection{Does WP[P] equal W[P]?}
 
