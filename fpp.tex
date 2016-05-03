@@ -906,6 +906,7 @@ This problem is highly parallelizable, given that a witness of size $O(k \log n)
   We conclude that this parameterized problem is in $\para \WL$.
 \end{proof}
 
+Suppose $d$ is a fixed positive integer.
 This is the $\NC^d$ bounded version of the parameterized problem from \autocite[Lemma~3.26]{fg06}.
 
 \begin{definition}[$\pncsat$]
@@ -918,16 +919,30 @@ This is the $\NC^d$ bounded version of the parameterized problem from \autocite[
 \end{definition}
 
 \begin{lemma}\label{lem:pncsat}
-  $\pncsat$ is in $\WP^d[P]$.
+  For each positive integer $d$, the problem $\pncsat$ is in $\para \WNC^d$.
 \end{lemma}
 \begin{proof}
-  The depth-universal circuit $U$ of \autocite{ch85} proves membership of this problem in $\WP^d[P]$.
+  The depth-universal circuit $U$ of \autocite{ch85} proves membership of this problem in $\para \WNC^d$.
   The number of nondeterministic bits required by the universal circuit is simply $n$, the size of the input to the circuit $C$, which is of the form $h(k) \log m$ if we choose $h(k) = k = n / \log m$ where $k = \kappa(x)$.
 \end{proof}
 
-\subsection{Example problem complete for \texorpdfstring{$\WP[P]$}{WP[P]}}
+\subsection{Example problem complete for \texorpdfstring{$\para \WNC$}{paraWNC}}
 
-\todo{If we show a complete problem here, make sure to give a corollary in the section below that it is not in FPP unless something bad happens.}
+Let $p \dash k \dash \textsc{FSat}$ denote the weighted Boolean formula satisfiability problem.
+
+\begin{theorem}[{\autocite[Theorem~3.6]{est15}}]
+  $p \dash k \dash \textsc{FSat}$ is complete for $\para \WNC^1$ under $\para \FO$ many-one reductions.
+\end{theorem}
+
+\todo{Give a corollary in the section below that the complete problem is not in $\para \NC$ unless something bad happens.}
+
+Since Boolean formulas are equivalent to Boolean circuits of logarithmic depth \autocite{??}, the above theorem can be rephrased as ``$p \dash \NC^1 \textsc{CSat}$ is complete''.
+We would like to generalize this to $\NC^d$ circuit satisfiability; this hierarchy interpolates between weighted Boolean formula satisfiability and weighted circuit satisfiability.
+Let $p \dash k \dash \NC^d \textsc{CSat}$ denote the weighted satisfiability problem for $\NC^d$ circuits.
+
+\begin{conjecture}
+  For each positive integer $d$, we have $p \dash k \dash \NC^d \textsc{CSat}$ is complete for $\para \WNC^d$ under $\para \FO$ many-one reductions.
+\end{conjecture}
 
 \subsection{Does \texorpdfstring{$\FPP$}{FPP} equal \texorpdfstring{$\WP[P]$}{WP[P]}?}
 \label{sec:fppwpp}
