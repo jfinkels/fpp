@@ -1074,7 +1074,7 @@ This theorem is an adaptation of \autocite[Theorem~3.29]{fg06}.
   Assume $\para \NC^d = \para \WNC^d$.
   Since $\pncsat$ is in $\para \WNC^d$ by \autoref{lem:pncsat}, it is now in $\para \NC^d$ as well.
   We will use \autoref{lem:reducetonc} to show a reduction meeting the criteria of that lemma from an arbitrary decision problem $Q$ in $\NNC^d[i(n) \log n]$ to $\pncsat$.
-  \todo{It would be nice to use a complete problem for $\NNC^d[i(n) \log n]$ instead of an arbitrary problem.}
+  \todo{It would be nice to use a complete problem for $\NNC^d[i(n) \log n]$ instead of an arbitrary problem; this matches the original theorem as well as \autoref{thm:ncwnct}.}
 
   Let $\{C_{m, k'}\}$ be the deterministic circuit family deciding the parameterized problem $\pncsat$ and $f$ and $g$ the circuit-computable functions such that
   \begin{itemize}
@@ -1113,12 +1113,13 @@ This theorem is an adaptation of \autocite[Theorem~3.29]{fg06}.
 \end{proof}
 
 \subsection{Is \texorpdfstring{$\para \WNC$}{paraWNC} in \texorpdfstring{$\para \P$}{paraP}?}
+\label{sec:wncp}
 
 The previous section demonstrates that it is unlikely that $\para \WNC$ is contained in $\para \NC$.
 Does the weaker inclusion of $\para \WNC$ in $\para \P$ also have negative consequences, albeit less severe ones?
 This conjecture relaxes \autoref{thm:ncwnc}.
 
-\begin{conjecture}
+\begin{conjecture}\label{con:wncp}
   $\para \WNC^d \subseteq \para \P$ if and only if $\NNC^d[i(n) \log n] \subseteq \P$.
 \end{conjecture}
 
@@ -1149,6 +1150,7 @@ Here we interpolate between $\para \WNC^1$ and $\para \WP$.
 \end{conjecture}
 
 \subsection{Does \texorpdfstring{$\para \WNC$}{paraWNC} equal \texorpdfstring{$\para \WP$}{paraWP}?}
+\label{sec:wncwp}
 
 \begin{conjecture}
   For each positive integer $d$, if $\para \WNC^d = \para \WP$, then $\NC^d = \P$.
@@ -1284,7 +1286,10 @@ This basically means that the problem is in a class like $\para \WNC^2[\log n]$,
 
 This theorem is an adaptation of one direction of \autocite[Theorem~4.3]{cc97npo}.
 It is a translation of one direction of \autoref{thm:ncwnc} to the finite levels of the $\WP$ hierarchy.
-\todo{discuss that $\Pi_t \LOGTIME$ is in $\AC^0$, and therefore is strictly weaker than $\NC^1$; see similar discussion at the end of \autocite{cc97npo}.}
+\todo{
+  Discuss that $\Pi_t \LOGTIME$ is in $\AC^0$, and therefore is strictly weaker than $\NC^1$; see similar discussion at the end of \autocite{cc97npo}.
+  This is similar to how $\NC$ is probably weaker than $\P$ in \autoref{con:wncp}.
+}
 
 \begin{theorem}\label{thm:wptparti}
   Suppose $d$ and $t$ are positive integers with $t \geq 2$.
@@ -1292,13 +1297,13 @@ It is a translation of one direction of \autoref{thm:ncwnc} to the finite levels
   \[
   \GC[i(n) \log n, \Pi_t \LOGTIME] \subseteq \NC^d,
   \]
-  then $\FPP^d = \WP^d[t]$.
+  then $\para \NC^d = \para \WNC^d[t]$.
 \end{theorem}
 \begin{proof}
   Assume $\GC[i(n) \log n, \Pi_t \LOGTIME] \subseteq \NC^d$.
   Since $\PiCSAT$ is in the class $\GC[i(n) \log n, \Pi_t \LOGTIME]$ by \autoref{thm:picsatgc}, it is now in $\NC^d$ as well.
 
-  Since $\pPiFSAT$ is complete for $\WP^d[t]$ under $\FPP^d$ many-one reductions by \autoref{thm:ppifsat}, it suffices to show that $\pPiFSAT$ is in $\FPP^d$.
+  Since $\pPiFSAT$ is complete for $\para \WNC^d[t]$ under $\para \NC^d$ many-one reductions by \autoref{thm:ppifsat}, it suffices to show that $\pPiFSAT$ is in $\para \NC^d$.
   Furthermore, by \autoref{lem:spreduction}, it suffices to show that there is a small parameter $\NC^d$ many-one reduction from $\pPiFSAT$ to $\PiCSAT$.
 
   Let $\{R_n\}$ be the family of circuits computing the function $\phi \mapsto C_\phi$, where $\phi$ is a $\Pi_t$-normalized Boolean formula and $C_\phi$ is the natural $\Pi_t$ Boolean circuit induced by that formula.
@@ -1312,7 +1317,7 @@ Compare this corollary with one direction of \autoref{thm:ncwnc}.
 
 \begin{corollary}
   Suppose $d$ and $t$ are positive integers with $t \geq 2$.
-  If there is a circuit-computable, nondecreasing, unbounded function $i$ such that $\NC^d = \NNC^d[i(n) \log n]$, then $\FPP^d = \WP^d[t]$.
+  If there is a circuit-computable, nondecreasing, unbounded function $i$ such that $\NC^d = \NNC^d[i(n) \log n]$, then $\para \NC^d = \para \WNC^d[t]$.
 \end{corollary}
 \begin{proof}
   The class $\Pi_t \LOGTIME$ is a subclass of $\AC^0$, which is a subclass of $\NC^1$.
@@ -1336,31 +1341,30 @@ Compare this corollary with one direction of \autoref{thm:ncwnc}.
   Constructing a trie from $O(m^t)$ binary strings can be done by a circuit with $O(\log m^t)$ time and $O(m^{2t})$ size \autocite{lv86} (\todo{someone needs to verify this}).
   Since each ``character'' in our ``strings'' is really an element of $\{1, \dotsc, m\}$, there is an extra $O(\log m)$ depth penalty for reducing an alphabet of size $m$ to the binary alphabet.
   Thus the overall depth is $O(t \log^2 m)$ and the size $O(m^{2t} \log m)$.
-  Since $t$ is a constant with respect to the size of the input $C$, this is an $\NC^d$ circuit.
+  Since $t$ is a constant with respect to the size of the input $C$, this is an $\NC^2$ circuit.
 \end{proof}
 
 This theorem is an adaptation of the other direction of \autocite[Theorem~4.3]{cc97npo}.
-It is a translation of one direction of \autoref{thm:ncwnc} to the finite levels of the $\WP$ hierarchy.
+It is a translation of one direction of \autoref{thm:ncwnc} to the finite levels of the $\para \WNC$ hierarchy.
 
-\begin{theorem}
-  Suppose $d$, $e$, and $t$ are positive integers with $t \geq 2$.
-  If $\FPP^d = \WP^d[t]$, then there is a circuit-computable, unbounded, nondecreasing function $i$ (that depends on $e$) such that %% $i(n) \leq n$ and
-  $\GC[i(n) \log n, \Pi_t \LOGTIME] \subseteq \NC^{d + e}$.
+\begin{theorem}\label{thm:ncwnct}
+  Suppose $d$ and $t$ are positive integers with $t \geq 2$.
+  If $\para \NC^d = \para \WNC^d[t]$, then there is a circuit-computable, unbounded, nondecreasing function $i$ such that %% $i(n) \leq n$ and
+  $\GC[i(n) \log n, \Pi_t \LOGTIME] \subseteq \NC^d$.
 \end{theorem}
 \begin{proof}
-  Assume $\FPP^d = \WP^d[t]$.
-  Since $\pPiFSAT$ is in $\WP^d[t]$ by \autoref{thm:ppifsat}, it is now in $\FPP^d$ as well.
+  Assume $\para \NC^d = \para \WNC^d[t]$.
+  Since $\pPiFSAT$ is in $\para \WNC^d[t]$ by \autoref{thm:ppifsat}, it is now in $\para \NC^d$ as well.
   We will use \autoref{lem:reducetonc} to show a reduction meeting the criteria of that lemma from $\PiCSAT$, which is complete for the class $\GC[i(n) \log n, \Pi_t \LOGTIME]$ under $\NC^d$ reductions by \autoref{thm:picsatgc}, to $\pPiFSAT$.
 
-  Let $\{C_{m, k'}\}$ be the deterministic circuit family deciding $\pPiFSAT$ and $f$ and $g$ the circuit-computable functions such that
+  Let $\{C_{m, k'}\}$ be the deterministic circuit family deciding $\pPiFSAT$ and $f$ the circuit-computable function such that
   \begin{itemize}
   \item for each $\phi$, we have $\phi$ is satisfiable if and only $C_{m, k'}(\phi) = 1$
   \item $\size(C_{m, k'}) \leq f(k') m^{O(1)}$,
-  \item $\depth(C_{m, k'}) \leq g(k') \log^d m$.
+  \item $\depth(C_{m, k'}) \leq f(k') + O(\log^d m)$.
   \end{itemize}
-  Assume without loss of generality that $f$ and $g$ are increasing.
-  Let $i_f$ and $i_{g, e}$ be the functions corresponding to $f$ and $g$, respectively, guaranteed by \autoref{lem:lowerinverse}.
-  Let $i(n) = \min(i_f(n), i_{g, e}(n))$, for each natural number $n$.
+  Assume without loss of generality that $f$ is increasing.
+  Choose $i$ to be the ``lower inverse'' function $i_{f, d}$ guaranteed by \autoref{lem:lowerinverse}.
 
   For the chosen function $i$, consider the problem $\PiCSAT$.
   By \autoref{lem:circuittoformula}, there is an $\NC^d$ reduction, $\{R_n\}$, from $\PiCSAT$ to $\PiFSAT$, the decision problem underlying the parameterized problem $\pPiFSAT$.
@@ -1369,28 +1373,22 @@ It is a translation of one direction of \autoref{thm:ncwnc} to the finite levels
     f(\kappa'(R_n(C, k))) & = f(\kappa'(\phi, k)) \\
     & \leq f(k) \\
     & \leq f(i(n)) \\
-    & \leq f(i_f(n)) \\
-    & \leq n,
+    & \leq f(i_{f, d}(n)) \\
+    & \leq \min(n, \log^d n).
   \end{align*}
-  and
-  \begin{align*}
-    g(\kappa'(R_n(C, k))) & = g(\kappa'(\phi, k)) \\
-    & \leq g(k) \\
-    & \leq g(i(n)) \\
-    & \leq g(i_{g, e}(n)) \\
-    & \leq O(\log^e n).
-  \end{align*}
-  Thus the many-one reduction from \autoref{lem:circuittoformula} and the $\FPP^d$ algorithm for $\pPiFSAT$ meet the conditions in the premise of \autoref{lem:reducetonc}.
-  We conclude that $\PiCSAT$ is in $\NC^{d + e}$.
+  Thus the many-one reduction from \autoref{lem:circuittoformula} and the $\para \NC^d$ algorithm for $\pPiFSAT$ meet the conditions in the premise of \autoref{lem:reducetonc}.
+  We conclude that $\PiCSAT$ is in $\NC^d$.
 \end{proof}
 
-\subsection{Is WP[t] in FPT?}
+\todo{Combine the two directions into a single biconditional theorem.}
 
-\todo{May be able to relax the proof of the previous subsection in order to show similar (negative) consequences.}
+\subsection{Is \texorpdfstring{$\para \WNC[t]$}{paraWNC[t]} in \texorpdfstring{$\para \P$}{paraP}?}
 
-\subsection{Does WP[t] = W[t]?}
+\todo{Translate everything from \autoref{sec:wncp}.}
 
-\todo{I think no, unless P = NC; prove it.}
+\subsection{Does \texorpdfstring{$\para \WNC[t]$}{paraWNC[t]} equal \texorpdfstring{$\para \WP[t]$}{paraWP[t]}?}
+
+\todo{Translate everything from \autoref{sec:wncwp}.}
 
 %% Print the bibliography section here.
 \printbibliography
