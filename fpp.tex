@@ -312,6 +312,9 @@ To find a non-degenerate example, we can parameterize the circuit evaluation pro
 
 \subsection{Relationship between \texorpdfstring{$\para \NC$}{paraNC} and \texorpdfstring{$\NC$}{NC}}
 
+The lemmas in this section allow us to transform, in certain circumstances, a highly parallel algorithm for a decision problem into a fixed-parameter parallelizable one for a parameterized problem, or vice versa.
+They will be used in later sections to provide evidence against the collapse of larger complexity classes to $\para \NC$.
+
 \begin{definition}\label{def:eventually}
   Suppose $d$ is a natural number and $(Q, \kappa)$ is a parameterized problem.
   We say the problem $(Q, \kappa)$ is \emph{eventually in $\NC^d$} if there is a circuit-computable function $h$ and an $\NC^d$ family of circuits $\{C_n\}_{n \in \mathbb{N}}$ such that for each $x$ of length $n$, if $n \geq h(\kappa(x))$, then $x \in Q$ if and only if $C_n(x) = 1$.
