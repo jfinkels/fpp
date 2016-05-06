@@ -564,6 +564,12 @@ Our goal now reduces to finding an optimization problem in $\ENCAS$ whose budget
 %% The $\WP$ hierarchy does not capture this.
 %% This is similar to the way $\NNC[\polylog]$ allows us to consider efficient highly parallel verification but does not capture polynomial-time decision.
 
+\subsection{Definition of \texorpdfstring{$\para \P$}{paraP}}
+
+\begin{definition}
+  A parameterized problem $(Q, \kappa)$ is in $\para \P$ if there is a deterministic Turing machine $M$, a polynomial $p$, and a computable function $f$ such that $M$ decides $Q$ within $f(\kappa(x)) p(n)$ steps.
+\end{definition}
+
 \subsection{Example problem in \texorpdfstring{$\para \P$}{paraP}}
 
 Consider the parameterized high degree subgraph problem.
@@ -927,7 +933,7 @@ This is the $\NC^d$ bounded version of the parameterized problem from \autocite[
   The number of nondeterministic bits required by the universal circuit is simply $n$, the size of the input to the circuit $C$, which is of the form $h(k) \log m$ if we choose $h(k) = k = n / \log m$ where $k = \kappa(x)$.
 \end{proof}
 
-\subsection{Example problem complete for \texorpdfstring{$\para \WNC$}{paraWNC}}
+\subsection{Completeness in \texorpdfstring{$\para \WNC$}{paraWNC}}
 
 Let $p \dash \textsc{FSat}$ denote the weighted Boolean formula satisfiability problem.
 
@@ -1270,7 +1276,7 @@ In general, the number of variables grows with the order of the group.
 \end{itemize}
 This basically means that the problem is in a class like $\para \WNC^2[\log n]$, and any improvement would likely follow an improvement of the desrciptive complexity of the subgroup membership problem.
 
-\subsection{Example problem complete for \texorpdfstring{$\para \WNC[t]$}{paraWNC[t]}}
+\subsection{Completeness in \texorpdfstring{$\para \WNC[t]$}{paraWNC[t]}}
 
 \todo{If we show a complete problem here, make sure to give a corollary in the section below that it is not in $\para \NC$ unless something bad happens.}
 
