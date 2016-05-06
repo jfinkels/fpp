@@ -306,7 +306,7 @@ To find a non-degenerate example, we can parameterize the circuit evaluation pro
 \begin{proof}
   As stated in the proof of the previous theorem, the circuit evaluation problem is $\P$-complete.
   Evaluating the circuit $C$ of size $m$ and depth $d$ on inputs $x$ can be performed by the depth-universal circuit $U$ of \autocite{ch85}.
-  The size of $U$ is $O(m)$ and the depth is $O(m)$, so if we choose $f$ to be sufficiently large, then the size is bounded by $f(d) m^{O(1)}$ and the depth by $f(d)$.
+  The size of $U$ is $O(m)$ and the depth is $d$, so there is a function $f$ such that the size is bounded by $f(d) m^{O(1)}$ and the depth by $f(d)$.
   Therefore the circuit evaluation problem parameterized by circuit depth is in $\para \AC^{0 \uparrow}$.
 \end{proof}
 
