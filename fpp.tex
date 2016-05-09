@@ -660,12 +660,12 @@ The following problem is adapted from \textsc{Short Deterministic Turing Machine
   Therefore we conclude that $\pBHP$ is $\para \P$-complete.
 \end{proof}
 
-The following problem is a generalization of the problem \textsc{BS-BD-CVP} from \autocite{cd98}.
+The following problem is a modification of the problem \textsc{BS-BD-CVP} from \autocite{cd98}.
 
 \begin{definition}[$p\dash\textsc{Small Circuit Evaluation}$, aka $\pSCE$]
   \mbox{} \\
   \begin{tabular}{r p{9.2cm}}
-    \textbf{Instance:} & single-output Boolean circuit $C$ on $n$ inputs, binary string $x$ of length $n$, positive integer $k$, positive integers $\alpha$ and $\beta$, multi-output Boolean circuits $f$ and $g$ on $\ceil{\log k}$ inputs with $\size(C) \leq f(k) n^\alpha$ and $\depth(C) \leq g(k) n^\beta$. \\
+    \textbf{Instance:} & Boolean circuit $C$ on $n$ inputs, binary string $x$ of length $n$, positive integer $k$, positive integer $\alpha$, multi-output Boolean circuit $f$ with size and depth of $C$ at most $f(k) n^\alpha$. \\
     \textbf{Parameter:} & $k$ \\
     \textbf{Question:} & Does $C(x) = 1$?
   \end{tabular}
@@ -679,7 +679,7 @@ While their reduction is a generic reduction, ours is a reduction from the param
 \end{theorem}
 \begin{proof}
   Membership in $\para \P$ is straightforward to prove: use the natural algorithm for evaluating a circuit which can be performed in linear time with respect to the size of the circuit.
-  We must also compute $f(k) n^\alpha$ and $g(k) n^\beta$, and compare these with the size and depth of the circuit $C$.
+  We must also compute $f(k) n^\alpha$ and compare it with the size and depth of the circuit $C$.
   Both of these are polynomial-time algorithms with respect to the size of the input, and hence the problem is in $\para \P$.
 
 %% %%%% Here we showed a generic reduction.
@@ -722,22 +722,21 @@ While their reduction is a generic reduction, ours is a reduction from the param
   Now we prove $\para \P$-hardness.
   The reduction from $\pBHP$ is
   \[
-  (M, x, 1^t, c) \mapsto (C_M, x, \alpha, \beta, f, g, k),
+  (M, x, 1^t, c) \mapsto (C_M, x, k, \alpha, f),
   \]
   where
   \begin{itemize}
   \item $C_M$ is the standard circuit of size $O(t^2)$ and depth $O(t)$ simulating $t$ steps of the action of $M$ on inputs of length $n$,
-  \item $\alpha = 2c$,
-  \item $\beta = c$,
-  \item $f$ is the function $x \mapsto x^2$,
-  \item $g$ is the function $x \mapsto x$,
+  \item $x$ is copied directly from the input,
   \item $k = t / n^c$.
+  \item $\alpha = 2c$,
+  \item $f$ is the function $x \mapsto x^2$,
   \end{itemize}
   This reduction is computable in the appropriate size and depth bounds, and its correctness follows from the correctness of the standard deterministic Turing machine-to-circuit reduction.
   To check that the reduced instance is well-formed, let us verify that the circuit $C_M$ meets the size and depth requirements.
   The size of $C_M$ is $O(t^2)$, which is $O(((t / n^c) n^c)^2)$, or simply $f(k) n^\alpha$.
-  Similarly the depth of $C_M$ is $O(t)$, which is $O((t / n^c) n^c)$, or simply $g(k) n^\beta$.
-  (There are some constants in the size and depth bounds that we have ignored, but those can be incorporated into the circuit-computable functions $f$ and $g$.)
+  Similarly the depth of $C_M$ is $O(t)$, which is smaller than $O(t^2)$, and thus bounded above by $f(k) n^\alpha$ as well.
+  (There are some constants in the size and depth bounds that we have ignored, but those can be incorporated into the definition of $f$.)
   Finally, the parameter in the original instance, $t / n^c$, is exactly the parameter of the reduced instance, so this reduction meets the necessary paramater bound.
   Therefore we have shown a correct $\para \NC$ many-one reduction from a $\para \P$-complete problem.
 \end{proof}
