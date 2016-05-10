@@ -310,7 +310,8 @@ To find a non-degenerate example, we can parameterize the circuit evaluation pro
   Therefore the circuit evaluation problem parameterized by circuit depth is in $\para \AC^{0 \uparrow}$.
 \end{proof}
 
-For a problem derived from an optimization problem, consider the ``depth of ones'' problem.
+For a problem with a standard parameterization derived from an optimization problem (see \autoref{def:standard} below), consider the ``depth of ones'' problem.
+The circuit evaluation problem is a special case of the depth of ones problem if we choose $k$ to be the depth of the circuit $C$.
 
 \begin{definition}[$p \dash \textsc{Ones Depth}$]
   \mbox{} \\
@@ -321,17 +322,18 @@ For a problem derived from an optimization problem, consider the ``depth of ones
   \end{tabular}
 \end{definition}
 
+As an optimization problem, the depth of ones problem is inapproximable up to any constant factor by any $\NC$ circuit, unless $\NC = \P$ \autocite{ks88}.
+Contrast this with the complexity of the corresponding parameterized problem.
+
 \begin{theorem}
   $p \dash \textsc{Ones Depth}$ is in $\para \AC^{0 \uparrow}$ and the underlying decision problem is $\P$-complete.
 \end{theorem}
 \begin{proof}
   Computing the depth of ones in a circuit is $\P$-complete \autocite{ks88} (see also \autocite[Problem~A.1.10]{ghr95}).
-  The naïve algorithm for solving this problem is as follows.
-  On input $C$, $x$, and $k$, evaluate the circuit one layer at a time up to depth $k$ and accept if and only if any of the gates at depth $k$ evaluate to one.
-  Evaluating a circuit of depth one and size $O(m)$ can be performed by a circuit of depth $O(1)$ and size $O(m)$.
-  Chaining together $k$ of these circuits of constant depth produces a circuit of overall depth $O(k)$ and size $O(k m)$.
-  Finally, a single \textsc{or} gate decides whether any of the gates at the final layer evaluated to one.
-  The size and depth of the circuit deciding this problem meets the bounds for $\para \AC^{0\uparrow}$.
+  The naïve algorithm for solving this problem is to take the subcircuit consisting of all gates starting from the inputs and extending through layer $k$, evaluating that (multi-output) circuit, then applying a single \textsc{or} gate to decide whether any of the gates at layer $k$ evaluated to one.
+  For each gate at layer $k$, use an instance of the depth-universal circuit to evaluate the single-output circuit induced by that gate.
+  This yields a circuit of depth $O(k)$ and size $f(k) m^{O(1)}$ for some $f$, where $m$ is the size of the circuit given as input.
+  Therefore this problem is in $\para \AC^{0\uparrow}$.
 \end{proof}
 
 \subsection{Relationship between \texorpdfstring{$\para \NC$}{paraNC} and \texorpdfstring{$\NC$}{NC}}
@@ -468,7 +470,7 @@ Yet another way to do this is to find an optimization problem whose budget probl
   An \emph{optimization problem} $O$ is a four-tuple $(I, S, m, t)$, where $I$ is the set of instances, $S$ is the set of pairs $(x, w)$ where $w$ is a solution for $x$, the function $m$ computes the \emph{measure} (or \emph{objective value}) for such a pair, and $t$ is either $\min$ or $\max$.
 \end{definition}
 
-\begin{definition}
+\begin{definition}\label{def:standard}
   The \emph{standard parameterization} of a minimization problem $O$, denoted $p\dash{O}$, is $(Q, \kappa)$, where $Q = \{ (x, k) \, | \, m^*(x) \leq k \}$ and $\kappa(x, k) = k$.
   The inequality is reversed for a maximization problem.
 \end{definition}
