@@ -275,7 +275,7 @@ One way to do this is to choose $Q$ to be a $\P$-complete problem and $\kappa$ t
 \begin{definition}[$p \dash s \dash \textsc{Circuit Evaluation}$]
   \mbox{} \\
   \begin{tabular}{r p{9.2cm}}
-    \textbf{Instance:} & Boolean circuit $C$ on $n$ inputs, with size $m$ and depth $d$. \\
+    \textbf{Instance:} & Boolean circuit $C$ on $n$ inputs with size $m$ and depth $d$, binary string $x$ of length $n$. \\
     \textbf{Parameter:} & $m$. \\
     \textbf{Question:} & Does $C(x) = 1$?
   \end{tabular}
@@ -294,7 +294,7 @@ To find a non-degenerate example, we can parameterize the circuit evaluation pro
 \begin{definition}[$p \dash d \dash \textsc{Circuit Evaluation}$]
   \mbox{} \\
   \begin{tabular}{r p{9.2cm}}
-    \textbf{Instance:} & Boolean circuit $C$ on $n$ inputs, with size $m$ and depth $d$. \\
+    \textbf{Instance:} & Boolean circuit $C$ on $n$ inputs with size $m$ and depth $d$, binary string $x$ of length $n$. \\
     \textbf{Parameter:} & $d$. \\
     \textbf{Question:} & Does $C(x) = 1$?
   \end{tabular}
@@ -308,6 +308,30 @@ To find a non-degenerate example, we can parameterize the circuit evaluation pro
   Evaluating the circuit $C$ of size $m$ and depth $d$ on inputs $x$ can be performed by the depth-universal circuit $U$ of \autocite{ch85}.
   The size of $U$ is $O(m)$ and the depth is $d$, so there is a function $f$ such that the size is bounded by $f(d) m^{O(1)}$ and the depth by $f(d)$.
   Therefore the circuit evaluation problem parameterized by circuit depth is in $\para \AC^{0 \uparrow}$.
+\end{proof}
+
+For a problem derived from an optimization problem, consider the ``depth of ones'' problem.
+
+\begin{definition}[$p \dash \textsc{Ones Depth}$]
+  \mbox{} \\
+  \begin{tabular}{r p{9.2cm}}
+    \textbf{Instance:} & Boolean circuit $C$ on $n$ inputs with size $m$ and depth $d$, binary string $x$ of length $n$, positive integer $k$. \\
+    \textbf{Parameter:} & $k$. \\
+    \textbf{Question:} & When evaluating $C(x)$, do ones propagate to depth at least $k$?
+  \end{tabular}
+\end{definition}
+
+\begin{theorem}
+  $p \dash \textsc{Ones Depth}$ is in $\para \AC^{0 \uparrow}$ and the underlying decision problem is $\P$-complete.
+\end{theorem}
+\begin{proof}
+  Computing the depth of ones in a circuit is $\P$-complete \autocite{ks88} (see also \autocite[Problem~A.1.10]{ghr95}).
+  The naïve algorithm for solving this problem is as follows.
+  On input $C$, $x$, and $k$, evaluate the circuit one layer at a time up to depth $k$ and accept if and only if any of the gates at depth $k$ evaluate to one.
+  Evaluating a circuit of depth one and size $O(m)$ can be performed by a circuit of depth $O(1)$ and size $O(m)$.
+  Chaining together $k$ of these circuits of constant depth produces a circuit of overall depth $O(k)$ and size $O(k m)$.
+  Finally, a single \textsc{or} gate decides whether any of the gates at the final layer evaluated to one.
+  The size and depth of the circuit deciding this problem meets the bounds for $\para \AC^{0\uparrow}$.
 \end{proof}
 
 \subsection{Relationship between \texorpdfstring{$\para \NC$}{paraNC} and \texorpdfstring{$\NC$}{NC}}
@@ -597,14 +621,16 @@ The first two slices of the problem are in $\NC$, whereas all other slices are $
 \begin{theorem}[{\autocite{am84}}]
   \mbox{}
   \begin{enumerate}
-  \item Both $p\dash\textsc{HDS}_1$ and $p \dash \textsc{HDS}_2$ are in $\NC$.
-  \item For each positive integer $d$ greater than two, $p \dash \textsc{HDS}_d$ is $\P$-complete.
+  \item Both $pHDS_1$ and $\pHDS_2$ are in $\NC$.
+  \item For each positive integer $d$ greater than two, $\pHDS_d$ is $\P$-complete.
   \end{enumerate}
 \end{theorem}
 
 %% As a maximization problem, the problem is approximable to within a certain constant factor, but inapproximable beyond that factor (unless $\NC = \P$) \autocite{am84}.
 
-\todo{Is this problem $\para \P$-complete? Is it in $\para \EP$?}
+\todo{The proof that the high degree subgraph problem is $\P$-complete does not translate to proving that $\pHDS$ is $\para \P$-complete; for that reduction to work, the parameterization for $\pHDS$ would need to be on the size of the graph, not the degree $d$.}
+
+\todo{A reduction to $\pWCE$ does not seem possible, since it seems hard to encode the degree of a subgraph as?}
 
 \subsection{Completeness in \texorpdfstring{$\para \P$}{paraP}}
 
@@ -773,8 +799,9 @@ Let $\|x\|_1$ denote the Hamming weight (that is, the number of ones) in $x$.
   \end{tabular}
 \end{definition}
 
-This is a little silly, since the Hamming weight of $x$ can be computed easily (in $\NC^1$, but not in $\AC^0$), but it is technically the ``verification'' problem corresponding to the satisfiability problem above.
-Instead, we use a problem that is equivalent but a little less silly.
+This is a little silly, since the Hamming weight of $x$ can be computed easily (in $\NC^1$ but not in $\AC^0$), but it is technically the ``verification'' problem corresponding to the satisfiability problem above.
+Instead, we use a problem that is a little less silly while still equivalent under $\para \NC^1$ many-one reductions.
+%% \todo{Reference for circuit computing Hamming weight; see \url{http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=4781532}}
 
 \begin{definition}[$p \dash \textsc{Weighted Circuit Evaluation}$, aka $\pWCE$]
   \mbox{} \\
@@ -785,12 +812,9 @@ Instead, we use a problem that is equivalent but a little less silly.
   \end{tabular}
 \end{definition}
 
-These parameterized problems are equivalent under $\para \NC^1$ many-one reductions because the parameterization is computable in $\NC^1$.
-\todo{Reference for circuit computing Hamming weight; see \url{http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=4781532}}
-
-\begin{proposition}
-  $\pCkE \equiv_m^{\para \NC^1} \pWCE$.
-\end{proposition}
+%% \begin{proposition}
+%%   $\pCkE \equiv_m^{\para \NC^1} \pWCE$.
+%% \end{proposition}
 %% \begin{proof}
 %%   Let $\kappa_1$ denote the parameterization of the problem on the left and $\kappa_2$ the parameterization of the problem on the right.
 %%   The right-to-left reduction is simply $(C, x) \mapsto (C, x, \|x\|_1)$.
