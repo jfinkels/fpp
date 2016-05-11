@@ -636,9 +636,9 @@ The first two slices of the problem are in $\NC$, whereas all other slices are $
 
 %% As a maximization problem, the problem is approximable to within a certain constant factor, but inapproximable beyond that factor (unless $\NC = \P$) \autocite{am84}.
 
-\todo{The proof that the high degree subgraph problem is $\P$-complete does not translate to proving that $\pHDS$ is $\para \P$-complete; for that reduction to work, the parameterization for $\pHDS$ would need to be on the size of the graph, not the degree $d$.}
+\todo{The proof that the high degree subgraph problem is $\P$-complete does not translate to proving that the parameterized high degree subgraph problem is $\para \P$-complete; for that reduction to work, the parameterization would need to be on the size of the graph, not the degree $d$.}
 
-\todo{A reduction to $\pWCE$ does not seem possible, since it seems hard to encode the degree of a subgraph as?}
+\todo{A reduction to place this problem in $\para \EP$ does not seem possible, since it seems hard to encode the degree of a subgraph in that way?}
 
 \subsection{Completeness in \texorpdfstring{$\para \P$}{paraP}}
 
@@ -947,28 +947,6 @@ This problem is highly parallelizable, given that a witness of size $O(k \log n)
   We conclude that this parameterized problem is in $\para \WL$.
 \end{proof}
 
-Suppose $d$ is a fixed positive integer.
-This is the $\NC^d$ bounded version of the parameterized problem from \autocite[Lemma~3.26]{fg06}.
-
-\begin{definition}[$\pncsat$]
-  \mbox{} \\
-  \begin{tabular}{r p{9.2cm}}
-    \textbf{Instance:} & Boolean circuit $C$ on $n$ inputs, with size $m$ and depth $O(\log^d n)$. \\
-    \textbf{Parameter:} & $n / \log m$. \\
-    \textbf{Question:} & Is $C$ satisfiable?
-  \end{tabular}
-\end{definition}
-
-\todo{This is a miniaturization, incorporate miniaturization into this paper?}
-
-\begin{lemma}\label{lem:pncsat}
-  For each positive integer $d$, the problem $\pncsat$ is in $\para \WNC^d$.
-\end{lemma}
-\begin{proof}
-  The depth-universal circuit $U$ of \autocite{ch85} proves membership of this problem in $\para \WNC^d$.
-  The number of nondeterministic bits required by the universal circuit is simply $n$, the size of the input to the circuit $C$, which is of the form $h(k) \log m$ if we choose $h(k) = k = n / \log m$ where $k = \kappa(x)$.
-\end{proof}
-
 A related problem with a more natural parameterization is the weighted $\NC^d$ circuit satisfiability problem.
 
 \begin{definition}[$\pNCSAT$]
@@ -1035,7 +1013,7 @@ This theorem is an adaptation of \autocite[Lemma~3.3]{cc97lim}.
   Thus the size of $D_{m, k}$ is $O(k m + m \log k)$ and the depth $O(\log m + \log k)$.
   Hence the overall size of $A_{m, k}$ is of the form $f(k) m^{O(1)}$ and the depth $f(k) + \log^d m$.
 
-  Since we have shown a correct $\para \WNC^d$ circuit family deciding $\pNCSAT$, we conclude that the problem is in $\para \WNC^D$.
+  Since we have shown a $\para \WNC^d$ circuit family deciding $\pNCSAT$, we conclude that the problem is in $\para \WNC^d$.
 \end{proof}
 
 \subsection{Completeness in \texorpdfstring{$\para \WNC$}{paraWNC}}
@@ -1061,7 +1039,7 @@ Since Boolean formulas are equivalent to Boolean circuits of logarithmic depth \
 We would like to generalize this to $\NC^d$ circuit satisfiability; this hierarchy interpolates between weighted Boolean formula satisfiability and weighted circuit satisfiability.
 
 Although the proof of \autoref{thm:parawnc1complete} (from \autocite[Theorem~3.6]{est15}) does not translate to the setting of bounded depth circuit satisfiability (their reduction would yield a circuit of depth greater than polylogarithmic in the number of inputs), we can use instead the strategy from \autocite[Theorem~3.6]{cc97lim}.
-There the authors prove that as a decision problem, the weighted $\NC^d$ circuit satisfiability problem is complete for $\NNC[k \log n]$.
+There the authors prove that the decision problem underlying $\pNCSAT$ is complete for $\NNC[k \log n]$.
 As we will see in the next section (and repeatedly throughout this paper), parameterized complexity and limited nondeterminism in decision complexity are closely related.
 
 \begin{theorem}\label{thm:parawncdcomplete}
@@ -1125,8 +1103,6 @@ As we will see in the next section (and repeatedly throughout this paper), param
 
   Since we have shown a correct $\para \NC^1$ many-one reduction from an arbitrary parameterized problem in $\para \WNC^d$ to $\pNCSAT$, we conclude that $\pNCSAT$ is complete for the class.
 \end{proof}
-
-\todo{Show this problem is in $\NNC[\poly]$ as well.}
 
 \subsection{Does \texorpdfstring{$\para \NC$}{paraNC} equal \texorpdfstring{$\para \WNC$}{paraWNC}?}
 \label{sec:fppwpp}
@@ -1228,28 +1204,19 @@ It is the ``opposite'' of \autoref{lem:upperinverse}.
   In the worst case, there will be at most $\log n$ comparison subcircuits, each requiring a computation of $f$, so the overall depth of the circuit computing $i_{f, d}$ is $O(\depth(f) \log n)$ and the size is $O(\size(f) \log n)$.
 \end{proof}
 
-The following assumption is true for $d = 1$ (\autoref{thm:parawnc1complete}), and we conjecture it true for all positive $d$ (\autoref{con:parawncdcomplete}).
-
-\begin{assumption}\label{ass:complete}
-  There is a parameterized problem $(Q, \kappa)$ complete for $\para \WNC^d$ under $\para \NC^d$ many-one reductions such that $Q \in \NNC^d[\poly]$.
-\end{assumption}
-
 This theorem is an adaptation of \autocite[Theorem~3.29]{fg06}.
+For any computable function $i$, let $i(n) \dash \NC^d \dash \textsc{CSat}$ denote the problem of deciding whether a depth $O(\log^d n)$ circuit is satisfiable by an input of Hamming weight at most $i(n)$.
+This problem is complete for $\NNC^d[i(n) \log n]$ under logarithmic space many-one reductions \autocite[Theorem~3.6]{cc97lim}.
 
 \begin{theorem}\label{thm:ncwnc}
-  Assume \autoref{ass:complete}.
   Suppose $d$ is a positive integer.
   $\para \NC^d = \para \WNC^d$ if and only if there is a circuit-computable, nondecreasing, unbounded function $i$ such that $\NC^d = \NNC^d[i(n) \log n]$.
 \end{theorem}
 \begin{proof}
   First we prove the reverse implication.
-  Assume $\NC^d = \NNC^d[i(n) \log n]$.
-  By \autoref{ass:complete}, let $(Q, \kappa)$ be a parameterized problem complete for $\para \WNC^d$ with $Q \in \NNC^d[\poly]$.
-  \todo{
-    Ideally, we would use the problem from \autoref{con:parawncdcomplete}, and then we could use that problem both here and in the proof of the other direction of the theorem.
-    But the problem comes in the reduction from an arbitrary parameterized problem: the circuit depth needs to be polylogarithmic, but it may be larger.
-  }
-  By \autoref{thm:rmparam}, there is a circuit-computable function $h$ and an $\NNC^d$ circuit family $\{C_{n, k}\}$ such that $\nondet(C_{n, k}) \leq h(k) \log n$.
+  Assume $\NC^d = \NNC^d[i(n) \log n]$, for some $i$.
+  We will show that $\pNCSAT$, a problem complete for $\para \WNC^d$ by \autoref{thm:parawncdcomplete}, is now in $\para \NC^d$, which necessitates the claimed collapse.
+  Since this problem is also in $\NNC^d[\poly]$, \autoref{thm:rmparam} guarantees the existence of a circuit-computable function $h$ and an $\NNC^d$ circuit family $\{C_{n, k}\}$ such that $\nondet(C_{n, k}) \leq h(k) \log n$.
 
   Let $f$ be a circuit-computable function such that $n \geq f(k)$ implies $h(k) \leq i(n)$.
   \todo{Explain why such an $f$ must exist; using \autoref{lem:upperinverse} or \autoref{lem:lowerinverse}?}
@@ -1262,52 +1229,33 @@ This theorem is an adaptation of \autocite[Theorem~3.29]{fg06}.
   By assumption, $Q^+$ is therefore also in $\NC^d$.
   This means $Q$ is eventually in $\NC^d$, so we have $Q \in \para \NC^d$ by \autoref{thm:eventually}.
 
-  Now we prove the forward implication
+  Now we prove the forward implication.
   Assume $\para \NC^d = \para \WNC^d$.
-  Since $\pncsat$ is in $\para \WNC^d$ by \autoref{lem:pncsat}, it is now in $\para \NC^d$ as well.
-  We will use \autoref{lem:reducetonc} to show a reduction meeting the criteria of that lemma from an arbitrary decision problem $Q$ in $\NNC^d[i(n) \log n]$ to $\pncsat$.
-  \todo{It would be nice to use a complete problem for $\NNC^d[i(n) \log n]$ instead of an arbitrary problem; this matches the original theorem as well as \autoref{thm:ncwnct}.}
-
-  Let $\{C_{m, k'}\}$ be the deterministic circuit family deciding the parameterized problem $\pncsat$ and $f$ and $g$ the circuit-computable functions such that
-  \begin{itemize}
-  \item for each instance $D$, we have $D \in \NC^d\textnormal{-}\textsc{Circuit Sat}$ if and only if $C_{m, k'}(D) = 1$,
-  \item $\size(C_{m, k'}) \leq f(k') m^{O(1)}$,
-  \item $\depth(C_{m, k'}) \leq f(k') + O(\log^d m)$.
-  \end{itemize}
+  By \autoref{thm:parawncdcomplete}, the parameterized problem $\pNCSAT$ is now in $\para \NC^d$.
+  Let $\{A_{n, k}\}$ be the $\para \NC^d$ circuit family that decides this problem, with size bound $f(k) n^{O(1)}$ and depth bound $f(k) + \log^d n$, for some circuit-computable function $f$.
   Assume without loss of generality that $f$ is increasing.
   Choose $i$ to be the ``lower inverse'' function $i_{f, d}$ guaranteed by \autoref{lem:lowerinverse}.
 
-  Let $Q \in \NNC^d[i(n) \log n]$.
-  Suppose $\{D_n\}$ is the family of $\NNC^d[i(n) \log n]$ circuits that decides $Q$.
-  For each input $x$, let $D_x$ denote $D_n$ with $x$ hardcoded.
-  Whereas the circuit $D_n$ has $n + i(n) \log n$ inputs, the circuit $D_x$ has $i(n) \log n$ inputs.
-
-  Let $R_n$ be the circuit-computable function $x \mapsto D_x$, where $n$ denotes the length of $x$.
-  The circuit family $\{R_n\}$ is an $\NC^d$ many-one reduction
-  Then
-  \begin{itemize}
-  \item for each $x$, we have $x \in Q$ if and only if $D_x$ is satisfiable,
-  \item $\size(R_n) \leq O(\size(D_x)) = O(\size(D_n)) = n^{O(1)}$,
-  \item $\depth(R_n) \leq O(1)$.
-  \end{itemize}
-  Now we have the two main ingredients required for \autoref{lem:reducetonc}, an $\NC^d$ many-one reduction and a $\para \NC^d$ algorithm.
-  It remains to show $f(\kappa'(R_n(x))) \leq \min(n^{O(1)}, O(\log^d n))$.
-  This is true because
-  \begin{align*}
-    f(\kappa'(R_n(x))) & = f(\kappa'(D_x)) \\
-    & = f\left(\frac{i(n) \log n}{\log m}\right) \\
-    & = f\left(\frac{i_{f, d}(n) \log n}{\log m}\right) \\
-    & \leq f\left(\frac{i_{f, d}(n) \log n}{\log n}\right) \\
-    & \leq f(i_{f, d}(n)) \\
-    & \leq \min(n, \log^d n) \\
-    & \leq \min(n^{O(1)}, O(\log^d n)). \qedhere
-  \end{align*}
+  The decision problem $i(n) \dash \NC^d \dash \textsc{CSat}$ is complete for $\NNC^d[i(n) \log n]$ under logarithmic space many-one reductions by \autocite[Theorem~3.6]{cc97lim}, so it suffices to show that this problem is in $\NC^d$.
+  \todo{Need to show the case $d = 1$ works as well.}
+  The circuit family $\{A'_n\}$ defined by $A'_n(C) = A_{n, i(n)}((C, i(n)))$ witnesses this membership:
+  \[
+  \size(A'_n) = \size(A_{n, i(n)}) \leq f(i(n)) n^{O(1)} \leq n^{O(1)}
+  \]
+  and
+  \[
+  \depth(A_n) = \depth(A_{n, i(n)}) \leq f(i(n)) + O(\log^d n) \leq O(\log^d n),
+  \]
+  by the way $i$ was chosen.
+  The correctness of this algorithm follows from the correctness of $A_{n, k}$.
+  Since we have shown an $\NC^d$ algorithm for an $\NNC^d[i(n) \log n]$-complete problem, we conclude that $\NC^d = \NNC^d[i(n) \log n]$.
 \end{proof}
 
 As a corollary, any problem complete for $\para \WNC^d$ is not in $\para \NC^d$ unless $\NC^d = \NNC^d[i(n) \log n]$.
 
 \begin{corollary}
-  $\pFSAT$ is in $\para \NC^1$ if and only if there is a circuit-computable, nondecreasing, unbounded function $i$ such that $\NC^1 = \NNC^1[i(n) \log n]$.
+  For each positive integer $d$, we have $\pNCSAT$ is in $\para \NC^d$ if and only if there is a circuit-computable, nondecreasing, unbounded function $i$ such that $\NC^d = \NNC^d[i(n) \log n]$.
+  (Here we equate $\NC^1 \dash \textsc{CSat}$ with $\textsc{FSat}$.)
 \end{corollary}
 
 \subsection{Is \texorpdfstring{$\para \WNC$}{paraWNC} in \texorpdfstring{$\para \P$}{paraP}?}
@@ -1327,7 +1275,7 @@ Here is an alternate approach that connects a collapse in parameterized complexi
   If $\NC^1 = \P$, then $\W[\SAT] = \para \WP$.
 \end{theorem}
 
-As in \autoref{con:parawncdcomplete}, we wish to generalize this theorem so that we have an interpolation between $\NC^1$ and $\P$.
+As in \autoref{thm:parawncdcomplete}, we wish to generalize this theorem so that we have an interpolation between $\NC^1$ and $\P$.
 %% Writing ``$\P$'', the upper limit of the interpolation, in place of ``$\NC^d$'' on the left gives $\para \WP = \para \WP$ on the right, a tautology.
 
 \begin{conjecture}
@@ -1539,6 +1487,7 @@ See similar comments after \autocite[Theorem~4.3]{cc97npo} and compare with the 
   Assume $\para \NC^d = \para \WNC^d[t]$.
   Since $\pPiFSAT$ is in $\para \WNC^d[t]$ by \autoref{thm:ppifsat}, it is now in $\para \NC^d$ as well.
   We will use \autoref{lem:reducetonc} to show a reduction meeting the criteria of that lemma from $\PiCSAT$, which is complete for the class $\GC[i(n) \log n, \Pi_t \LOGTIME]$ under $\NC^d$ reductions by \autoref{thm:picsatgc}, to $\pPiFSAT$.
+  \todo{Move that lemma down here, since it's only used here now?}
 
   Let $\{C_{m, k'}\}$ be the deterministic circuit family deciding $\pPiFSAT$ and $f$ the circuit-computable function such that
   \begin{itemize}
