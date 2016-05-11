@@ -214,6 +214,10 @@ We prove that $\para \NC = \para \WNC$ almost exactly when $\NC = \NNC[i(n) \log
 
 Nonuniformity is required in \autoref{thm:eventually} and \autoref{thm:rmparam}, among other theorems, in which the size of the input relative to the size of the parameter for an instance of the parameterized problem selects which of two circuits to use.
 If the circuits were uniform, we would need to include both alternatives as subcircuits of a single larger circuit, thereby making the circuits too deep to meet the required circuit depth bounds.
+\todo{
+  Early on, I tried to see what would happen if we place the parameterized running time in the uniformity part of the computation (i.e. $\para \L$-uniform $\NC$ circuits instead of $\L$-uniform $\para \NC$ circuits), but I could not show anything.
+  However, I would like to take another look at this.
+}
 
 \begin{definition}[Decision problems and parameterized problems]
   A \emph{language} is a set of binary strings.
@@ -999,6 +1003,8 @@ Compare it with the following similar theorems (here $\beta$ indicates one-way a
 The next theorem is similar to \autoref{thm:eventually} in that it is a characterization of $\para \WNC^d$, a nondeterministic extension of $\para \NC^d$.
 It is the adaptation of \autocite[Proposition~3.7]{fg06}.
 The parameterized problems in $\para \WNC^d$ of most interest to us are those for which there is a nondeterministic $\NC$ algorithm with nondeterminism limited by a function of the parameter.
+Compare this with \autoref{lem:reducetonc}.
+\todo{Can they be generalized?}
 
 \begin{theorem}\label{thm:rmparam}
   Suppose $d$ is a positive integer and $(Q, \kappa)$ is a parameterized problem.
