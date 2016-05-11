@@ -959,12 +959,83 @@ This is the $\NC^d$ bounded version of the parameterized problem from \autocite[
   \end{tabular}
 \end{definition}
 
+\todo{This is a miniaturization, incorporate miniaturization into this paper?}
+
 \begin{lemma}\label{lem:pncsat}
   For each positive integer $d$, the problem $\pncsat$ is in $\para \WNC^d$.
 \end{lemma}
 \begin{proof}
   The depth-universal circuit $U$ of \autocite{ch85} proves membership of this problem in $\para \WNC^d$.
   The number of nondeterministic bits required by the universal circuit is simply $n$, the size of the input to the circuit $C$, which is of the form $h(k) \log m$ if we choose $h(k) = k = n / \log m$ where $k = \kappa(x)$.
+\end{proof}
+
+A related problem with a more natural parameterization is the weighted $\NC^d$ circuit satisfiability problem.
+
+\begin{definition}[$\pNCSAT$]
+  \mbox{} \\
+  \begin{tabular}{r p{9.2cm}}
+    \textbf{Instance:} & Boolean circuit $C$ on $n$ inputs with depth $\log^d n$, natural number $k$. \\
+    \textbf{Parameter:} & $k$. \\
+    \textbf{Question:} & Is there a binary string $w$ such that $\|w\|_1 \leq k$ and $C(x) = 1$?
+  \end{tabular}
+\end{definition}
+
+To prove membership in $\para \WNC^d$, we will use the following \emph{decoder function}.
+Since we will also later use its inverse, the \emph{encoder function}, we define it here as well.
+
+\begin{definition}\label{def:coding}
+  The \emph{encoder function}, $E_n \colon \{0, 1\}^n \to \{0, 1\}^{\log n}$, is defined by
+  \[
+  E_n(x) =
+  \begin{cases}
+    i & \text{if } x \text{ has exactly one 1 at index } i \\
+    0^{\log n} & \text{otherwise}.
+  \end{cases}
+  \]
+  for each binary string $x$ of length $n$.
+  The \emph{decoder function}, $D_n$, is defined as the inverse of the encoder function.
+\end{definition}
+
+\begin{lemma}\label{lem:codingbounds}
+  For each natural number $n$, both the encoder and decoder functions are computable by a circuit of size $O(n)$ and depth $O(\log n)$.
+\end{lemma}
+\begin{proof}
+  This can be found in, for example, Lemmas~2.5.3 and 2.5.4 of \autocite{savage98}.
+\end{proof}
+
+This theorem is an adaptation of \autocite[Lemma~3.3]{cc97lim}.
+
+\begin{lemma}\label{lem:pkncsat}
+  For each positive integer $d$, we have $\pNCSAT$ is in $\para \WNC^d$.
+  Also, the underlying decision problem is in $\NNC[\poly]$.
+\end{lemma}
+\begin{proof}
+  The underlying decision problem has a straightforward $\NNC[\poly]$ algorithm using the depth-universal circuit of \autocite{ch85}, along with a small circuit that enforces the inequality $\|w\|_1 \leq k$.
+  The number of nondeterministic bits used by that circuit is $n$, the number of inputs to the circuit $C$, which is bounded above by the size of $C$.
+
+  Membership in $\pNCSAT$ requires a little more work.
+  Let $U$ be the depth-universal circuit \autocite{ch85} for depth $\log^d n$.
+  Let $D_{m, k}$ be the function defined by $D_{m, k}(w) = D_m(w_1) \circ \dotsc \circ D_m(w_k)$, where $\circ$ denotes string concatenation, $w_i$ is the $i$th block of $w$ of size $\log m$, and $D_m$ is the decoder function (\autoref{def:coding}).
+  %% The circuit $D_{m, k}$ interprets its input as $k$ blocks of length $\log m$ each, then outputs the string containing a one at index $i$ exactly when at least one block is the binary encoding of the natural number $i$.
+  Define the nonuniform, nondeterministic $\NC^d$ circuit family $\{A_{m, k}\}$ that decides $\pNCSAT$ by $A_{m, k}((C, k), w) = U(C, D_{m, k}(w))$.
+  In other words, $A_{m, k}$ interprets its witness string $w$ of length $k \log m$ as an encoding of a string of length $m$ containing at most $k$ ones, then evaluates the circuit $C$ on that string.
+
+  This algorithm correctly decides the underlying decision problem:
+  \begin{align*}
+    (C, k) \in \pNCSAT & \iff \exists x \in \{0, 1\}^m \colon \|x\|_1 \leq k \text{ and } C(x) = 1 \\
+    & \iff \exists w \in \{0, 1\}^{k \log m} \colon C(D_{m, k}(w)) = 1 \\
+    & \iff A_{m, k}((C, k)) = 1.
+  \end{align*}
+  The number of nondeterministic bits used by $A_{m, k}$ is $|w|$, which is of the form $h(k) \log m$.
+
+  For the size and depth bounds, we need to determine the size and depth of the circuits $U$ and $D_{m, k}$.
+  The depth-universal circuit $U$ has size $m^{O(1)}$ and depth $O(\log^d n)$, which is $O(\log^d m)$ because we can assume without loss of generality that the size of $C$ is at least the number of its inputs.
+  Decoding a single block of size $\log m$ requires size $O(m)$ and depth $O(\log m)$ by \autoref{lem:codingbounds}.
+  Decoding all $k$ blocks of size $\log m$ requires $k$ copies of that subcircuit, along with an \textsc{or} tree for each of the $m$ output bits.
+  Thus the size of $D_{m, k}$ is $O(k m + m \log k)$ and the depth $O(\log m + \log k)$.
+  Hence the overall size of $A_{m, k}$ is of the form $f(k) m^{O(1)}$ and the depth $f(k) + \log^d m$.
+
+  Since we have shown a correct $\para \WNC^d$ circuit family deciding $\pNCSAT$, we conclude that the problem is in $\para \WNC^D$.
 \end{proof}
 
 \subsection{Completeness in \texorpdfstring{$\para \WNC$}{paraWNC}}
@@ -986,49 +1057,19 @@ Let $\|x\|_1$ denote the Hamming weight (that is, the number of ones) of a binar
 
 \todo{Can we use the ``template on top of a verification language'' elsewhere?}
 
-Since Boolean formulas are equivalent to Boolean circuits of logarithmic depth \todo{add citation}, the above theorem can be rephrased as ``$p \dash \NC^1 \textsc{CSat}$ is complete''.
+Since Boolean formulas are equivalent to Boolean circuits of logarithmic depth \todo{add citation}, the above theorem can be rephrased as ``$p \dash k \dash \NC^1 \textsc{CSat}$ is complete''.
 We would like to generalize this to $\NC^d$ circuit satisfiability; this hierarchy interpolates between weighted Boolean formula satisfiability and weighted circuit satisfiability.
-
-\begin{definition}[$\pNCSAT$]
-  \mbox{} \\
-  \begin{tabular}{r p{9.2cm}}
-    \textbf{Instance:} & Boolean circuit $C$ on $n$ inputs with depth $\log^d n$, natural number $k$. \\
-    \textbf{Parameter:} & $k$. \\
-    \textbf{Question:} & Is there a binary string $w$ such that $\|w\|_1 \leq k$ and $C(x) = 1$?
-  \end{tabular}
-\end{definition}
 
 Although the proof of \autoref{thm:parawnc1complete} (from \autocite[Theorem~3.6]{est15}) does not translate to the setting of bounded depth circuit satisfiability (their reduction would yield a circuit of depth greater than polylogarithmic in the number of inputs), we can use instead the strategy from \autocite[Theorem~3.6]{cc97lim}.
 There the authors prove that as a decision problem, the weighted $\NC^d$ circuit satisfiability problem is complete for $\NNC[k \log n]$.
 As we will see in the next section (and repeatedly throughout this paper), parameterized complexity and limited nondeterminism in decision complexity are closely related.
 
 \begin{theorem}\label{thm:parawncdcomplete}
-  For each positive integer $d$ greater than one, we have $\pNCSAT$ is complete for $\para \WNC^d$ under $\para \NC^1$ many-one reductions.
+  For each positive integer $d$ greater than one, $\pNCSAT$ is complete for $\para \WNC^d$ under $\para \NC^1$ many-one reductions.
+  Also, the underlying decision problem is in $\NNC[\poly]$.
 \end{theorem}
-
-The proof of this theorem requires an auxiliary function, $\psi$, that decodes a binary string of Hamming weight exactly one into the index, as an integer in binary, of the one in that string.
-Define $\psi \colon \{0, 1\}^n \to \{0, 1\}^{\log n}$ as
-\[
-\psi(x) =
-\begin{cases}
-  i & \text{if } x = 0^{i - 1}10^{n - i} \\
-  0^{\log n}& \text{otherwise},
-\end{cases}
-\]
-for each binary string $x$ of length $n$.
-The function $\psi$ is surjective: for each binary string $i$ of length $\log n$ there is an $x$ such that $\psi(x) = i$.
-Another way of understanding $\psi$ is by its inverse: $\psi^{-1}$ encodes each nonzero binary string of length $\log n$ as a binary string of length $n$ of Hamming weight exactly one.
-This will be useful for enforcing an upper bound on the Hamming weight of satisfying inputs to the circuit constructed in the reduction.
-
-\begin{lemma}
-  $\psi$ is circuit-computable in size ... and depth ...
-\end{lemma}
 \begin{proof}
-  \todo{fill me in}
-\end{proof}
-
-\begin{proof}[Proof of \autoref{thm:parawncdcomplete}]
-  \todo{Show membership.}
+  Membership in $\para \WNC^d$ (and in $\NNC[\poly]$ for the underlying decision problem) was proven in \autoref{lem:pkncsat}.
 
   Suppose $(Q, \kappa)$ is in $\para \WNC^d$, so there is a nonuniform $\NC^d$ circuit family $\{C_{n, k}\}$ and circuit-computable functions $f$ and $h$ such that
   \begin{itemize}
@@ -1039,22 +1080,22 @@ This will be useful for enforcing an upper bound on the Hamming weight of satisf
   \end{itemize}
   On input $x$ of length $n$, let $C_x$ denote the circuit $C_{n, k}$ with $x$ hardcoded as its first $n$ inputs.
   Thus $C_x$ is a circuit with $h(k) \log n$ inputs such that $x \in Q$ if and only if $C_x$ is satisfiable.
-  Let $\Psi$ denote the function $\Psi(w) = \psi(w_1) \circ \dotsc \circ \psi(w_{h(k)})$, where $w_i$ is the $i$th block of size $n$ in the string $w$, for each string $w$ of length $h(k) n$.
-  The reduction is then $x \mapsto (D, h(k))$, where $D = C_x \circ \Psi$.
+  Let $E_{n, k}$ denote the function defined by $E_{n, k}(w) = E_n(w_1) \circ \dotsc \circ E_n(w_{h(k)})$, where $\circ$ denotes string concatenation and $w_i$ is the $i$th block of size $n$ in the string $w$, for each string $w$ of length $h(k) n$.
+  The reduction is then $x \mapsto (D, h(k))$, where $D = C_x \circ E_{n, k}$.
 
   The circuit $D$ is of the correct form to be an input to $\pNCSAT$.
   The size of $D$ is
   \begin{align*}
-    \size(D) & = \size(\Psi) + \size(C_x) \\
-    & \leq h(k) \size(\psi) + f(k) n^{O(1)} \\
-    & \leq h(k) n + f(k) n^{O(1)}
+    \size(D) & = \size(E_{n, k}) + \size(C_x) \\
+    & \leq h(k) \size(E_n) + f(k) n^{O(1)} \\
+    & \leq h(k) O(n) + f(k) n^{O(1)}
   \end{align*}
   and the depth
   \begin{align*}
-    \depth(D) & = \depth(\Psi) + \depth(C_x) \\
-    & \leq \depth(\psi) + (f(k) + \log^d n) \\
-    & \leq \log n + f(k) + \log^d n \\
-    & \leq f(k) + 2\log^d n.
+    \depth(D) & = \depth(E_{n, k}) + \depth(C_x) \\
+    & \leq \depth(E_n) + (f(k) + \log^d n) \\
+    & \leq O(\log n) + f(k) + \log^d n \\
+    & \leq f(k) + O(\log^d n).
   \end{align*}
   The number of inputs to $D$ is $h(k) n$, so we need the size to be polynomial in $h(k) n$ and the depth to be $\log^d (h(k) n)$.
   The size bound is satisfied if we choose $h(k)$ so that $f(k) \leq h(k)$ and the depth bound satisfied if we choose $h(k)$ so that $f(k) \leq \log^d h(k)$, ignoring some constants that can be incorporated into the function $h$.
@@ -1063,12 +1104,12 @@ This will be useful for enforcing an upper bound on the Hamming weight of satisf
 
   The reduction is a correct many-one reduction between the underlying decision problems.
   Suppose $x \in Q$, so $C_x$ is satisfiable.
-  Since $\psi$ is surjective, so is $\Psi$, hence there is a string $w$ (of length $h(k) n$) such that $D(w) = 1$.
-  Furthermore, this string satisfies $\|w\|_1 \leq h(k)$ since all preimages of $\Psi$ satisfy this inequality.\footnote{%
-    Technically, we need to guarantee the satisfying input to $C_x$ is nonzero to make this statement, but it is easy to enforce such a restriction on the witnesses for $Q$.}
+  Since $E_n$ is surjective, so is $E_{n, k}$, hence there is a string $w$ (of length $h(k) n$) such that $D(w) = 1$.
+  Furthermore, this string satisfies $\|w\|_1 \leq h(k)$ since all preimages of $E_{n, k}$ satisfy this inequality.\footnote{%
+    Technically, we need to guarantee the satisfying input to $C_x$ is nonzero to make this statement, but it we can simply enforce such a restriction on the witnesses for $Q$ with no change in the complexity of $Q$.}
   Therefore, $D$ has a satisfying assignment of Hamming weight at most $h(k)$.
   For the converse, suppose $D$ has a satisfying assignment $w$ of weight at most $h(k)$.
-  Then there is a satisfying assignment of length $h(k) \log n$ for $C_x$, namely $\Psi(w)$.
+  Then there is a satisfying assignment of length $h(k) \log n$ for $C_x$, namely $E_{n, k}(w)$.
   Therefore, $x$ is in $Q$.
 
   The reduction is $\para \NC^1$-computable.
