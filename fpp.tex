@@ -114,6 +114,7 @@
 \newcommand{\pCkE}{p \dash k \dash \textsc{CE}}
 \newcommand{\pWCE}{p \dash \textsc{WCE}}
 \newcommand{\pPiFSAT}{p \dash \Pi_t \textsc{FSat}}
+\newcommand{\pFSAT}{p \dash \textsc{FSat}}
 \newcommand{\PiFSAT}{\Pi_t \textsc{FSat}}
 \newcommand{\PiCSAT}{\Pi_t \textsc{CSat}}
 
@@ -963,13 +964,13 @@ This is the $\NC^d$ bounded version of the parameterized problem from \autocite[
 
 \subsection{Completeness in \texorpdfstring{$\para \WNC$}{paraWNC}}
 
-Let $p \dash \textsc{FSat}$ denote the weighted Boolean formula satisfiability problem.
+Let $\pFSAT$ denote the weighted Boolean formula satisfiability problem.
 
 \begin{theorem}[{\autocite[Theorem~3.6]{est15}}]\label{thm:parawnc1complete}
-  $p \dash \textsc{FSat}$ is complete for $\para \WNC^1$ under $\para \FO$ many-one reductions.
+  $\pFSAT$ is complete for $\para \WNC^1$ under $\para \FO$ many-one reductions.
 \end{theorem}
 
-\todo{Give a corollary in the section below that the complete problem is not in $\para \NC$ unless something bad happens.}
+\todo{Can we use the ``template on top of a verification language'' elsewhere?}
 
 Since Boolean formulas are equivalent to Boolean circuits of logarithmic depth \todo{add citation}, the above theorem can be rephrased as ``$p \dash \NC^1 \textsc{CSat}$ is complete''.
 We would like to generalize this to $\NC^d$ circuit satisfiability; this hierarchy interpolates between weighted Boolean formula satisfiability and weighted circuit satisfiability.
@@ -978,6 +979,9 @@ Let $p \dash k \dash \NC^d \textsc{CSat}$ denote the weighted satisfiability pro
 \begin{conjecture}\label{con:parawncdcomplete}
   For each positive integer $d$, we have $p \dash k \dash \NC^d \textsc{CSat}$ is complete for $\para \WNC^d$ under $\para \FO$ many-one reductions.
 \end{conjecture}
+
+Unfortunately, the proof of \autocite[Theorem~3.6]{est15} does not translate to the setting of bounded depth circuit satisfiability.
+Their reduction would yield a circuit of depth greater than polylogarithmic in the number of inputs.
 
 \todo{Perhaps we can adapt the complete problems from \autocite{cc97lim} here?}
 
@@ -990,6 +994,7 @@ Compare it with the following similar theorems (here $\beta$ indicates one-way a
 \item $\para \P = \para \WP$ if and only if $\P = \NP[\omega(\log n)]$ \autocite[Theorem~3.29]{fg06}.
 \item $\para \L = \para \beta \L$ if and only if $\L = \NL[\omega(\log n)]$ \autocite[Theorem~15]{cm14}.
 \end{itemize}
+\todo{Can we generalize all of these theorems?}
 
 The next theorem is similar to \autoref{thm:eventually} in that it is a characterization of $\para \WNC^d$, a nondeterministic extension of $\para \NC^d$.
 It is the adaptation of \autocite[Proposition~3.7]{fg06}.
@@ -1153,6 +1158,12 @@ This theorem is an adaptation of \autocite[Theorem~3.29]{fg06}.
     & \leq \min(n^{O(1)}, O(\log^d n)). \qedhere
   \end{align*}
 \end{proof}
+
+As a corollary, any problem complete for $\para \WNC^d$ is not in $\para \NC^d$ unless $\NC^d = \NNC^d[i(n) \log n]$.
+
+\begin{corollary}
+  $\pFSAT$ is in $\para \NC^1$ if and only if there is a circuit-computable, nondecreasing, unbounded function $i$ such that $\NC^1 = \NNC^1[i(n) \log n]$.
+\end{corollary}
 
 \subsection{Is \texorpdfstring{$\para \WNC$}{paraWNC} in \texorpdfstring{$\para \P$}{paraP}?}
 \label{sec:wncp}
