@@ -1,0 +1,489 @@
+\section{\texorpdfstring{$\para \NC$}{paraNC} is to \texorpdfstring{$\NC$}{NC} as \texorpdfstring{$\para \WNC$}{paraWNC} is to \texorpdfstring{$\NNC$}{NNC}}
+
+\subsection{Definition of \texorpdfstring{$\para \WNC$}{paraWNC}}
+
+\begin{definition}[{$\para \WNC^d$}]
+  Let $d$ be a natural number.
+  A parameterized problem $(Q, \kappa)$ is in the class $\para \WNC^d$ if there are circuit-computable functions $f$, $g$, and $h$, and a nondeterministic circuit family $\{C_{n, k}\}$ such that for each string $x$,
+  \begin{itemize}
+  \item $x \in Q$ if and only if $C_{n, k}(x) = 1$, where $n = |x|$ and $k = \kappa(x)$,
+  \item $\size(C_{n, k}) \leq f(k) n^{O(1)}$,
+  \item $\depth(C_{n, k}) \leq g(k) \log^d n$,
+  \item $\nondet(C_{n, k}) \leq h(k) \log n$.
+  \end{itemize}
+\end{definition}
+
+\subsection{Example problems in \texorpdfstring{$\para \WNC$}{paraWNC}}
+\label{sec:rankinwp}
+
+What kind of problems are in the class $\para \WNC$?
+
+\begin{itemize}
+\item The parameterized weighted Boolean formula satisfiability problem is in $\para \WNC^1$ \autocite[Theorem~3.6]{est15}.
+\item The parameterized feedback vertex set problem is in $\para \WL$ \autocite[Section~4.3]{est15}, which is a subclass of $\para \WNC^2$.
+\item The parameterized semigroup rank problem is in $\para \WNL$ \autocite[Theorem~3.12]{est15}, which is a subclass of $\para \WNC^2$.
+\end{itemize}
+
+\subsubsection{Small generating set problems}
+
+Let us consider the parameterized group rank problem, a subset of the parameterized semigroup rank problem.
+
+\begin{definition}[$\pgrouprank$]
+  \mbox{} \\
+  \begin{tabular}{r p{9.2cm}}
+    \textbf{Instance:} & finite group $G$ given as a product table, positive integer $k$. \\
+    \textbf{Parameter:} & $k$. \\
+    \textbf{Question:} & Does $G$ have a generating set of cardinality $k$?
+  \end{tabular}
+\end{definition}
+
+This problem is highly parallelizable, given that a witness of size $O(k \log n)$ is provided.
+
+\begin{theorem}\label{thm:pgrouprank}
+  $\pgrouprank$ is in $\para \WL$.
+\end{theorem}
+\begin{proof}
+  The Turing machine receives $G$ and $k$ as input and a subset $S$ of $k$ group elements as a witness.
+  It loops over each element $g$ in $G$ and decides whether $g \in \gen{S}$.
+  The machine accepts exactly when all of the subgroup membership tests pass.
+  Looping over $n$ elements uses $O(\log n)$ space.
+  Deciding whether $g$ is in $\gen{S}$ is the subgroup membership problem, which is in $\SL$, which in turn equals $\L$.
+  Thus the overall space usage is $O(\log n)$.
+  The size of the witness is $k \log n$, and two-way access is required, since we execute the subgroup membership procedure $n$ times.
+  We conclude that this parameterized problem is in $\para \WL$.
+\end{proof}
+
+\subsubsection{Weighted satisfiability problems}
+
+Let $\|x\|_1$ denote the Hamming weight (that is, the number of ones) of a binary string.
+This problem is the restriction of $\pCSAT$ to bounded depth circuits.
+
+\begin{definition}[$\pNCSAT$]
+  \mbox{} \\
+  \begin{tabular}{r p{9.2cm}}
+    \textbf{Instance:} & Boolean circuit $C$ on $m$ inputs with depth $\log^d m$, natural number $k$. \\
+    \textbf{Parameter:} & $k$. \\
+    \textbf{Question:} & Is there a binary string $w$ such that $\|w\|_1 = k$ and $C(x) = 1$?
+  \end{tabular}
+\end{definition}
+
+To prove membership in $\para \WNC^d$, we will use the following \emph{decoder function}.
+Since we will also later use its inverse, the \emph{encoder function}, we define it here as well.
+
+\begin{definition}\label{def:coding}
+  The \emph{encoder function}, $E_n \colon \{0, 1\}^m \to \{0, 1\}^{\log m}$, is defined by
+  \[
+  E_m(x) =
+  \begin{cases}
+    i & \text{if } x \text{ has exactly one 1 at index } i \\
+    0^{\log n} & \text{otherwise}.
+  \end{cases}
+  \]
+  for each binary string $x$ of length $m$.
+  The \emph{decoder function}, $D_m$, is defined as the inverse of the encoder function.
+\end{definition}
+
+\begin{lemma}\label{lem:codingbounds}
+  For each natural number $m$, both the encoder and decoder functions are computable by a circuit of size $O(m)$ and depth $O(\log m)$.
+\end{lemma}
+\begin{proof}
+  This can be found in, for example, Lemmas~2.5.3 and 2.5.4 of \autocite{savage98}.
+\end{proof}
+
+This theorem is an adaptation of \autocite[Lemma~3.3]{cc97lim}.
+
+\begin{lemma}\label{lem:pkncsatmem}
+  For each positive integer $d$, we have $\pNCSAT$ is in $\para \WNC^d$.
+  %% Also, the underlying decision problem is in $\NNC^d[\poly]$.
+\end{lemma}
+\begin{proof}
+  %% The underlying decision problem has a straightforward $\NNC^d[\poly]$ algorithm using the depth-universal circuit of \autocite{ch85}, along with a logarithmic depth circuit that enforces the inequality $\|w\|_1 = k$.
+  %%The number of nondeterministic bits used by that circuit is $n$, the number of inputs to the circuit $C$, which is bounded above by the size of $C$.
+  %%
+  %% Membership in $\para \WNC^d$ requires a little more work.
+  The algorithm will be composed of several subcircuits.
+  \begin{itemize}
+  \item Let $U$ be the depth-universal circuit \autocite{ch85} for depth $\log^d m$.
+  \item Let $D_{m, k}$ be the function defined by $D_{m, k}(w) = D_m(w_1) \lor \dotsb \lor D_m(w_k)$, where $\lor$ denotes bitwise \textsc{or} for strings of length $m$, the binary string $w_i$ is the $i$th block of $w$ of size $\log m$, and $D_m$ is the decoder function (\autoref{def:coding}).
+  %% The circuit $D_{m, k}$ interprets its input as $k$ blocks of length $\log m$ each, then outputs the string containing a one at index $i$ exactly when at least one block is the binary encoding of the natural number $i$.
+  \item Let $\Delta$ be the function that takes $k$ blocks of $\log m$ bits each as input and evaluates to true exactly when each pair of blocks of size $\log m$ are distinct. For example, if $m = 4$, then $\Delta(0101) = 0$ but $\Delta(1011) = 1$.
+  \end{itemize}
+  Define the nonuniform, nondeterministic $\NC^d$ circuit family $\{A_{m, k}\}$ that decides $\pNCSAT$ by
+  \[
+  A_{n, k}((C, k), w) = U(C, D_{m, k}(w)) \land \Delta(w).
+  \]
+  In other words, $A_{n, k}$ interprets its witness string $w$ of length $k \log m$ as an encoding of a string of length $m$ containing \emph{exactly} $k$ ones (as enforced by $\Delta$), then evaluates the circuit $C$ on that string.
+
+  This algorithm correctly decides the underlying decision problem.
+  For each circuit $C$ of size $n$ and each integer $k$,
+  \begin{align*}
+    (C, k) \in \pNCSAT & \iff \exists x \in \{0, 1\}^m \colon \|x\|_1 = k \text{ and } C(x) = 1 \\
+    & \iff \exists w \in \{0, 1\}^{k \log m} \colon (C(D_{m, k}(w)) \land \Delta(w)) = 1 \\
+    & \iff \exists w \in \{0, 1\}^{k \log m} \colon (U(C, (D_{m, k}(w))) \land \Delta(w)) = 1 \\
+    & \iff \exists w \in \{0, 1\}^{k \log m} \colon A_{n, k}((C, k), w) = 1.
+  \end{align*}
+  %% The number of nondeterministic bits used by $A_{n, k}$ is of the form $h(k) \log m$ if we choose $h$ to be the identity function.
+  If we assume without loss of generality that $m \leq n$ (by padding with useless gates, for example), then the number of nondeterministic bits used is less than $k \log m$, which is of the form $h(k) \log n$.
+
+  For the size and depth bounds, we need to determine the size and depth of the circuits for $U$, $D_{m, k}$, and $\Delta$.
+  \begin{itemize}
+  \item The depth-universal circuit $U$ has size $m^{O(1)}$ and depth $O(\log^d n)$, which is $O(\log^d m)$ because we can assume without loss of generality that the size of $C$ is at least the number of its inputs.
+  \item
+    Decoding a single block of size $\log m$ requires size $O(m)$ and depth $O(\log m)$ by \autoref{lem:codingbounds}.
+    Decoding all $k$ blocks of size $\log m$ requires $k$ copies of that subcircuit, along with an \textsc{or} tree for each of the $m$ output bits.
+    Thus the size of $D_{m, k}$ is $O(k m + m \log k)$ and the depth $O(\log m + \log k)$.
+  \item
+    Comparing two binary strings of length $\log m$ for inequality requires $O(\log m)$ size and $O(\log \log m)$ depth.
+    Comparing all $\binom{k}{2}$ pairs of blocks and requiring they are all distinct thus requires a circuit of size $O(\binom{k}{2} \log m)$ and depth $O(\log m + \log k)$.
+  \end{itemize}
+  Hence the overall size of $A_{n, k}$ is of the form $f(k) m^{O(1)}$ and the depth $f(k) + \log^d m$.
+  Since we can assume without loss of generality that $m \leq n$, we get size and depth bounds with the appropriate dependence on $k$ and $n$.
+
+  Since we have shown a $\para \WNC^d$ circuit family deciding $\pNCSAT$, we conclude that the problem is in $\para \WNC^d$.
+\end{proof}
+
+\todo{Show a miniaturization of this problem?}
+
+This technique also provides some alternate proofs that parameterized weighted Boolean formula satisfiability problem, denoted $\pFSAT$, is in $\para \WNC^1$, implicit in \autocite[Theorem~3.6]{est15}.
+%% \todo{
+%%   If we can show a reduction from parameterized formula satisfability to parameterized $\NC^1$ satisfiability, then we have yet another proof, although that's really the same as the one below.
+%%   Each formula has an equivalent log depth circuit, but I need to ensure it is computable in $\AC^0$ (or $\FO$).
+%% }
+The first proof is a reduction to $p \dash k \dash \NC^1 \textsc{Csat}$, and requires two auxiliary algorithms.
+
+\begin{lemma}[{\autocite{lsh65}}]
+  There is an $\NC^1$ algorithm that, given a binary tree $T$ on $n$ leaves, finds a subtree on $s$ leaves, where $\frac{1}{3} n \leq s \leq \frac{2}{3} n$.
+\end{lemma}
+\begin{proof}
+  The naïve implementation of the procedure from \autocite{lsh65} would require repeatedly computing the number of leaves in each subtree.
+  Instead, we compute the number of leaves in each subtree once at the beginning of the algorithm.
+
+  The algorithm proceeds as follows.
+  Compute $\frac{1}{3} n$ and $\frac{2}{3} n$.
+  Compute for each node, the number of leaves in the subtree rooted at that node.
+  Output the subtree that is within the bounds (one must exist by a counting argument).
+
+  Division and multiplication of integers of length $\log n$ can certainly be done by a circuit of size $O(n)$ and depth $O(\log n)$.
+  Computing the number of leaves in each subtree can be done by first computing the number of direct children of each node with a circuit of size $O(n)$ and depth $O(1)$, then performing a prefix-sum operation (only on those prefixes that are paths in the tree) with size $O(n)$ and depth $O(\log n)$ (see \autocite[Theorem~2.6.1]{savage98} for a prefix-sum implementation).
+  Comparing each of these numbers to the computed upper and lower bounds requires size $O(n \log n)$ and depth $O(\log \log n)$.
+  Finally, outputing the node requires depth $O(1)$, or, if the entire subtree is desired, depth $O(\log n)$ by using a path-doubling algorithm to find each node in the subtree rooted at the given node.
+
+  Overall, the algorithm can be implemented by a circuit of size $n^{O(1)}$ and depth $O(\log n)$.
+\end{proof}
+
+\todo{find a copy of \autocite{spira71}}
+
+\begin{lemma}[{\autocite{spira71} (see also \autocite[Theorem~2]{bb94})}]\label{lem:logformula}
+  There is an $\NC^1$ algorithm that transforms a Boolean formula of size $n$ into a Boolean formula of size $n^{O(1)}$ and depth $O(\log n)$.
+\end{lemma}
+\begin{proof}
+  Let $A'$ be the algorithm of the previous lemma that finds a subtree of size approximately $n / 2$.
+  Construct the algorithm $A$ that proceeds as follows on input $\phi$ of size $n$.
+  \todo{Modify this, because it doesn't work: computing A' repeatedly is too much; we can just compute the mapping from node to size of subtree and update it when replacing $\psi$ with 1 or 0.}
+  \begin{itemize}
+  \item Let $\psi = A'(\phi)$.
+  \item Let $\phi' = (\psi \land \phi|_{\psi = 1}) \lor (\lnot \psi \land \phi|_{\psi = 0})$, where $\phi|_{\psi = b}$ denotes the formula $\phi$ with each instance of $\psi$ replaced with the constant $b$.
+  \item Apply $A$ recursively to each of the four subformulas in $\phi'$ and return the resulting formula.
+  \end{itemize}
+  \todo{fill me in}
+\end{proof}
+
+\begin{lemma}[{\autocite[Theorem~3.6]{est15}}]\label{lem:pfsatmem}
+  $\pFSAT$ is in $\para \WNC^1$.
+  %% Also, the underlying decision problem is in $\NNC^1[\poly]$.
+\end{lemma}
+\begin{proof}
+  We show a $\para \NC^1$ many-one reduction to the weighted circuit satisfiability for logarithmic depth circuits.
+  By \autoref{lem:logformula}, each Boolean formula $\phi$ of size $n$ can be transformed into an equivalent Boolean formula $\phi'$ of depth $O(\log n)$.
+  From there, we simply output the circuit representation $C$ of that logarithmic depth formula.
+  Furthermore, the formula $\phi'$ has the property that $\phi(x) = \phi'(x)$ for each assignment $x$, and the circuit $C$ has the property that $\phi'(x) = C(x)$ for each $x$.
+  Thus the reduction is correct: $\phi$ has a satisfying assignment of weight exactly $k$ if and only if $\phi'$ does if and only if $C$ does.
+  Since the reduction is computable in $\NC^1$ and the parameter is identical, it is trivially computable in $\para \NC^1$.
+\end{proof}
+
+The second proof directly implements the decoder function of \autoref{def:coding} as a Boolean formula.
+
+\begin{proof}[Alternate proof of \autoref{lem:pfsatmem}]
+  The underlying decision problem has a straightforward $\NNC^1[\poly]$ algorithm using the $\NC^1$ algorithm for Boolean formula satisfiability \autocites{buss87, bcgr92}, along with a logarithmic depth circuit that enforces the inequality $\|w\|_1 = k$.
+  The number of nondeterministic bits used by the circuit is the number of variables in the formula, which is bounded above by a polynomial in the size of the formula.
+
+  We adapt the ``$k \log n$ trick'' from circuit inputs to formula variables.
+  This requires a reimplementation of the decoder function of \autoref{def:coding} as a function on Boolean variables.
+
+  Similar to the proof of \autoref{lem:pkncsatmem}, the algorithm involves composing a decoder and an algorithm for evaluating a Boolean formula, after nondeterministically choosing a witness.
+  Again, we use some subcircuits:
+  \begin{itemize}
+  \item Let $U$ be the $\NC^1$ algorithm for evaluating a Boolean formula \autocites{buss87, bcgr92}.
+  \item
+    Let $M_i$ be the function on $\log m$ that outputs the $i$th minterm of its input variables (for example, $M_4(w_1, w_2, w_3) = w_1 \land \lnot w_2 \land \lnot w_3$).
+    This function acts like the decoder in \autoref{lem:pkncsatmem}.
+  \item
+    Let $R_{m, k}(\phi)$ be the function that replaces each instance of a variable $x_i$ in a Boolean formula $\phi$ on $m$ variables with $\vee_{j = 1}^k M_i(\vec{v}_j)$, where $\vec{v}_j$ denotes the $j$th block of size $\log m$ in a tuple of $k \log m$ new variables $v_1, \dotsc, v_{k \log m}$.
+  \item Let $\Delta$ be the function that takes $k$ blocks of $\log m$ bits each as input and evaluates to true exactly when each pair of blocks of size $\log m$ are distinct.
+  \end{itemize}
+  Define the nonuniform, nondeterministic $\NC^1$ circuit family $\{A_{n, k}\}$ that decides $\pFSAT$ by
+  \[
+  A_{n, k}((\phi, k), w) = U(R_{m, k}(\phi), w) \land \Delta(w).
+  \]
+  In other words, $A_{n, k}$ interprets its witness string $w$ of length $k \log m$ as the \emph{encoding of an assignment} to the variables of $\phi$ in which exactly $k$ variables are set to true, then evaluates the formula $\phi$ with respect to the decoded assignment.
+
+  This algorithm correctly decides the weighted Boolean formula satisfiability problem.
+  Similar to the proof of \autoref{lem:pkncsatmem}, $\phi$ has a satisfying assignment of weight exactly $k$ if and only if $\phi'$ has a satisfying assignment (of arbitrary weight).
+  If we assume without loss of generality that $m \leq n$ (by padding with tautological conjuncts, for example), then the number of nondeterministic bits used is less than $k \log m$, which is of the form $h(k) \log n$.
+
+  The algorithm also has the appropriate size and depth bounds.
+  Since each minterm is of size exactly $\log m$ and each variable $x_i$ is represented the disjunction of $k$ such minterms, the new formula $\phi'$ is of size $|\phi| k \log m$, which is just $n k \log m$.
+  \begin{itemize}
+  \item
+    Each variable $x_i$ can be replaced in parallel, and within that replacement, each disjunct $M_i(\vec{w}_j)$ can be replaced in parallel as well.
+    The circuit that writes $M_i(\vec{w}_j)$ is a circuit of size $O(\log m)$ and depth $O(\log m)$ (for using the index $i$ as a selector in a multiplexer), so $R_{m, k}$ can be implemented by a circuit of size $O(n k \log m)$ and depth $O(\log m)$.
+  \item
+    The circuit $U$ receives a formula of size $O(n k \log m)$ and an assignment of length $O(k \log m)$.
+    Since $U$ is a circuit of size polynomial in its the size of its input, its size is $O((n k \log m)^c)$ for some constant $c$.
+    Similarly, its depth is $O(\log^d (n k \log m))$.
+  \item As in \autoref{lem:pkncsatmem}, the circuit for $\Delta$ is of size $O(\binom{k}{2} \log m)$ and depth $O(\log m + \log k)$.
+  \end{itemize}
+  The overall size and depth of the circuit $A_{n, k}$ are therefore of the form $f(k) n^{O(1)}$ and $f(k) + O(\log^d n)$, respectively.
+  \todo{Add info in the introduction about why we can assume, since $k$ is smaller than $O(\log n)$, that $O(\log^d nk) \leq f(k) + O(\log^d n)$.}
+
+  At this point, we have shown a correct $\para \WNC^1$ algorithm for $\pFSAT$.
+\end{proof}
+
+The same proof works for the problems of deciding whether a circuit or a formula has a satisfying assignment of weight \emph{at most} $k$, as well (one could even remove the $\Delta$ subcircuit entirely, but that is not necessary).
+
+\subsection{Completeness in \texorpdfstring{$\para \WNC$}{paraWNC}}
+
+We saw that the parameterized weighted Boolean formula satisfiability problem, $\pFSAT$, is in $\para \WNC^1$ in \autoref{lem:pfsatmem}.
+In fact, it is complete for $\para \WNC^1$ under $\para \FO$ many-one reductions \autocite[Theorem~3.6]{est15}.
+\todo{Can we use the ``template on top of a verification language'' elsewhere?}
+The parameterized weighted Boolean circuit satisfiability problem, denoted $\pCSAT$, is the same problem with Boolean circuits instead of Boolean formulas; this problem is complete for $\para \WP$ under $\para \FO$ many-one reductions by a similar proof.
+It makes sense to expect, then, that the problems $\pNCSAT$ may be complete for the classes $\para \WNC^d$, for each positive integer $d$.
+
+%% One strategy for proving complete problems for the $\para \WNC^d$ classes might be to adapt the proof of the $\para \WNC^1$-completeness of $\pFSAT$.
+%% Since Boolean formulas are equivalent to Boolean circuits of logarithmic depth \todo{add citation}, the $\pFSAT$ can be viewed as $p \dash k \dash \NC^1 \textsc{CSat}$.
+%% However, the proof of \autocite[Theorem~3.6]{est15} does not translate directly to the setting of bounded depth circuit satisfiability (their reduction would yield a circuit of depth greater than polylogarithmic in the number of inputs).
+In order to prove completeness for these problems, we use the strategy from \autocite[Theorem~3.6]{cc97lim}, which relies on the ``$k \log n$ trick'' (see \autocite[Corollary~3.13]{fg06}, or the origin \autocite{adf95}).
+There the authors prove that the decision problem underlying $\pNCSAT$ is complete for $\NNC^d[k \log n]$.
+As we will see in the next section (and repeatedly throughout this paper), parameterized complexity and limited nondeterminism in decision complexity are closely related.
+
+\begin{theorem}\label{thm:parawncdcomplete}
+  For each positive integer $d$, we have $\pNCSAT$ is complete for $\para \WNC^d$ under $\para \NC^1$ many-one reductions.
+  %% Also, the underlying decision problem is in $\NNC^d[\poly]$.
+\end{theorem}
+\begin{proof}
+  Membership in $\para \WNC^d$ was proven in \autoref{lem:pkncsatmem}.
+
+  Suppose $(Q, \kappa)$ is in $\para \WNC^d$, so there is a nonuniform $\NC^d$ circuit family $\{C_{n, k}\}$ and circuit-computable functions $f$ and $h$ such that
+  \begin{itemize}
+  \item $x \in Q$ if and only if $C_{n, k}(x) = 1$,
+  \item $\size(C_{n, k}) \leq f(k) n^{O(1)}$,
+  \item $\depth(C_{n, k}) \leq f(k) + O(\log^d n)$,
+  \item $\nondet(C_{n, k}) \leq h(k) \log n$.
+  \end{itemize}
+  On input $x$ of length $n$, let $C_x$ denote the circuit $C_{n, k}$ with $x$ hardcoded as its first $n$ inputs.
+  Thus $C_x$ is a circuit with $h(k) \log n$ inputs such that $x \in Q$ if and only if $C_x$ is satisfiable.
+  Let $E_{n, k}$ denote the function defined by $E_{n, k}(w) = E_n(w_1) \circ \dotsb \circ E_n(w_{h(k)})$, where $\circ$ denotes string concatenation, $E_n$ is the encoder function of \autoref{def:coding}, and $w_i$ is the $i$th block of size $n$ in the string $w$, for each string $w$ of length $h(k) n$.
+  The reduction is then $x \mapsto (C', h(k))$, where $C' = C_x \circ E_{n, k}$.
+
+  The circuit $C'$ is of the correct form to be an input to $\pNCSAT$.
+  The size of $C'$ is
+  \begin{align*}
+    \size(C') & = \size(E_{n, k}) + \size(C_x) \\
+    & \leq h(k) \size(E_n) + f(k) n^{O(1)} \\
+    & \leq h(k) O(n) + f(k) n^{O(1)}
+  \end{align*}
+  and the depth
+  \begin{align*}
+    \depth(C') & = \depth(E_{n, k}) + \depth(C_x) \\
+    & \leq \depth(E_n) + (f(k) + \log^d n) \\
+    & \leq O(\log n) + f(k) + \log^d n \\
+    & \leq f(k) + O(\log^d n).
+  \end{align*}
+  The number of inputs to $C'$ is $h(k) n$, so we need the size to be polynomial in $h(k) n$ and the depth to be $\log^d (h(k) n)$.
+  The size bound is satisfied if we choose $h(k)$ so that $f(k) \leq h(k)$ and the depth bound satisfied if we choose $h(k)$ so that $f(k) \leq \log^d h(k)$, ignoring some constants that can be incorporated into the function $h$.
+  We can choose $h$ this way without loss of generality, because choosing a larger $h$ does not affect membership of $(Q, \kappa)$ in $\para \WNC^d$.
+  (This does, however, cause the nondeterminism upper bound of the problem $(Q, \kappa)$ to be extremely loose and the dependence on $k$ in the size and depth bounds of $C'$ to be extremely high, but it is technically sufficient.)
+
+  The reduction is a correct many-one reduction between the underlying decision problems.
+  Suppose $x \in Q$, so $C_x$ is satisfiable.
+  Since $E_n$ is surjective, so is $E_{n, k}$, hence there is a string $w$ (of length $h(k) n$) such that $C'(w) = 1$.
+  Furthermore, this string satisfies $\|w\|_1 = h(k)$ since all preimages of $E_{n, k}$ satisfy this equality.%
+  \footnote{%
+    Technically, we need to guarantee the satisfying input to $C_x$ has no all-zero blocks to make this statement.
+    For each parameterized problem $(Q, \kappa)$ there is another equivalent problem that satisfies such a requirement on the witnesses for $Q$ with no change in complexity.%
+  }
+  Therefore, $C'$ has a satisfying assignment of Hamming weight exactly $h(k)$.
+  For the converse, suppose $C'$ has a satisfying assignment $w$ of weight exactly $h(k)$.
+  Then there is a satisfying assignment of length $h(k) \log n$ for $C_x$, namely $E_{n, k}(w)$.
+  Therefore, $x$ is in $Q$.
+
+  The reduction is $\para \NC^1$-computable.
+  The size of the circuit computing the reduction is simply the size of the output, which is $\size(C') + \size(h_k)$, where $h_k$ denotes the circuit computing $h$ on inputs of size $k$.
+  Both addends are of the form $f'(k) n^{O(1)}$ for some circuit-computable function $f'$.
+  The depth of the circuit computing the reduction is dominated by the depth of the $h_k$, which is bounded above by $f'(k) + \log n$ for some function $f'$.
+  Thus the size and depth requirements for the reduction are met.
+  Finally, if $R$ denotes the reduction and $\kappa'$ denotes the parameterization for $\pNCSAT$,
+  \[
+  \kappa'(R(x)) \leq \kappa'((C', h(\kappa(x)))) = h(\kappa(x)).
+  \]
+  Since $h$ is circuit-computable by hypothesis, the reduction meets the parameterization bound.
+
+  Since we have shown a correct $\para \NC^1$ many-one reduction from an arbitrary parameterized problem in $\para \WNC^d$ to $\pNCSAT$, we conclude that $\pNCSAT$ is complete for the class.
+\end{proof}
+
+This technique also gives us an alternate proof of the completeness $\pFSAT$ \autocite[Theorem~3.6]{est15}.
+However, we can prove only completeness under the $\para \NC^1$ reduction instead of the tighter $\para \FO$ reduction.
+
+\begin{theorem}\label{thm:pfsatcomplete}
+  $\pFSAT$ is complete for $\para \WNC^1$ under $\para \NC^1$ many-one reductions.
+  %% Also, the underlying decision problem is in $\NNC^1[\poly]$.
+\end{theorem}
+\begin{proof}
+  Membership in $\para \WNC^1$ was proven in \autoref{lem:pfsatmem}.
+
+  To prove hardness, it suffices to show a $\para \NC^1$ reduction from $p \dash k \dash \NC^1 \textsc{CSat}$ to $\pFSAT$, since the circuit problem is complete for $\para \WNC^1$ by the previous theorem.
+  The reduction is $(C, k) \mapsto (\phi, k)$, where $\phi$ is the standard reduction for logarithmic depth circuits to polynomial size Boolean formulas.
+  This reduction recursively replaces each subcircuit with its corresponding formula, using the input gates of the circuit as the variables for the formula.
+  Since the depth of the (fan-in 2) circuit is $O(\log n)$, where $n$ is the number if inputs to $C$, the size of the formula is $2^{O(\log n)}$, which is polynomial in $n$.
+  Furthermore, since the variables appearing in the formula are exactly the input gates of the circuit, the circuit has a satisfying assignment of weight $k$ if and only if the formula has a satisfying assignment of weight $k$.
+  Finally, the reduction is computable by circuit of size $O(|\phi|)$ and depth $O(\depth(C))$, so it is computable in $\NC^1$ \todo{someone verify this}.
+  Since furthermore the parameter is unchanged by the reduction, the $\NC^1$-computable function trivially induces a $\para \NC^1$ reduction.
+\end{proof}
+
+Now we have a full interpolation for the inclusion chain
+\[
+\para \WNC^1 \subseteq \para \WNC^2 \subseteq \dotsb \subseteq \para \WP,
+\]
+via the chain of parameterized reductions between corresponding complete problems
+\[
+\pFSAT \leq p \dash k \dash \NC^2 \textsc{CSat} \leq \dotsb \leq p \dash \textsc{CSat}.
+\]
+Whether the $\pNCSAT$ problems are complete under $\para \FO$ many-one reductions remains open.
+
+\subsection{Does \texorpdfstring{$\para \NC$}{paraNC} equal \texorpdfstring{$\para \WNC$}{paraWNC}?}
+\label{sec:fppwpp}
+
+The main theorem in this section, \autoref{thm:ncwnc}, provides evidence that the parameterized complexity classes $\para \NC$ and $\para \WNC$ are distinct.
+Compare it with the following similar theorems (here $\beta$ indicates one-way access to the witness as opposed to $\W$, which indicates two-way access).
+\begin{itemize}
+\item $\para \P = \para \WP$ if and only if $\P = \NP[\omega(\log n)]$ \autocite[Theorem~3.29]{fg06}.
+\item $\para \L = \para \beta \L$ if and only if $\L = \NL[\omega(\log n)]$ \autocite[Theorem~15]{cm14}.
+\end{itemize}
+\todo{Can we generalize all of these theorems?}
+
+This lemma is an adaptation of \autocite[Lemma~3.24]{fg06}.
+It is the ``opposite'' of \autoref{lem:upperinverse}.
+
+\begin{lemma}\label{lem:lowerinverse}
+  Suppose $d$ is a positive integer.
+  For each increasing, circuit-computable function $f$, there is a function $i_{f, d}$ such that
+  \[
+  f(i_{f, d}(n)) \leq \min(n, \log^d n)
+  \]
+  for each $n \geq f(1)$.
+  Furthermore, $i_{f, d}$ is circuit-computable, nondecreasing, unbounded.
+\end{lemma}
+\begin{proof}
+  Define $i_{f, d}$ by
+  \[
+  i_{f, d}(n) = \max\{ j \in \mathbb{N} \, | \, f(j) \leq \min(n, \log^d n) \}.
+  \]
+  For the boundary case where $n$ is smaller than $f(1)$, define $i_{f, d}(n) = 1$.
+  It is straightforward to prove that this function is nondecreasing and unbounded.
+  (The integer $d$ must be greater than zero to guarantee $i_{f, d}$ is unbounded.)
+
+  To compute $i_{f, d}$, we use the fact that $f$ is increasing to perform a binary search on the values $f(1), \dotsc, f(\min(n, \log^d n))$ and to determine the largest $j$ such that $f(j) \leq \min(n, \log^d n)$.
+  In the worst case, there will be at most $\log n$ comparison subcircuits, each requiring a computation of $f$, so the overall depth of the circuit computing $i_{f, d}$ is $O(\depth(f) \log n)$ and the size is $O(\size(f) \log n)$.
+\end{proof}
+
+This theorem is an adaptation of \autocite[Theorem~3.29]{fg06}.
+For any computable function $i$, let $\iNCSAT$ denote the problem of deciding whether a depth $O(\log^d n)$ circuit is satisfiable by an input of Hamming weight $k$, where $k$ is at most $i(n)$.
+This problem is complete for $\NNC^d[i(n) \log n]$ under logarithmic space many-one reductions \autocite[Theorem~3.6]{cc97lim} (\todo{they technically use the problem ``has a satisfying assignment of weight $\leq i(n)$'', but I believe this is equivalent.}).
+
+\begin{theorem}\label{thm:ncwnc}
+  Suppose $d$ is a positive integer.
+  $\para \NC^d = \para \WNC^d$ if and only if there is a circuit-computable, nondecreasing, unbounded function $i$ such that $\NC^d = \NNC^d[i(n) \log n]$.
+\end{theorem}
+\begin{proof}
+  First we prove the reverse implication.
+  Assume $\NC^d = \NNC^d[i(n) \log n]$, for some $i$.
+  Since $\pNCSAT$ is complete for $\para \WNC^d$ by \autoref{thm:parawncdcomplete}, it suffices to show that this problem is in $\para \NC^d$, which necessitates the claimed collapse.
+  By the comments preceding this theorem, the problem $\iNCSAT$ is in $\NNC^d[i(n) \log n]$, which means it is also in $\NC^d$ by assumption.
+  If $(Q, \kappa)$ denotes $\pNCSAT$ and $i(n) \dash Q$ denotes $\iNCSAT$, then the former is in $\para \NC^d$ by \autoref{cor:sprself}.
+
+  Now we prove the forward implication.
+  Assume $\para \NC^d = \para \WNC^d$.
+  By \autoref{thm:parawncdcomplete}, the parameterized problem $\pNCSAT$ is now in $\para \NC^d$.
+  Let $\{A_{n, k}\}$ be the $\para \NC^d$ circuit family that decides this problem, with size bound $f(k) n^{O(1)}$ and depth bound $f(k) + \log^d n$, for some circuit-computable function $f$.
+  Assume without loss of generality that $f$ is increasing.
+  Choose $i$ to be the ``lower inverse'' function $i_{f, d}$ guaranteed by \autoref{lem:lowerinverse}.
+
+  The decision problem $i(n) \dash \NC^d \dash \textsc{CSat}$ is complete for $\NNC^d[i(n) \log n]$ under logarithmic space many-one reductions by \autocite[Theorem~3.6]{cc97lim}, so it suffices to show that this problem is in $\NC^d$.
+  \todo{Need to show the case $d = 1$ works as well.}
+  The circuit family $\{A'_n\}$ defined by $A'_n(C) = A_{n, i(n)}((C, i(n)))$ witnesses this membership:
+  \[
+  \size(A'_n) = \size(A_{n, i(n)}) \leq f(i(n)) n^{O(1)} \leq n^{O(1)}
+  \]
+  and
+  \[
+  \depth(A_n) = \depth(A_{n, i(n)}) \leq f(i(n)) + O(\log^d n) \leq O(\log^d n),
+  \]
+  by the way $i$ was chosen.
+  The correctness of this algorithm follows from the correctness of $A_{n, k}$.
+  Since we have shown an $\NC^d$ algorithm for an $\NNC^d[i(n) \log n]$-complete problem, we conclude that $\NC^d = \NNC^d[i(n) \log n]$.
+\end{proof}
+
+As a corollary, any problem complete for $\para \WNC^d$ is not in $\para \NC^d$ unless $\NC^d = \NNC^d[i(n) \log n]$.
+
+\begin{corollary}
+  For each positive integer $d$, we have $\pNCSAT$ is in $\para \NC^d$ if and only if there is a circuit-computable, nondecreasing, unbounded function $i$ such that $\NC^d = \NNC^d[i(n) \log n]$.
+  (Here we equate $\NC^1 \dash \textsc{CSat}$ with $\textsc{FSat}$.)
+\end{corollary}
+
+\subsection{Is \texorpdfstring{$\para \WNC$}{paraWNC} in \texorpdfstring{$\para \P$}{paraP}?}
+\label{sec:wncp}
+
+The previous section demonstrates that it is unlikely that $\para \WNC$ is contained in $\para \NC$.
+Does the weaker inclusion of $\para \WNC$ in $\para \P$ also have negative consequences, albeit less severe ones?
+This conjecture relaxes \autoref{thm:ncwnc}.
+
+\begin{conjecture}\label{con:wncp}
+  $\para \WNC^d \subseteq \para \P$ if and only if $\NNC^d[i(n) \log n] \subseteq \P$.
+\end{conjecture}
+
+Here is an alternate approach that connects a collapse in parameterized complexity classes to one in classical complexity classes.
+
+\begin{theorem}[{\autocite[Corollary~3.7]{est15}}]
+  If $\NC^1 = \P$, then $\W[\SAT] = \para \WP$.
+\end{theorem}
+
+As in \autoref{thm:parawncdcomplete}, we wish to generalize this theorem so that we have an interpolation between $\NC^1$ and $\P$.
+%% Writing ``$\P$'', the upper limit of the interpolation, in place of ``$\NC^d$'' on the left gives $\para \WP = \para \WP$ on the right, a tautology.
+
+\begin{conjecture}
+  For each positive integer $d$, if $\NC^d = \P$, then $\W[\NC^d \SAT] = \para \WP$.
+\end{conjecture}
+
+An alternative approach is to demonstrate related collapses in parameterized complexity classes.
+
+\begin{theorem}[{\autocite[Corollary~3.8]{est15}}]
+  $\para \WNC^1 \subseteq \para \P$ if and only if $\para \P = \W[\SAT]$.
+\end{theorem}
+
+Here we interpolate between $\para \WNC^1$ and $\para \WP$.
+%% Writing ``$\para \WP$'' in place of ``$\para \WNC^d$'' on the left, the upper limit of the interpolation, gives $\para \P = \para \WP$ on the right, a tautology.
+
+\begin{conjecture}
+  For each positive integer $d$, we have $\para \WNC^d \subseteq \para \P$ if and only if $\para \P = \W[\NC^d \SAT]$.
+\end{conjecture}
+
+\subsection{Does \texorpdfstring{$\para \WNC$}{paraWNC} equal \texorpdfstring{$\para \WP$}{paraWP}?}
+\label{sec:wncwp}
+
+\begin{conjecture}
+  For each positive integer $d$, if $\para \WNC^d = \para \WP$, then $\NC^d = \P$.
+\end{conjecture}
+\begin{justification}
+  $p \dash k \dash \textsc{CSat}$ is $\para \WP$-complete and $p \dash \textsc{FSat}$ is $\para \WNC^1$-complete \autocite[Theorem~3.6]{est15}.
+  A reduction from the former to the latter would be very surprising.
+\end{justification}
