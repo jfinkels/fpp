@@ -427,11 +427,17 @@ This problem is complete for $\NNC^d[i(n) \log n]$ under logarithmic space many-
   Since we have shown an $\NC^d$ algorithm for an $\NNC^d[i(n) \log n]$-complete problem, we conclude that $\NC^d = \NNC^d[i(n) \log n]$.
 \end{proof}
 
-As a corollary, any problem complete for $\para \WNC^d$ is not in $\para \NC^d$ unless $\NC^d = \NNC^d[i(n) \log n]$.
+As a corollary, we can relate the completeness of parameterized or decision problems to collapses in decision or parameterized classes, respectively.
 
 \begin{corollary}
-  For each positive integer $d$, we have $\pNCSAT$ is in $\para \NC^d$ if and only if there is a circuit-computable, nondecreasing, unbounded function $i$ such that $\NC^d = \NNC^d[i(n) \log n]$.
-  (Here we equate $\NC^1 \dash \textsc{CSat}$ with $\textsc{FSat}$.)
+  Suppose $d$ is a positive integer.
+  The following are equivalent.
+  \begin{enumerate}
+  \item $\pNCSAT$ is in $\para \NC^d$.
+  \item There is a circuit-computable, nondecreasing, unbounded function $i$ such that $\iNCSAT$ is in $\NC^d$.
+  \item $\para \NC^d = \para \WNC^d$.
+  \item There is a circuit-computable, nondecreasing, unbounded function $i$ such that $\NC^d = \NNC^d[i(n) \log n]$.
+  \end{enumerate}
 \end{corollary}
 
 \subsection{Is \texorpdfstring{$\para \WNC$}{paraWNC} in \texorpdfstring{$\para \P$}{paraP}?}
