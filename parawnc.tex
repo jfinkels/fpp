@@ -250,7 +250,7 @@ The same proof works for the problems of deciding whether a circuit or a formula
 
 We saw that the parameterized weighted Boolean formula satisfiability problem, $\pFSAT$, is in $\para \WNC^1$ in \autoref{lem:pfsatmem}.
 In fact, it is complete for $\para \WNC^1$ under $\para \FO$ many-one reductions \autocite[Theorem~3.6]{est15}.
-\todo{Can we use the ``template on top of a verification language'' elsewhere?}
+\todo{Can we use the ``template on top of a verification language'' to prove completeness in complexity classes of decision problems with limited nondeterminism as well?}
 The parameterized weighted Boolean circuit satisfiability problem, denoted $\pCSAT$, is the same problem with Boolean circuits instead of Boolean formulas; this problem is complete for $\para \WP$ under $\para \FO$ many-one reductions by a similar proof.
 It makes sense to expect, then, that the problems $\pNCSAT$ may be complete for the classes $\para \WNC^d$, for each positive integer $d$.
 
@@ -414,7 +414,6 @@ This problem is complete for $\NNC^d[i(n) \log n]$ under logarithmic space many-
   Choose $i$ to be the ``lower inverse'' function $i_{f, d}$ guaranteed by \autoref{lem:lowerinverse}.
 
   The decision problem $i(n) \dash \NC^d \dash \textsc{CSat}$ is complete for $\NNC^d[i(n) \log n]$ under logarithmic space many-one reductions by \autocite[Theorem~3.6]{cc97lim}, so it suffices to show that this problem is in $\NC^d$.
-  \todo{Need to show the case $d = 1$ works as well.}
   The circuit family $\{A'_n\}$ defined by $A'_n(C) = A_{n, i(n)}((C, i(n)))$ witnesses this membership:
   \[
   \size(A'_n) = \size(A_{n, i(n)}) \leq f(i(n)) n^{O(1)} \leq n^{O(1)}
