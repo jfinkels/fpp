@@ -117,6 +117,7 @@
 \newcommand{\pFSAT}{p \dash \textsc{FSat}}
 \newcommand{\pCSAT}{p \dash \textsc{CSat}}
 \newcommand{\pNCSAT}{p \dash k \dash \NC^d \textsc{CSat}}
+\newcommand{\iNCSAT}{i(n) \dash \NC^d \dash \textsc{CSat}}
 \newcommand{\PiFSAT}{\Pi_t \textsc{FSat}}
 \newcommand{\PiCSAT}{\Pi_t \textsc{CSat}}
 
@@ -214,12 +215,13 @@ We prove that $\para \NC = \para \WNC$ almost exactly when $\NC = \NNC[i(n) \log
   In this case, we say the language is \emph{circuit-decidable with uniform size and depth}.
 \end{definition}
 
-Nonuniformity is required in \autoref{thm:eventually} and \autoref{thm:rmparam}, among other theorems, in which the size of the input relative to the size of the parameter for an instance of the parameterized problem selects which of two circuits to use.
+Nonuniformity is required in \autoref{lem:spreduction}, among other theorems, in which the size of the input relative to the size of the parameter for an instance of the parameterized problem selects which of two circuits to use.
 If the circuits were uniform, we would need to include both alternatives as subcircuits of a single larger circuit, thereby making the circuits too deep to meet the required circuit depth bounds.
 \todo{
   Early on, I tried to see what would happen if we place the parameterized running time in the uniformity part of the computation (i.e. $\para \L$-uniform $\NC$ circuits instead of $\L$-uniform $\para \NC$ circuits), but I could not show anything.
   However, I would like to take another look at this.
 }
+It may be possible to adapt some theorems in later sections to use uniform circuits, but we did not pursue this.
 
 \begin{definition}[Decision problems and parameterized problems]
   A \emph{language} is a set of binary strings.
@@ -348,51 +350,6 @@ Contrast this with the complexity of the corresponding parameterized problem.
 The lemmas in this section allow us to transform, in certain circumstances, a highly parallel algorithm for a decision problem into a fixed-parameter parallelizable one for a parameterized problem, or vice versa.
 They will be used in later sections to provide evidence against the collapse of larger complexity classes to $\para \NC$.
 
-\begin{definition}\label{def:eventually}
-  Suppose $d$ is a natural number and $(Q, \kappa)$ is a parameterized problem.
-  We say the problem $(Q, \kappa)$ is \emph{eventually in $\NC^d$} if there is a circuit-computable function $h$ and an $\NC^d$ family of circuits $\{C_n\}_{n \in \mathbb{N}}$ such that for each $x$ of length $n$, if $n \geq h(\kappa(x))$, then $x \in Q$ if and only if $C_n(x) = 1$.
-\end{definition}
-
-This theorem is a characterization of parameterized problems in the class $\para \NC^d$ as problems for which the parameter suggests an input size threshold, below which it suffices to perform an exhaustive search to solve the problem and after which we require an efficient algorithm.
-It is the adaptation of \autocite[Theorem~1.37]{fg06}.
-
-\begin{theorem}\label{thm:eventually}
-  Suppose $d$ is a natural number and $(Q, \kappa)$ is a parameterized problem.
-  If $Q$ is circuit-decidable with uniform size and depth and $(Q, \kappa)$ is eventually in $\NC^d$, then $(Q, \kappa)$ is in $\para \NC^d$.
-\end{theorem}
-\begin{proof}
-  Let $h$ be the function that defines the lower bound on the length after which $(Q, \kappa)$ is in $\NC^d$.
-  The nonuniform family of circuits $\{A_{n, k}\}$ that decides $(Q, \kappa)$ is defined by
-  \[
-  A_{n, k} =
-  \begin{cases}
-    C^1_n & \text{if } n < h(k) \\
-    C^2_n & otherwise,
-  \end{cases}
-  \]
-  where $\{C^1_n\}$ is the family of circuits that decides $Q$ and $\{C^2_n\}$ is the family of $\NC^d$ circuits that eventually decides $(Q, \kappa)$.
-  The correctness of $A_{n, k}$ follows from the correctness of $C^1_n$ and $C^2_n$.
-
-  Let $S$ and $D$ be the circuit-computable functions that give the size and depth, respectively, of $C^1_n$ from $n$.
-  If $n < h(k)$, then
-  \begin{align*}
-    \size(A_{n, k}) & = \size(C^1_n) = S(n) \leq S(h(k)), \\
-    \depth(A_{n, k}) & = \depth(C^1_n) = D(n) \leq D(h(k)).
-  \end{align*}
-  If $n \geq h(k)$, then
-  \begin{align*}
-    \size(A_{n, k}) & = \size(C^2_n) = n^{O(1)}, \\
-    \depth(A_{n, k}) & = \depth(C^2_n) = O(\log^d n).
-  \end{align*}
-  An upper bound for the size of $A_{n, k}$ in either case is $S(h(k)) n^{O(1)}$ and for the depth $D(h(k)) + O(\log^d n)$.
-  Since $S$ and $D$ are computable, composing each with $h$ yields another computable function, so these size and depth bounds meet the requirements of the definition of $\para \NC^d$.
-\end{proof}
-
-\begin{definition}\label{def:spreduction}
-  Suppose $d$ is a natural number, $(Q, \kappa)$ is a parameterized problem, and $Q'$ is a decision problem.
-  There is a \emph{small parameter $\NC^d$ many-one reduction} from $(Q, \kappa)$ to $Q'$ if there is a nondecreasing, unbounded, circuit-computable function $h$ and an $\NC^d$ family of circuits $\{R_n\}_{n \in \mathbb{N}}$ such that for each string $x$ of length $n$ with $\kappa(x) \leq h(n)$, we have $x \in Q$ if and only if $R_n(x) \in Q'$.
-\end{definition}
-
 \begin{lemma}\label{lem:upperinverse}
   Suppose $i$ is an unbounded, nondecreasing, circuit-computable function.
   Then there is an unbounded, nondecreasing, circuit-computable function $f_i$ such that for each natural number $n$, we have $f_i(i(n)) \geq n$.
@@ -403,8 +360,13 @@ It is the adaptation of \autocite[Theorem~1.37]{fg06}.
   \todo{Fill me in}
 \end{proof}
 
-This lemma is analogous to \autoref{thm:eventually}.
-It demonstrates that the closure of $\NC$ under small parameter reductions is $\para \NC$.
+\begin{definition}\label{def:spreduction}
+  Suppose $d$ is a natural number, $(Q, \kappa)$ is a parameterized problem, and $Q'$ is a decision problem.
+  There is a \emph{small parameter $\NC^d$ many-one reduction} from $(Q, \kappa)$ to $Q'$ if there is a nondecreasing, unbounded, circuit-computable function $h$ and an $\NC^d$ family of circuits $\{R_n\}_{n \in \mathbb{N}}$ such that for each string $x$ of length $n$ with $\kappa(x) \leq h(n)$, we have $x \in Q$ if and only if $R_n(x) \in Q'$.
+\end{definition}
+
+%% This lemma is analogous to \autoref{thm:eventually}.
+This lemma demonstrates that the closure of $\NC$ under small parameter reductions is $\para \NC$.
 
 \begin{lemma}\label{lem:spreduction}
   Suppose $d$ is a natural number, $(Q, \kappa)$ is a parameterized problem, and $Q'$ is a decision problem.
@@ -434,6 +396,15 @@ It demonstrates that the closure of $\NC$ under small parameter reductions is $\
   \end{align*}
   where $S$ and $D$ are the (circuit-computable, nondecreasing) size and depth bounds for the circuit family $\{C_n^1\}$.
   Thus in either case, there is a sufficiently large circuit-computable function $f$ such the size of $A_{n, k}$ is bounded above by $f(k) n^{O(1)}$ and the depth $f(k) + O(\log^d n)$.
+\end{proof}
+
+\begin{corollary}\label{cor:sprself}
+  Suppose $(Q, \kappa)$ is a parameterized problem, $d$ is a positive integer, and $i$ is an unbounded, nondecreasing, circuit-computable function.
+  Let $i(n) \dash Q$ denote the problem of deciding, given $x$ with $\kappa(x) \leq i(|x|)$, whether $x \in Q$.
+  If $i(n) \dash Q$ is in $\NC^d$, then $(Q, \kappa)$ is in $\para \NC^d$.
+\end{corollary}
+\begin{proof}
+  The identity function is a small parameter $\NC^d$ many-one reduction from from $(Q, \kappa)$ to $i(n) \dash Q$, thereby proving that $Q$ is in $\para \NC^d$ by the previous lemma.
 \end{proof}
 
 This lemma shows that a many-one reduction to a fixed-parameter parallelizable problem can sometimes induce a highly parallel algorithm, if the parameter functions are bounded for the reduced instance.
@@ -921,6 +892,8 @@ What kind of problems are in the class $\para \WNC$?
 \item The parameterized semigroup rank problem is in $\para \WNL$ \autocite[Theorem~3.12]{est15}, which is a subclass of $\para \WNC^2$.
 \end{itemize}
 
+\subsubsection{Small generating set problems}
+
 Let us consider the parameterized group rank problem, a subset of the parameterized semigroup rank problem.
 
 \begin{definition}[$\pgrouprank$]
@@ -948,7 +921,8 @@ This problem is highly parallelizable, given that a witness of size $O(k \log n)
   We conclude that this parameterized problem is in $\para \WL$.
 \end{proof}
 
-%% A related problem with a more natural parameterization is the weighted $\NC^d$ circuit satisfiability problem.
+\subsubsection{Weighted satisfiability problems}
+
 Let $\|x\|_1$ denote the Hamming weight (that is, the number of ones) of a binary string.
 This problem is the restriction of $\pCSAT$ to bounded depth circuits.
 
@@ -988,13 +962,13 @@ This theorem is an adaptation of \autocite[Lemma~3.3]{cc97lim}.
 
 \begin{lemma}\label{lem:pkncsatmem}
   For each positive integer $d$, we have $\pNCSAT$ is in $\para \WNC^d$.
-  Also, the underlying decision problem is in $\NNC^d[\poly]$.
+  %% Also, the underlying decision problem is in $\NNC^d[\poly]$.
 \end{lemma}
 \begin{proof}
-  The underlying decision problem has a straightforward $\NNC^d[\poly]$ algorithm using the depth-universal circuit of \autocite{ch85}, along with a logarithmic depth circuit that enforces the inequality $\|w\|_1 = k$.
-  The number of nondeterministic bits used by that circuit is $n$, the number of inputs to the circuit $C$, which is bounded above by the size of $C$.
-
-  Membership in $\para \WNC^d$ requires a little more work.
+  %% The underlying decision problem has a straightforward $\NNC^d[\poly]$ algorithm using the depth-universal circuit of \autocite{ch85}, along with a logarithmic depth circuit that enforces the inequality $\|w\|_1 = k$.
+  %%The number of nondeterministic bits used by that circuit is $n$, the number of inputs to the circuit $C$, which is bounded above by the size of $C$.
+  %%
+  %% Membership in $\para \WNC^d$ requires a little more work.
   The algorithm will be composed of several subcircuits.
   \begin{itemize}
   \item Let $U$ be the depth-universal circuit \autocite{ch85} for depth $\log^d m$.
@@ -1079,12 +1053,12 @@ The first proof is a reduction to $p \dash k \dash \NC^1 \textsc{Csat}$, and req
   \item Let $\phi' = (\psi \land \phi|_{\psi = 1}) \lor (\lnot \psi \land \phi|_{\psi = 0})$, where $\phi|_{\psi = b}$ denotes the formula $\phi$ with each instance of $\psi$ replaced with the constant $b$.
   \item Apply $A$ recursively to each of the four subformulas in $\phi'$ and return the resulting formula.
   \end{itemize}
-  ...
+  \todo{fill me in}
 \end{proof}
 
 \begin{lemma}[{\autocite[Theorem~3.6]{est15}}]\label{lem:pfsatmem}
   $\pFSAT$ is in $\para \WNC^1$.
-  Also, the underlying decision problem is in $\NNC^1[\poly]$.
+  %% Also, the underlying decision problem is in $\NNC^1[\poly]$.
 \end{lemma}
 \begin{proof}
   We show a $\para \NC^1$ many-one reduction to the weighted circuit satisfiability for logarithmic depth circuits.
@@ -1162,10 +1136,10 @@ As we will see in the next section (and repeatedly throughout this paper), param
 
 \begin{theorem}\label{thm:parawncdcomplete}
   For each positive integer $d$, we have $\pNCSAT$ is complete for $\para \WNC^d$ under $\para \NC^1$ many-one reductions.
-  Also, the underlying decision problem is in $\NNC^d[\poly]$.
+  %% Also, the underlying decision problem is in $\NNC^d[\poly]$.
 \end{theorem}
 \begin{proof}
-  Membership in $\para \WNC^d$ (and in $\NNC^d[\poly]$ for the underlying decision problem) was proven in \autoref{lem:pkncsatmem}.
+  Membership in $\para \WNC^d$ was proven in \autoref{lem:pkncsatmem}.
 
   Suppose $(Q, \kappa)$ is in $\para \WNC^d$, so there is a nonuniform $\NC^d$ circuit family $\{C_{n, k}\}$ and circuit-computable functions $f$ and $h$ such that
   \begin{itemize}
@@ -1230,10 +1204,10 @@ However, we can prove only completeness under the $\para \NC^1$ reduction instea
 
 \begin{theorem}\label{thm:pfsatcomplete}
   $\pFSAT$ is complete for $\para \WNC^1$ under $\para \NC^1$ many-one reductions.
-  Also, the underlying decision problem is in $\NNC^1[\poly]$.
+  %% Also, the underlying decision problem is in $\NNC^1[\poly]$.
 \end{theorem}
 \begin{proof}
-  Membership in $\para \WNC^1$ (and in $\NNC^1[\poly]$ for the underlying decision problem) was proven in \autoref{lem:pfsatmem}.
+  Membership in $\para \WNC^1$ was proven in \autoref{lem:pfsatmem}.
 
   To prove hardness, it suffices to show a $\para \NC^1$ reduction from $p \dash k \dash \NC^1 \textsc{CSat}$ to $\pFSAT$, since the circuit problem is complete for $\para \WNC^1$ by the previous theorem.
   The reduction is $(C, k) \mapsto (\phi, k)$, where $\phi$ is the standard reduction for logarithmic depth circuits to polynomial size Boolean formulas.
@@ -1265,70 +1239,6 @@ Compare it with the following similar theorems (here $\beta$ indicates one-way a
 \end{itemize}
 \todo{Can we generalize all of these theorems?}
 
-The next theorem is similar to \autoref{thm:eventually} in that it is a characterization of $\para \WNC^d$, a nondeterministic extension of $\para \NC^d$.
-It is the adaptation of \autocite[Proposition~3.7]{fg06}.
-The parameterized problems in $\para \WNC^d$ of most interest to us are those for which there is a nondeterministic $\NC$ algorithm with nondeterminism limited by a function of the parameter.
-Compare this with \autoref{lem:reducetonc}.
-\todo{Can they be generalized?}
-
-\begin{theorem}\label{thm:rmparam}
-  Suppose $d$ is a positive integer and $(Q, \kappa)$ is a parameterized problem.
-  If $(Q, \kappa) \in \para \WNC^d$ and $Q \in \NNC^d[\poly]$, then there is a nondeterministic $\NC^d$ circuit family $\{C_{n, k}\}$ and a circuit-computable function $h$ such that $\{C_{n, k}\}$ decides $Q$ and $\nondet(C_{n, k}) \leq h(k) \log n$.
-  %% The converse holds when $e = 0$.
-\end{theorem}
-\begin{proof}
-  Assume $(Q, \kappa) \in \para \WNC^d$ and $Q \in \NNC^d[\poly]$.
-  Define the circuit family $\{A_{n, k}\}$ by
-  \[
-  A_{n, k} =
-  \begin{cases}
-    C^1_{n, k} & \text{if } f(k) \leq \min(n, \log^d n) \\
-    C^2_n & \text{otherwise},
-  \end{cases}
-  \]
-  where
-  \begin{itemize}
-  \item $\{C^1_{n, k}\}$ is the $\para \WNC^d$ circuit family,
-  \item $f$ is the circuit-computable function on the parameter that appears in the size and depth bounds for $C^1_{n, k}$,
-  \item $\{C^2_n\}$ is the $\NNC^d[\poly]$ circuit family.
-  \end{itemize}
-  The fact that $A_{n, k}$ correctly decides $Q$ follows from the correctness of the circuits $C^1_{n, k}$ and $C^2_n$.
-  It remains to show that $A_{n, k}$ has the required size, depth, and nondeterminism bounds.
-
-  If $f(k) \leq \min(n, \log^d n)$, then
-  \begin{align*}
-    \size(A_{n, k}) & \leq \size(C^1_{n, k}) \leq f(k) n^{O(1)} \leq n^{O(1)} \\
-    \depth(A_{n, k}) & \leq \depth(C^1_{n, k}) \leq f(k) + O(\log^d n) \leq O(\log^d n),
-  \end{align*}
-  and otherwise
-  \begin{align*}
-    \size(A_{n, k}) & \leq \size(C^2_n) \leq n^{O(1)} \\
-    \depth(A_{n, k}) & \leq \depth(C^2_n) \leq O(\log^d n).
-  \end{align*}
-  The overall size and depth upper bounds for $A_{n, k}$ are thus $n^{O(1)}$ and $O(\log^d n)$, respectively.
-
-  For the nondeterminism, there are three cases.
-  First, if $f(k) \leq n$ and $f(k) \leq \log^d n$, then
-  \[
-  \nondet(A_{n, k}) \leq \nondet(C^1_{n, k}) \leq h(k) \log n,
-  \]
-  where $h$ is the circuit-computable of the parameter that appears in the nondeterminism bound for $C^1_{n, k}$.
-  Second, if $f(k) > n$, then
-  \[
-  \nondet(A_{n, k}) \leq \nondet(C^2_n) \leq n^{O(1)} \leq f(k)^{O(1)}.
-  \]
-  Finally, if $f(k) > \log^d n$, then $2^{f(k)^{1 / d}} > n$, which implies
-  \[
-  \nondet(A_{n, k}) \leq \nondet(C^2_n) \leq n^{O(1)} \leq 2^{O\left(f(k)^{1 / d}\right)}.
-  \]
-  If we choose $h$ to be the computable function
-  \[
-  h(k) = \max \left\{ h(k), f(k)^{O(1)}, 2^{O\left(f(k)^{1 / d}\right)} \right\},
-  \]
-  then we can conclude $\nondet(A_{n, k}) \leq h(k) \log n$.
-  (Since we assume $d$ is positive, the quotient $1 / d$ is well-defined.)
-\end{proof}
-
 This lemma is an adaptation of \autocite[Lemma~3.24]{fg06}.
 It is the ``opposite'' of \autoref{lem:upperinverse}.
 
@@ -1355,8 +1265,8 @@ It is the ``opposite'' of \autoref{lem:upperinverse}.
 \end{proof}
 
 This theorem is an adaptation of \autocite[Theorem~3.29]{fg06}.
-For any computable function $i$, let $i(n) \dash \NC^d \dash \textsc{CSat}$ denote the problem of deciding whether a depth $O(\log^d n)$ circuit is satisfiable by an input of Hamming weight at most $i(n)$.
-This problem is complete for $\NNC^d[i(n) \log n]$ under logarithmic space many-one reductions \autocite[Theorem~3.6]{cc97lim}.
+For any computable function $i$, let $\iNCSAT$ denote the problem of deciding whether a depth $O(\log^d n)$ circuit is satisfiable by an input of Hamming weight $k$, where $k$ is at most $i(n)$.
+This problem is complete for $\NNC^d[i(n) \log n]$ under logarithmic space many-one reductions \autocite[Theorem~3.6]{cc97lim} (\todo{they technically use the problem ``has a satisfying assignment of weight $\leq i(n)$'', but I believe this is equivalent.}).
 
 \begin{theorem}\label{thm:ncwnc}
   Suppose $d$ is a positive integer.
@@ -1365,19 +1275,9 @@ This problem is complete for $\NNC^d[i(n) \log n]$ under logarithmic space many-
 \begin{proof}
   First we prove the reverse implication.
   Assume $\NC^d = \NNC^d[i(n) \log n]$, for some $i$.
-  We will show that $\pNCSAT$, a problem complete for $\para \WNC^d$ by \autoref{thm:parawncdcomplete}, is now in $\para \NC^d$, which necessitates the claimed collapse.
-  Since this problem is also in $\NNC^d[\poly]$, \autoref{thm:rmparam} guarantees the existence of a circuit-computable function $h$ and an $\NNC^d$ circuit family $\{C_{n, k}\}$ such that $\nondet(C_{n, k}) \leq h(k) \log n$.
-
-  Let $f$ be a circuit-computable function such that $n \geq f(k)$ implies $h(k) \leq i(n)$.
-  \todo{Explain why such an $f$ must exist; using \autoref{lem:upperinverse} or \autoref{lem:lowerinverse}?}
-  Now consider the set $Q^+$, defined by
-  \[
-  Q^+ = Q \cap \left\{ x \, \middle| \, |x| \geq f(\kappa(x)) \right\}.
-  \]
-  Since $|x| \geq f(\kappa(x))$ for each $x \in Q^+$, we have $h(\kappa(x)) \leq i(|x|)$.
-  Thus $Q^+$ is in $\NNC^d[i(n) \log n]$.
-  By assumption, $Q^+$ is therefore also in $\NC^d$.
-  This means $Q$ is eventually in $\NC^d$, so we have $Q \in \para \NC^d$ by \autoref{thm:eventually}.
+  Since $\pNCSAT$ is complete for $\para \WNC^d$ by \autoref{thm:parawncdcomplete}, it suffices to show that this problem is in $\para \NC^d$, which necessitates the claimed collapse.
+  By the comments preceding this theorem, the problem $\iNCSAT$ is in $\NNC^d[i(n) \log n]$, which means it is also in $\NC^d$ by assumption.
+  If $(Q, \kappa)$ denotes $\pNCSAT$ and $i(n) \dash Q$ denotes $\iNCSAT$, then the former is in $\para \NC^d$ by \autoref{cor:sprself}.
 
   Now we prove the forward implication.
   Assume $\para \NC^d = \para \WNC^d$.
