@@ -6,6 +6,10 @@ But can the lack of parallelizability for these problems depend on a parameteriz
 
 \subsection{Definition of \texorpdfstring{$\para \NC$}{paraNC}}
 
+The $\para$ ``operator'' defined in \autocite{fg03} applies generically to an arbitrary complexity class as follows.
+If $\mathcal{C}$ is a class of decision problems, then $\para \mathcal{C}$ is the class of parameterized problems $(Q, \kappa)$ for which there is a decision problem $L \in \mathcal{C}$ and a computable function $f$ such that $x$ in $Q$ if and only if $(x, 1^{f(\kappa(x))}) \in L$.
+When $\mathcal{C} = \NC$ in particular, we get the following equivalent definition.
+
 \begin{definition}[$\para \NC^d$]
   Let $d$ be a natural number.
   A parameterized problem $(Q, \kappa)$ is in the class $\para \NC^d$ if there is a circuit-computable function $f$ and a nonuniform family $\{C_{n, k}\}$ of bounded fan-in Boolean circuits such that for each string $x$,
@@ -14,11 +18,10 @@ But can the lack of parallelizability for these problems depend on a parameteriz
   \item $\size(C_{n, k}) \leq f(k) n^{O(1)}$,
   \item $\depth(C_{n, k}) \leq f(k) + O(\log^d n)$.
   \end{itemize}
-  If instead the depth is bounded by $f(k) O(\log^d n)$, the class is denoted $\para \NC^{d \uparrow}$, a superclass of $\para \NC^d$.
-
-  If the circuits are of unbounded fan-in, the classes are $\para \AC^d$ and $\para \AC^{d \uparrow}$, respectively.
 \end{definition}
 
+If the depth of the circuit is instead bounded by $f(k) O(\log^d n)$, the class is denoted $\para \NC^{d \uparrow}$, a superclass of $\para \NC^d$.
+If the circuits are of unbounded fan-in, the classes are $\para \AC^d$ and $\para \AC^{d \uparrow}$, respectively.
 The classes $\para \AC^{d \uparrow}$ were first defined in \autocite{bst15}.
 
 \subsection{Example problem in \texorpdfstring{$\para \NC$}{paraNC}}

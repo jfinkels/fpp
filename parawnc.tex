@@ -53,6 +53,12 @@ We stop short of providing a general theorem that supercedes all of these theore
 
 \subsection{Definition of \texorpdfstring{$\para \WNC$}{paraWNC}}
 
+The $\para \W$ ``operator'' defined in \autocite[Definition~3.1]{est15} applies generically to an arbitrary complexity class as follows.
+If $\mathcal{C}$ is a class of decision problems, then $\para \W \mathcal{C}$ is the class of parameterized problems $(Q, \kappa)$ for which there is a $\mathcal{C}$ machine $M$ and computable functions $f$ and $h$ such that $x$ in $Q$ if and only if there is a string $w$ of length $h(\kappa(x)) \log |x|$ such that $M$ accepts on input $(x, 1^{f(\kappa(x))})$ and nondetermistic input $w$; access to the nondeterministic input is two-way.
+In a loose sense, for most classes $\mathcal{C}$, deterministic $\mathcal{C}$ is to nondeterministic $\mathcal{C}$ as $\para \mathcal{C}$ is to $\para \W \mathcal{C}$.
+
+When $\mathcal{C} = \NC$ in particular, we get the following equivalent definition.
+
 \begin{definition}[{$\para \WNC^d$}]
   Let $d$ be a natural number.
   A parameterized problem $(Q, \kappa)$ is in the class $\para \WNC^d$ if there are circuit-computable functions $f$ and $h$, and a nondeterministic circuit family $\{C_{n, k}\}$ such that for each string $x$,
