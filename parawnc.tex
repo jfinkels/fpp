@@ -1,14 +1,65 @@
 \section{\texorpdfstring{$\para \NC$}{paraNC} is to \texorpdfstring{$\NC$}{NC} as \texorpdfstring{$\para \WNC$}{paraWNC} is to \texorpdfstring{$\NNC$}{NNC}}
 
+% % Foreword %
+%
+% %% Context (anyone - why now?) %%
+%
+% What is the current situation, and why is the need so important?
+%
+The previous section shows one way of proving that a problem is likely not parallelizable, even in a parameterized sense: proving it complete for $\para \P$.
+A highly parallel algorithm for such a problem would imply that every problem that could be solved by a fixed-parameter tractable algorithm could be solved by a fixed-parameter parallelizable algorithm, a notion that violates our intuition about the nature of time.
+%
+% %% Need (readers - why you?) %%
+%
+% Why is this relevant to the reader, and why does something need to be done?
+% (Also reference relevant existing work.)
+%
+There is another way of proving a problem unlikely to be fixed-parameter parallelizable, one that relies on our intuition about the nature of nondeterminism.
+Our intuition is that nondeterministic computation cannot be simulated deterministically by any algorithm that is significantly more efficient than simply enumerating each possible branch of the nondeterministic computation.
+%
+% %% Task (author - why me?) %%
+%
+% What was undertaken to address the need?
+%
+We can use this intuition to provide evidence that an entire family of weighted circuit satisfiability problems is unlikely to be parallelizable in a parameterized sense;
+%
+% %% Object (document - why this document?) %%
+%
+% What does this document cover?
+%
+this section provides formalizes this idea.
+
+% % Summary %
+%
+% %% Findings (author - what?)
+%
+% What did the work reveal when performing the task?
+%
+Specifically, \autoref{thm:ncwnc} proves that $\NC^d = \NNC^d[\omega(\log n)]$ is equivalent to the corresponding collapse of the classes of parameterized problems.
+On the way to proving this equivalence, we also prove that the parameterized versions of the natural complete problems in $\NNC^d[\omega(\log n)]$ are complete for the corresponding parameterized complexity classes (\autoref{thm:parawncdcomplete}).
+Before getting to those theorems, we of course define the necessary parameterized complexity classes and provide some examples of member problems.
+%
+% %% Conclusion (readers - so what?)
+%
+% What did the findings mean for the audience?
+%
+These complete problems and complexity class collapses validate our intuition that the parameterized complexity classes behave like the classes of problems decidable by algorithms augmented with limited nondeterminism.
+%
+% %% Perspective (anyone - what now?)
+%
+% What should be done next?
+These results complement similar equivalences from \autocite[Theorem~3.29]{fg06} and \autocite[Theorem~15]{cm14}, as discussed in \autoref{sec:ncwnc} below.
+We stop short of providing a general theorem that supercedes all of these theorems.
+
 \subsection{Definition of \texorpdfstring{$\para \WNC$}{paraWNC}}
 
 \begin{definition}[{$\para \WNC^d$}]
   Let $d$ be a natural number.
-  A parameterized problem $(Q, \kappa)$ is in the class $\para \WNC^d$ if there are circuit-computable functions $f$, $g$, and $h$, and a nondeterministic circuit family $\{C_{n, k}\}$ such that for each string $x$,
+  A parameterized problem $(Q, \kappa)$ is in the class $\para \WNC^d$ if there are circuit-computable functions $f$ and $h$, and a nondeterministic circuit family $\{C_{n, k}\}$ such that for each string $x$,
   \begin{itemize}
   \item $x \in Q$ if and only if $C_{n, k}(x) = 1$, where $n = |x|$ and $k = \kappa(x)$,
   \item $\size(C_{n, k}) \leq f(k) n^{O(1)}$,
-  \item $\depth(C_{n, k}) \leq g(k) \log^d n$,
+  \item $\depth(C_{n, k}) \leq f(k) + \log^d n$,
   \item $\nondet(C_{n, k}) \leq h(k) \log n$.
   \end{itemize}
 \end{definition}
@@ -17,16 +68,13 @@
 \label{sec:rankinwp}
 
 What kind of problems are in the class $\para \WNC$?
-
-\begin{itemize}
-\item The parameterized weighted Boolean formula satisfiability problem is in $\para \WNC^1$ \autocite[Theorem~3.6]{est15}.
-\item The parameterized feedback vertex set problem is in $\para \WL$ \autocite[Section~4.3]{est15}, which is a subclass of $\para \WNC^2$.
-\item The parameterized semigroup rank problem is in $\para \WNL$ \autocite[Theorem~3.12]{est15}, which is a subclass of $\para \WNC^2$.
-\end{itemize}
+Some problems are given in \autocite{est15}, we provide a few more in this section.
 
 \subsubsection{Small generating set problems}
 
-Let us consider the parameterized group rank problem, a subset of the parameterized semigroup rank problem.
+The parameterized semigroup rank problem is in $\para \WNL$ \autocite[Theorem~3.12]{est15}, which is contained in $\para \WNC^2$.
+Let us consider the parameterized group rank problem, a restriction of the parameterized semigroup rank problem.
+We can show that this problem is in $\para \WL$, which is also in $\para \WNC^2$.
 
 \begin{definition}[$\pgrouprank$]
   \mbox{} \\
@@ -361,7 +409,7 @@ via the chain of parameterized reductions between corresponding complete problem
 Whether the $\pNCSAT$ problems are complete under $\para \FO$ many-one reductions remains open.
 
 \subsection{Does \texorpdfstring{$\para \NC$}{paraNC} equal \texorpdfstring{$\para \WNC$}{paraWNC}?}
-\label{sec:fppwpp}
+\label{sec:ncwnc}
 
 The main theorem in this section, \autoref{thm:ncwnc}, provides evidence that the parameterized complexity classes $\para \NC$ and $\para \WNC$ are distinct.
 Compare it with the following similar theorems (here $\beta$ indicates one-way access to the witness as opposed to $\W$, which indicates two-way access).
