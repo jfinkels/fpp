@@ -381,6 +381,20 @@ via the chain of parameterized reductions between corresponding complete problem
 \]
 Whether the $\pNCSAT$ problems are complete under $\para \FO$ many-one reductions remains open.
 
+Finally, we extend \autocite[Corollary~3.7]{est15} using this new family of complete problems.
+That theorem states that $\NC^1 = \P$ implies $\W[\SAT] = \W[\P] (= \para \WP)$, so we wish to generalize it to allow for an interpolation between $\NC^1$ and $\P$.
+This connects a collapse in parameterized complexity classes to one in classical complexity classes.
+
+\begin{corollary}
+  For each positive integer $d$, if $\NC^d = \P$, then $\W[\NC^d \SAT] = \W[\P] (= \para \WP)$.
+\end{corollary}
+\begin{proof}
+  By definition, $\W[\NC^d \SAT]$ is the closure of $\pNCSAT$ under $\para \P$ many-one reductions and $\W[\P]$ is the closure of $\pCSAT$ under $\para \P$ many-one reductions.
+  If $\NC^d = \P$, then there is a $\para \P$ many-one reduction from $\pCSAT$ to $\pNCSAT$ (because $\pCSAT$ is now in $\NC^d$).
+  Thus every parameterized problem that reduces to $\pCSAT$ also reduces to $\pNCSAT$.
+  We conclude that $\W[\NC^d \SAT] = \W[\P]$.
+\end{proof}
+
 \subsection{Does \texorpdfstring{$\para \NC$}{paraNC} equal \texorpdfstring{$\para \WNC$}{paraWNC}?}
 \label{sec:ncwnc}
 
@@ -457,25 +471,16 @@ As a corollary, we can relate the completeness of parameterized or decision prob
 \label{sec:wncp}
 
 The previous section demonstrates that it is unlikely that $\para \WNC$ is contained in $\para \NC$.
-Does the weaker inclusion of $\para \WNC$ in $\para \P$ also have negative consequences, albeit less severe ones?
-This conjecture relaxes \autoref{thm:ncwnc}.
+By relaxing the collapses in \autoref{thm:ncwnc}, we show that it is also unlikely that $\para \WNC$ is contained in $\para \P$.
+However, the collapses in this theorem are weaker.
 
-\begin{conjecture}\label{con:wncp}
-  $\para \WNC^d \subseteq \para \P$ if and only if $\NNC^d[i(n) \log n] \subseteq \P$.
-\end{conjecture}
-
-Here is an alternate approach that connects a collapse in parameterized complexity classes to one in classical complexity classes.
-
-\begin{theorem}[{\autocite[Corollary~3.7]{est15}}]
-  If $\NC^1 = \P$, then $\W[\SAT] = \para \WP$.
+\begin{theorem}\label{thm:wncp}
+  $\para \WNC^d \subseteq \para \P$ if and only if there is a circuit-computable, nondecreasing, unbounded function $i$ such that $\NNC^d[i(n) \log n] \subseteq \P$.
 \end{theorem}
-
-As in \autoref{thm:parawncdcomplete}, we wish to generalize this theorem so that we have an interpolation between $\NC^1$ and $\P$.
-%% Writing ``$\P$'', the upper limit of the interpolation, in place of ``$\NC^d$'' on the left gives $\para \WP = \para \WP$ on the right, a tautology.
-
-\begin{conjecture}
-  For each positive integer $d$, if $\NC^d = \P$, then $\W[\NC^d \SAT] = \para \WP$.
-\end{conjecture}
+\begin{proof}
+  This proof is identical to \autoref{thm:ncwnc}, just replacing $\para \NC^d$ and $\NC^d$ with $\para \P$ and $\P$, respectively.
+  It uses versions of \autoref{cor:sprself} and \autoref{cor:reducetoself} with similar changes.
+\end{proof}
 
 An alternative approach is to demonstrate related collapses in parameterized complexity classes.
 
