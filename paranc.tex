@@ -147,6 +147,8 @@ This lemma demonstrates that the closure of $\NC$ under small parameter reductio
   Thus in either case, there is a sufficiently large circuit-computable function $f$ such the size of $A_{n, k}$ is bounded above by $f(k) n^{O(1)}$ and the depth $f(k) + O(\log^d n)$.
 \end{proof}
 
+The following corollary highlights the special case of the preceding lemma in which the reduction is the identity function.
+
 \begin{corollary}\label{cor:sprself}
   Suppose $(Q, \kappa)$ is a parameterized problem, $d$ is a positive integer, and $i$ is an unbounded, nondecreasing, circuit-computable function.
   Let $i(n) \dash Q$ denote the problem of deciding, given $x$ with $\kappa(x) \leq i(|x|)$, whether $x \in Q$.
@@ -187,6 +189,43 @@ This lemma shows that a many-one reduction to a fixed-parameter parallelizable p
     & = O(\log^d n) + O(\log^d n) \\
     & = O(\log^d n). \qedhere
   \end{align*}
+\end{proof}
+
+The following corollary highlights the special case of the preceding lemma in which the decision problem of interest is a ``bounded-parameter'' version of the decision problem underlying the fixed-parameter parallelizable problem; compare this with \autoref{cor:sprself}.
+Below, a ``nontrivial'' parameterized problem is one in which $\emptyset \subsetneq Q \subsetneq \{0, 1\}^*$.
+
+\begin{corollary}\label{cor:reducetoself}
+  Suppose $(Q, \kappa)$ is a nontrivial parameterized problem, $d$ is a positive integer, and $i$ is an unbounded, nondecreasing, circuit-computable function.
+  Let $i(n) \dash Q$ denote the problem of deciding, given $x$ with $\kappa(x) \leq i(|x|)$, whether $x \in Q$.
+  If $(Q, \kappa)$ is in $\para \NC^d$ by a circuit family $\{C_{n, k}\}$ of size $f(k) n^{O(1)}$ and depth $f(k) + O(\log^d n)$ on inputs of length $n$ and $f(i(n)) \leq \min(n^{O(1)}, O(\log^d n))$, then $i(n) \dash Q$ is in $\NC^d$.
+\end{corollary}
+\begin{proof}
+  We will show a many-one reduction from the decision problem $i(n) \dash Q$ to the decision problem $Q$ underlying the parameterized problem $(Q, \kappa)$ that satisfies the conditions of the previous lemma.
+  The reduction $\{R_n\}$ is defined as follows.
+  \[
+  R_n(x) =
+  \begin{cases}
+    x & \text{if } \kappa(x) \leq i(n), \\
+    \bot & \text{otherwise},
+  \end{cases}
+  \]
+  where $\bot$ is an arbitrary string not in $Q$ (which must exist because the problem is nontrivial by hypothesis).
+  As long as $\kappa$ is computable by an $\NC^d$ circuit family, then so is $R_n$.
+  (The computation of $i(n)$ is captured by the nonuniformity of the circuit family, so it does not affect the size or depth required by the circuit computing $R_n$.)
+
+  The reduction $R_n$ is a correct many-one reduction.
+  If $x \in i(n) \dash Q$, then $\kappa(x) \leq i(|x|)$ and $x \in Q$, thus $R_n(x) \in Q$.
+  If $x \notin i(n) \dash Q$, then there are two cases.
+  In the first, $\kappa(x) > i(|x|)$, in which case $R_n(x) = \bot$, which is not in $Q$ by construction.
+  In the second case, $x \notin Q$ so $R_n(x) \notin Q$.
+
+  Finally, we consider the value of $f(\kappa(R_n(x)))$.
+  If $\kappa(x) \leq i(n)$, then by construction
+  \[
+  f(\kappa(R_n(x)) \leq f(\kappa(x)) \leq f(i(n)) \leq \min(n^{O(1)}, O(\log^d n)).
+  \]
+  On the other hand, if $\kappa(x) > i(n)$, then $\kappa(R_n(x)) = \kappa(\bot) = O(1)$, which is bounded above by both $n^{O(1)}$ and $O(\log^d n)$ for all but finitely many $n$.
+  Thus we have shown that $f(\kappa(R_n(x)))$ satisfies the upper bound required by \autoref{lem:reducetonc} and the conclusion, $i(n) \dash Q$ is in $\NC^d$, follows.
 \end{proof}
 
 \subsection{Approximable optimization problems}

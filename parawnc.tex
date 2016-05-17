@@ -196,6 +196,19 @@ This theorem is an adaptation of \autocite[Lemma~3.3]{cc97lim}.
   Since we have shown a $\para \WNC^d$ circuit family deciding $\pNCSAT$, we conclude that the problem is in $\para \WNC^d$.
 \end{proof}
 
+If we replace $k$ with any function $i(n)$ bounded above by a polynomial in $n$, we get the (already known) membership of the underlying decision problem in $\NNC^d[i(n) \log n]$.
+The weight $k$ can be at most the number of inputs to the circuit, which is in turn at most the size of the circuit, so a polynomial upper bound on $k$ suffices to cover all meaningful values of $k$.
+
+\begin{corollary}[{\autocite{cc97lim}}]\label{lem:nncmem}
+  Suppose $d$ is a positive integer and $i$ is a circuit-computable function such that $i(n) \leq n^{O(1)}$.
+  Then the decision problem $\iNCSAT$ is in nonuniform $\NNC^d[i(n) \log n]$.
+\end{corollary}
+\begin{proof}
+  The only change we need to make the circuit from the proof of the previous lemma is to add a single \textsc{and} with the result of deciding the inequality $k \leq i(n)$.
+  The computation of $i(n)$ can be assumed part of the nonuniformity of the circuit, at which point the comparison requires only logarithmic depth.
+  (If we wish the deciding circuit to be uniform, we can require that $i(n)$ be computable in uniform depth $O(\log^d n)$.)
+\end{proof}
+
 This technique also provides an alternate proof that parameterized weighted Boolean formula satisfiability problem, denoted $\pFSAT$, is in $\para \WNC^1$, implicit in \autocite[Theorem~3.6]{est15}.
 The proof directly implements the decoder function of \autoref{def:coding} as a Boolean formula.
 
@@ -326,6 +339,19 @@ As we will see in the next section (and repeatedly throughout this paper), param
   Since we have shown a correct $\para \NC^1$ many-one reduction from an arbitrary parameterized problem in $\para \WNC^d$ to $\pNCSAT$, we conclude that $\pNCSAT$ is complete for the class.
 \end{proof}
 
+As in \autoref{lem:nncmem}, if we replace $k$ with any function $i(n)$ bounded above by a polynomial in $n$, we get the (already known) completeness of the decision problem $\iNCSAT$ in the complexity class $\NNC^d[i(n) \log n]$.
+This is a slight improvement, since \autocite[Theorem~3.6]{cc97lim} proves that the problem of deciding whether a circuit has a satisfying assignment of weight at most $i(n)$ is complete for $\NNC^d[i(n) \log n]$ for all $d \geq 2$ under logarithmic space many-one reductions.
+
+\begin{corollary}[{\autocite[Theorem~3.6]{cc97lim}}]\label{cor:nnccomplete}
+  Suppose $d$ is a positive integer and $i$ is a circuit-computable function such that $i(n) \leq n^{O(1)}$.
+  Then $\iNCSAT$ is complete for $\NNC^d[i(n) \log n]$ under nonuniform $\NC^1$ many-one reductions.
+\end{corollary}
+\begin{proof}
+  Membership was proven in \autoref{lem:nncmem}.
+  The proof of completeness is identical to that of the previous theorem, replacing $k$ with $i(n)$.
+  (If we wish to have uniform completeness, we can require that $i(n)$ be computable in uniform depth $O(\log n)$.)
+\end{proof}
+
 This technique also gives us an alternate proof of the completeness $\pFSAT$ \autocite[Theorem~3.6]{est15}.
 However, we can prove only completeness under the $\para \NC^1$ reduction instead of the tighter $\para \FO$ reduction.
 
@@ -392,8 +418,6 @@ It is the ``opposite'' of \autoref{lem:upperinverse}.
 \end{proof}
 
 This theorem is an adaptation of \autocite[Theorem~3.29]{fg06}.
-For any computable function $i$, let $\iNCSAT$ denote the problem of deciding whether a depth $O(\log^d n)$ circuit is satisfiable by an input of Hamming weight $k$, where $k$ is at most $i(n)$.
-This problem is complete for $\NNC^d[i(n) \log n]$ under logarithmic space many-one reductions \autocite[Theorem~3.6]{cc97lim} (\todo{they technically use the problem ``has a satisfying assignment of weight $\leq i(n)$'', but I believe this is equivalent.}).
 
 \begin{theorem}\label{thm:ncwnc}
   Suppose $d$ is a positive integer.
@@ -403,28 +427,17 @@ This problem is complete for $\NNC^d[i(n) \log n]$ under logarithmic space many-
   First we prove the reverse implication.
   Assume $\NC^d = \NNC^d[i(n) \log n]$, for some $i$.
   Since $\pNCSAT$ is complete for $\para \WNC^d$ by \autoref{thm:parawncdcomplete}, it suffices to show that this problem is in $\para \NC^d$, which necessitates the claimed collapse.
-  By the comments preceding this theorem, the problem $\iNCSAT$ is in $\NNC^d[i(n) \log n]$, which means it is also in $\NC^d$ by assumption.
+  By \autoref{cor:nnccomplete}, the problem $\iNCSAT$ is in $\NNC^d[i(n) \log n]$, which means it is also in $\NC^d$ by assumption.
   If $(Q, \kappa)$ denotes $\pNCSAT$ and $i(n) \dash Q$ denotes $\iNCSAT$, then the former is in $\para \NC^d$ by \autoref{cor:sprself}.
 
   Now we prove the forward implication.
   Assume $\para \NC^d = \para \WNC^d$.
-  By \autoref{thm:parawncdcomplete}, the parameterized problem $\pNCSAT$ is now in $\para \NC^d$.
-  Let $\{A_{n, k}\}$ be the $\para \NC^d$ circuit family that decides this problem, with size bound $f(k) n^{O(1)}$ and depth bound $f(k) + \log^d n$, for some circuit-computable function $f$.
+  By \autoref{thm:parawncdcomplete}, the parameterized problem $\pNCSAT$ is in $\para \WNC^d$, which means it is also in $\para \NC^d$ by assumption.
+  Suppose the circuit family witnessing its membership in $\para \NC^d$ has size $f(k) n^{O(1)}$ and depth $f(k) + \log^d n$ for some circuit-computable function $f$.
   Assume without loss of generality that $f$ is increasing.
   Choose $i$ to be the ``lower inverse'' function $i_{f, d}$ guaranteed by \autoref{lem:lowerinverse}.
-
-  The decision problem $i(n) \dash \NC^d \dash \textsc{CSat}$ is complete for $\NNC^d[i(n) \log n]$ under logarithmic space many-one reductions by \autocite[Theorem~3.6]{cc97lim}, so it suffices to show that this problem is in $\NC^d$.
-  The circuit family $\{A'_n\}$ defined by $A'_n(C) = A_{n, i(n)}((C, i(n)))$ witnesses this membership:
-  \[
-  \size(A'_n) = \size(A_{n, i(n)}) \leq f(i(n)) n^{O(1)} \leq n^{O(1)}
-  \]
-  and
-  \[
-  \depth(A_n) = \depth(A_{n, i(n)}) \leq f(i(n)) + O(\log^d n) \leq O(\log^d n),
-  \]
-  by the way $i$ was chosen.
-  The correctness of this algorithm follows from the correctness of $A_{n, k}$.
-  Since we have shown an $\NC^d$ algorithm for an $\NNC^d[i(n) \log n]$-complete problem, we conclude that $\NC^d = \NNC^d[i(n) \log n]$.
+  Since $\iNCSAT$ is complete for $\NNC^d[i(n) \log n]$ by \autoref{cor:nnccomplete},it suffices to show that this problem is in $\NC^d$, which necessitates the claimed collapse.
+  If $(Q, \kappa)$ denotes $\pNCSAT$ and $i(n) \dash Q$ denotes $\iNCSAT$, then the latter is in $\NC^d$ by \autoref{cor:reducetoself}.
 \end{proof}
 
 As a corollary, we can relate the completeness of parameterized or decision problems to collapses in decision or parameterized classes, respectively.
