@@ -100,18 +100,26 @@ The lemmas in this section allow us to transform, in certain circumstances, a hi
 They will be used in later sections to provide evidence against the collapse of larger complexity classes to $\para \NC$.
 
 \begin{lemma}\label{lem:upperinverse}
-  Suppose $i$ is an unbounded, nondecreasing, circuit-computable function.
-  Then there is an unbounded, nondecreasing, circuit-computable function $f_i$ such that for each natural number $n$, we have $f_i(i(n)) \geq n$.
+  For each nondecreasing, unbounded, circuit-computable function $i$, there is a function $f_i$ such that $f_i(i(n)) \geq n$ for each $n \geq f(1)$.
+  Furthermore, $f_i$ is nondecreasing, unbounded, and circuit-computable.
   (We call $f_i$ the ``upper inverse'' of $i$.)
-  \todo{Make this look like the inverse lemma.}
 \end{lemma}
 \begin{proof}
-  \todo{Fill me in}
+  Define $f_i$ by
+  \[
+  f_i(k) = \max\{ n_0 \in \mathbb{N} \, | \, \forall n \geq n_0 \colon i(n) \geq k \}.
+  \]
+  Since $i$ is nondecreasing and unbounded, so is $f_i$.
+
+  To compute $f_i$, we use the fact that $i$ is nondecreasing is unbounded.
+  We know that for each $k$ there is a natural number $n_k$ such that for all $n \geq n_k$, we have $i(n) \geq k$.
+  Thus the algorithm for computing $f_i$ take $k$ as input and performs a binary search on $i(1), \dotsc, i(n_k)$ to determine the largest $n$ such that $i(n) \geq k$.
+  There will be at most $\log n_k$ comparison subcircuits, each requiring a computation of $i$ and a comparison with the integer $k$ (in binary, say), so the overall depth of the circuit computing $f_i$ is $O(\depth(i) \log n \log \log k)$ and the size is $O(\size(i) \log n \log k)$.
 \end{proof}
 
 \begin{definition}\label{def:spreduction}
   Suppose $d$ is a natural number, $(Q, \kappa)$ is a parameterized problem, and $Q'$ is a decision problem.
-  There is a \emph{small parameter $\NC^d$ many-one reduction} from $(Q, \kappa)$ to $Q'$ if there is a nondecreasing, unbounded, circuit-computable function $h$ and an $\NC^d$ family of circuits $\{R_n\}_{n \in \mathbb{N}}$ such that for each string $x$ of length $n$ with $\kappa(x) \leq h(n)$, we have $x \in Q$ if and only if $R_n(x) \in Q'$.
+  There is a \emph{small parameter $\NC^d$ many-one reduction} from $(Q, \kappa)$ to $Q'$ if there is a nondecreasing, unbounded, circuit-computable function $i$ and an $\NC^d$ family of circuits $\{R_n\}_{n \in \mathbb{N}}$ such that for each string $x$ of length $n$ with $\kappa(x) \leq i(n)$, we have $x \in Q$ if and only if $R_n(x) \in Q'$.
 \end{definition}
 
 %% This lemma is analogous to \autoref{thm:eventually}.
@@ -122,26 +130,26 @@ This lemma demonstrates that the closure of $\NC$ under small parameter reductio
   If $Q$ is circuit-decidable with uniform size and depth, $Q'$ is in $\NC^d$, and there is a small parameter $\NC^d$ many-one reduction from $(Q, \kappa)$ to $Q'$, then $Q$ is in $\para \NC^d$.
 \end{lemma}
 \begin{proof}
-  Let $h$ be the function that defines the upper bound on the parameter, below which there is an $\NC^d$ many-one reduction from $Q$ to $Q'$.
+  Let $i$ be the function that defines the upper bound on the parameter, below which there is an $\NC^d$ many-one reduction from $Q$ to $Q'$.
   Let $\{R_n\}$ be the $\NC^d$ circuit family computing the reduction.
   The nonuniform family of circuits $\{A_{n, k}\}$ that decides $(Q, \kappa)$ is defined by
   \[
   A_{n, k} =
   \begin{cases}
-    C_n^1 & \text{if } h(n) < k \\
+    C_n^1 & \text{if } i(n) < k \\
     C_{n'}^2 \circ R_{n} & \text{otherwise},
   \end{cases}
   \]
   where $\{C_n^1\}$ is the family of circuits that decides $Q$ with uniform size and depth, $\{C_n^2\}$ is the family of $\NC^d$ circuits that decides $Q'$, and $n'$ is the number of output bits of $R_n$.
   The correctness of $A_{n, k}$ follows from the correctness of the subsequent circuits.
 
-  If $h(n) \geq k$, then the size and depth of the circuit are polynomial and polylogarithmic in $n$, respectively, because the size and depth of $C_{n'}^2$ and $R_n$ are.
-  For the case when $h(n) < k$, consider the upper inverse $i_h$ of $h$ guaranteed by \autoref{lem:upperinverse}.
-  By construction, $n \leq i_h(h(n)) < i_h(k)$.
+  If $i(n) \geq k$, then the size and depth of the circuit are polynomial and polylogarithmic in $n$, respectively, because the size and depth of $C_{n'}^2$ and $R_n$ are.
+  For the case when $i(n) < k$, consider the upper inverse $f_i$ of $i$ guaranteed by \autoref{lem:upperinverse}.
+  By construction, $n \leq f_i(i(n)) < f_i(k)$.
   Now
   \begin{align*}
-    \size(A_{n, k}) & = \size(C_n^1) = S(n) \leq S(i_h(k)), \\
-    \depth(A_{n, k}) & = \depth(C_n^1) = D(n) \leq D(i_h(k)),
+    \size(A_{n, k}) & = \size(C_n^1) = S(n) \leq S(f_i(k)), \\
+    \depth(A_{n, k}) & = \depth(C_n^1) = D(n) \leq D(f_i(k)),
   \end{align*}
   where $S$ and $D$ are the (circuit-computable, nondecreasing) size and depth bounds for the circuit family $\{C_n^1\}$.
   Thus in either case, there is a sufficiently large circuit-computable function $f$ such the size of $A_{n, k}$ is bounded above by $f(k) n^{O(1)}$ and the depth $f(k) + O(\log^d n)$.

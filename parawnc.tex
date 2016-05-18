@@ -107,7 +107,7 @@ This problem is highly parallelizable, given that a witness of size $O(k \log n)
   We conclude that this parameterized problem is in $\para \WL$.
 \end{proof}
 
-\subsubsection{Weighted satisfiability problems}
+\subsubsection{Weighted circuit satisfiability problems}
 
 Let $\|x\|_1$ denote the Hamming weight (that is, the number of ones) of a binary string.
 This problem is the restriction of $\pCSAT$ to bounded depth circuits.
@@ -208,6 +208,8 @@ The weight $k$ can be at most the number of inputs to the circuit, which is in t
   The computation of $i(n)$ can be assumed part of the nonuniformity of the circuit, at which point the comparison requires only logarithmic depth.
   (If we wish the deciding circuit to be uniform, we can require that $i(n)$ be computable in uniform depth $O(\log^d n)$.)
 \end{proof}
+
+\subsubsection{Weighted formula satisfiability problems}
 
 This technique also provides an alternate proof that parameterized weighted Boolean formula satisfiability problem, denoted $\pFSAT$, is in $\para \WNC^1$, implicit in \autocite[Theorem~3.6]{est15}.
 The proof directly implements the decoder function of \autoref{def:coding} as a Boolean formula.
@@ -416,7 +418,8 @@ It is the ``opposite'' of \autoref{lem:upperinverse}.
   f(i_{f, d}(n)) \leq \min(n, \log^d n)
   \]
   for each $n \geq f(1)$.
-  Furthermore, $i_{f, d}$ is circuit-computable, nondecreasing, unbounded.
+  Furthermore, $i_{f, d}$ is nondecreasing, unbounded, and circuit-computable.
+  (We call $i_{f, d}$ the ``lower inverse'' of $f$.)
 \end{lemma}
 \begin{proof}
   Define $i_{f, d}$ by
@@ -427,7 +430,7 @@ It is the ``opposite'' of \autoref{lem:upperinverse}.
   It is straightforward to prove that this function is nondecreasing and unbounded.
   (The integer $d$ must be greater than zero to guarantee $i_{f, d}$ is unbounded.)
 
-  To compute $i_{f, d}$, we use the fact that $f$ is increasing to perform a binary search on the values $f(1), \dotsc, f(\min(n, \log^d n))$ and to determine the largest $j$ such that $f(j) \leq \min(n, \log^d n)$.
+  To compute $i_{f, d}$, we use the fact that $f$ is increasing to perform a binary search on the values $f(1), \dotsc, f(\min(n, \log^d n))$ to determine the largest $j$ such that $f(j) \leq \min(n, \log^d n)$.
   In the worst case, there will be at most $\log n$ comparison subcircuits, each requiring a computation of $f$, so the overall depth of the circuit computing $i_{f, d}$ is $O(\depth(f) \log n)$ and the size is $O(\size(f) \log n)$.
 \end{proof}
 
