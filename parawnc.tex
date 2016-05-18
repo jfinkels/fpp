@@ -475,25 +475,30 @@ By relaxing the collapses in \autoref{thm:ncwnc}, we show that it is also unlike
 However, the collapses in this theorem are weaker.
 
 \begin{theorem}\label{thm:wncp}
+  Suppose $d$ is a positive integer.
   $\para \WNC^d \subseteq \para \P$ if and only if there is a circuit-computable, nondecreasing, unbounded function $i$ such that $\NNC^d[i(n) \log n] \subseteq \P$.
 \end{theorem}
 \begin{proof}
-  This proof is identical to \autoref{thm:ncwnc}, just replacing $\para \NC^d$ and $\NC^d$ with $\para \P$ and $\P$, respectively.
+  The proof is identical to that of \autoref{thm:ncwnc}, replacing $\para \NC^d$ and $\NC^d$ with $\para \P$ and $\P$, respectively.
   It uses versions of \autoref{cor:sprself} and \autoref{cor:reducetoself} with similar changes.
 \end{proof}
 
-An alternative approach is to demonstrate related collapses in parameterized complexity classes.
+An alternate approach is to demonstrate related collapses in parameterized complexity classes.
+We extend \autocite[Corollary~3.8]{est15}, which states that $\para \WNC^1 \subseteq \para \P$ if and only if $\para \P = \W[\SAT]$.
+As before, we wish to generalize this equivalence to allow for an interpolation between $\NC^1$ and $\P$.
 
-\begin{theorem}[{\autocite[Corollary~3.8]{est15}}]
-  $\para \WNC^1 \subseteq \para \P$ if and only if $\para \P = \W[\SAT]$.
+\begin{theorem}
+  Suppose $d$ is a positive integer.
+  $\para \WNC^d \subseteq \para \P$ if and only if $\para \P = \W[\NC^d \SAT]$.
 \end{theorem}
+\begin{proof}
+  If $\para \WNC^d \subseteq \para \P$, then $\pNCSAT$ is in $\para \P$, so the closure of $\pNCSAT$ under $\para \P$ many-one reductions is contained in the closure of $\para \P$ under the same reductions, which is just $\para \P$.
+  Thus $\para \P = \W[\NC^d \SAT]$.
 
-Here we interpolate between $\para \WNC^1$ and $\para \WP$.
-%% Writing ``$\para \WP$'' in place of ``$\para \WNC^d$'' on the left, the upper limit of the interpolation, gives $\para \P = \para \WP$ on the right, a tautology.
-
-\begin{conjecture}
-  For each positive integer $d$, we have $\para \WNC^d \subseteq \para \P$ if and only if $\para \P = \W[\NC^d \SAT]$.
-\end{conjecture}
+  If $\para \P = \W[\NC^d \SAT]$, then every parameterized problem that reduces to $\pNCSAT$ under $\para \P$ many-one reductions is in $\para \P$.
+  Since $\pNCSAT$ is complete for $\para \WNC^d$ under $\para \NC^d$ many-one reductions, every problem in $\para \WNC^d$ reduces to $\pNCSAT$ under $\para \NC^d$ many-one reductions, and hence under $\para \P$ many-one reductions as well.
+  Thus $\para \WNC^d \subseteq \para \P$.
+\end{proof}
 
 \subsection{Does \texorpdfstring{$\para \WNC$}{paraWNC} equal \texorpdfstring{$\para \WP$}{paraWP}?}
 \label{sec:wncwp}
