@@ -506,9 +506,17 @@ As before, we wish to generalize this equivalence to allow for an interpolation 
 \label{sec:wncwp}
 
 \begin{conjecture}
-  For each positive integer $d$, if $\para \WNC^d = \para \WP$, then $\NC^d = \P$.
+  Suppose $d$ is a positive integer.
+  $\para \WNC^d = \para \WP$ if and only if there is a nondecreasing, unbounded, circuit-computable function $i$ such that $\NNC^d[i(n) \log n] = \NP[i(n) \log n]$.
 \end{conjecture}
 \begin{justification}
-  $p \dash k \dash \textsc{CSat}$ is $\para \WP$-complete and $p \dash \textsc{FSat}$ is $\para \WNC^1$-complete \autocite[Theorem~3.6]{est15}.
-  A reduction from the former to the latter would be very surprising.
+  It seems that
+  \[
+  \pCkSAT \leq_m^{\para \NC^d} \pNCSAT
+  \]
+  should imply
+  \[
+  \iCSAT \leq_m^{\NC^d} \iNCSAT.
+  \]
+  However, the problem is the nondeterminism bounds: on one side, the bound is $f(k) \log n$ and on the other $i(n) \log n$.
 \end{justification}
