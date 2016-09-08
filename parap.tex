@@ -93,7 +93,7 @@ The following problem is adapted from \textsc{Short Deterministic Turing Machine
   $\pBHP$ is $\para \P$-complete.
 \end{theorem}
 \begin{proof}
-  The underlying decision problem is in $\P$ (by a standard simulation on the deterministic universal Turing machine), so the parameterized problem is in $\FPT$.
+  The underlying decision problem is in $\P$ (by a standard simulation on the deterministic universal Turing machine), so the parameterized problem is in $\para \P$.
   To show $\para \P$-hardness, we use a generic reduction.
   Let $(Q, \kappa)$ be an arbitrary parameterized problem in $\para \P$ and let $M$ be the deterministic Turing machine that decides $Q$ in time $f_M(k) n^c$ for some (circuit-)computable function $f_M$ and some positive integer $c$.
   The reduction is $x \mapsto (M, x, 1^{f_M(k) n^c}, c)$.
