@@ -152,6 +152,12 @@ This lemma demonstrates that the closure of $\NC$ under small parameter reductio
   \]
   where $\{C_n^1\}$ is the family of circuits that decides $Q$ with uniform size and depth, $\{C_n^2\}$ is the family of $\NC^d$ circuits that decides $Q'$, and $n'$ is the number of output bits of $R_n$.
   The correctness of $A_{n, k}$ follows from the correctness of the subsequent circuits.
+  The circuit family is necessarily nonuniform: the computation of $i(n)$ and $k$ and the comparison of the two decides nonuniformly which circuit to select when defining $A_{n, k}$.\footnote{
+  All subsequent theorems that require nonuniform circuits are nonuniform because they rely on this lemma, and it is not clear whether this lemma can be made uniform.
+  Nonuniformity is necessary here, but only a \emph{single bit} of nonuniform advice is required to select the appropriate circuit for $A_{n, k}$, given the length $n$ and the parameterization $k$ of the input.
+  If the circuit $A_{n, k}$ were implemented with a selector for $i(n) < k$ and both branches as subcircuits, then the overall depth of the circuit would be bounded above by the larger of the depths of the two subcircuits.
+  For large values of $k$, this could be too great a depth to qualify as $\para \NC$.
+}
 
   If $i(n) \geq k$, then the size and depth of the circuit are polynomial and polylogarithmic in $n$, respectively, because the size and depth of $C_{n'}^2$ and $R_n$ are.
   For the case when $i(n) < k$, consider the upper inverse $f_i$ of $i$ guaranteed by \autoref{lem:upperinverse}.
