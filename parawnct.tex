@@ -1,126 +1,46 @@
-\section{The \texorpdfstring{$\para \WNC$}{paraWNC} hierarchy}
+\section{The \texorpdfstring{$\para \WP$}{paraWP} hierarchy}
 
-For the necessary background in logic, see \autocite[Chapter~4]{fg06}.
+Attempts to define $\para \WNC[t]$ in a way similar to the definition of $\para \WP[t]$ (more commonly known as $\W[t]$) elude us.
+Both the finite model theory definition of $\para \WNC[t]$ and the definition as the closure of a reasonable parameterized problem yield a complexity class that is equivalent to $\para \WP[t]$.
+Thus the main theorem in this section concerns the relationship between $\para \NC$ and $\para \WP[t]$ instead of $\para \WNC[t]$.
 
-\subsection{Definition of \texorpdfstring{$\para \WNC[t]$}{paraWNC[t]}}
-
-Let $\Phi$ be a class of formulas and let $\phi$ be an element of $\Phi$ with one free relation variable $X$ of arity $s$.
-Define the parameterized weighted definability problem as follows.
-
-%% \begin{definition}[{$\WD_\phi$ \autocite[Section~4.3]{fg06}}]
-%%   \mbox{} \\
-%%   \begin{tabular}{r p{9.2cm}}
-%%     \textbf{Instance:} & structure $\mathcal{A}$, natural number $k$. \\
-%%     \textbf{Question:} & Is there an $S \subseteq A^s$ such that $|S| = k$ and $\mathcal{A} \models \phi(S)$?
-%%   \end{tabular}
-%% \end{definition}
-
-\begin{definition}[{$p \dash \WD_\phi$ \autocite[Section~5.1]{fg06}}]
+\begin{definition}[{$p \dash \PiCSAT$ \autocite[Theorem~4.1]{cc97npo}}]
   \mbox{} \\
   \begin{tabular}{r p{9.2cm}}
-    \textbf{Instance:} & structure $\mathcal{A}$, natural number $k$. \\
+    \textbf{Instance:} & $\Pi_t$ Boolean circuit $C$, natural number $k$. \\
     \textbf{Parameter:} & $k$ \\
-    \textbf{Question:} & Is there an $S \subseteq A^s$ such that $|S| = k$ and $\mathcal{A} \models \phi(S)$?
+    \textbf{Question:} & Is $C$ $k$-satisfiable?
   \end{tabular}
 \end{definition}
 
-Let $p \dash \WD \dash \Phi$ be the class of all problems $p \dash \WD_\phi$ where $\phi$ is in $\Phi$.
-
-\todo{
-  Using closure under $\para \NC^1$ reductions just gives the $\para \WP[t]$ classes, since $\para \WP[t]$ is probably just the closure under first-order reductions.
-  We may have to use a weft-based definition here.
-}
-
-%% This definition is adapted from \autocite[Definition~5.1]{fg06}.
-
-%% \begin{definition}
-%%   For each positive integer $d$ greater than one and each positive integer $t$, let $\para \WNC^d[t] = \cl{p \dash \WD \dash \Pi_t}^{\leq_m^{\para \NC^1}}$.
-%% \end{definition}
-
-%% This theorem is adapted from \autocite[Proposition~5.3]{fg06}.
-
-%% \begin{conjecture}
-%%   For each positive integer $d$ greater than one and each positive integer $t$, we have $\para \WNC^d[t] \subseteq \para \WNC^d$.
-%% \end{conjecture}
-
-%% %% These definitions are used for the A[t] and A[P] hierarchy.
-
-%% \begin{definition}[{$\MC(\Phi)$ \autocite[Section~4.3]{fg06}}]
-%%   \mbox{} \\
-%%   \begin{tabular}{r p{9.2cm}}
-%%     \textbf{Instance:} & structure $\mathcal{A}$, formula $\phi \in \Phi$. \\
-%%     \textbf{Question:} & Does $\mathcal{A} \models \phi$?
-%%   \end{tabular}
-%% \end{definition}
-
-%% \begin{definition}[{$p\textnormal{-}\MC(\Phi)$ \autocite[Section~5.2]{fg06}}]
-%%   \mbox{} \\
-%%   \begin{tabular}{r p{9.2cm}}
-%%     \textbf{Instance:} & structure $\mathcal{A}$, formula $\phi \in \Phi$. \\
-%%     \textbf{Parameter:} & $|\phi|$ \\
-%%     \textbf{Question:} & Does $\mathcal{A} \models \phi$?
-%%   \end{tabular}
-%% \end{definition}
-
-\subsection{Example problem in \texorpdfstring{$\para \WNC[t]$}{paraWNC[t]}}
-
-\todo{Show a natural problem in some $\para \WNC[t]$, perhaps a weft-restricted $\NC^d$ circuit satisfiability problem.}
-
-In \autoref{sec:rankinwp}, we proved that $\pgrouprank$ is in $\para \WNC^2$.
-This problem may not be in $\para \WNC^2[t]$ for some finite $t$.
-%% Let us try to express this problem in first-order logic.
-%%
-%% \begin{definition}[Axiomatization of groups]
-%%   The signature for groups has a constant symbol for the identity element denoted $e$, a unary function for the inverse denoted $x^{-1}$, and a binary function for the group operation (denoted by concatenation).
-%%   Let the group axioms be defined as first-order formulae as follows.
-%%   \begin{align*}
-%%     \textsc{HasIdentity} & = \forall x\, (ex = x \land xe = x) \\
-%%     \textsc{HasInverses} & = \forall x\, (x^{-1} x = x x^{-1} = e) \\
-%%     \textsc{IsAssociative} & = \forall x \forall y \forall z\, ((x y) z = x (y z))
-%%   \end{align*}
-%%   Let $\textsc{IsGroup}$ be the conjunction of these three formulae.
-%%   Now for any finite structure $\mathcal{A}$, we have $\mathcal{A} \models \textsc{IsGroup}$ if and only if $\mathcal{A}$ is a group.
-%%   Let $\textsc{Group}$ denote the class of all finite structures that are valid groups, that is, the class of all structures that model $\textsc{IsGroup}$.
-%%   (Since the universal quantifiers can be placed in the beginning of the formula, $\textsc{IsGroup}$ is a $\Pi_1$ formula.)
-%% \end{definition}
-Unfortunately, the best first-order formulas that describe this problem are not of the form $\Sigma_k$ for some finite natural number $k$.
-In general, the number of variables grows with the order of the group.
-\begin{itemize}
-\item
-  There is a first-order formula that has $O(1)$ variables, but $O(\log n)$ quantifier alternations, using the strategy from the $\PSPACE$-completeness of $\textsc{TQBF}$ \autocite[Lemma~2.3]{nt16}.
-  This places the problem in $\FO[\log n]$, which is $\AC^1$, but doesn't provide placement in any finite level of the $\para \WNC$ hierarchy.
-\item
-  The authors of \autocite{bklm01} were not able to show membership in $\FO[\log \log n]$, which would have slightly improved the above membership, but still wouldn't place the problem in a finite level of the $\para \WNC$ hierarchy.
-\item
-  There is a first-order formula that has two alternations (beginning with $\forall$), but $O(\log n)$ variables \autocite[Lemma~3.5]{nt16}.
-  The fact that the number of variables grows with the size of the input means this does not place the problem in any descriptive complexity class, nor any parameterized complexity class.
-\item
-  There is a $\FO[\DTC]$ formula for the problem, since group membership is in $\L$, which equals $\FO[\DTC]$.
-  Although this subsumes the membership in $\FO[\log n]$ given in the first item above, this does not help us place the problem in a parameterized complexity class.
-\end{itemize}
-This basically means that the problem is in a class like $\para \WNC^2[\log n]$, and any improvement would likely follow an improvement of the descriptive complexity of the subgroup membership problem.
-
-\subsection{Completeness in \texorpdfstring{$\para \WNC[t]$}{paraWNC[t]}}
-
-\todo{If we show a complete problem here, make sure to give a corollary in the section below that it is not in $\para \NC$ unless something bad happens.}
-
-\subsection{Does \texorpdfstring{\para \NC}{paraNC} equal \texorpdfstring{\para \WNC[t]}{paraWNC[t]}?}
+\begin{definition}[{$\pPiFSAT$ \autocite[Theorem~4.2]{cc97npo}}]
+  \mbox{} \\
+  \begin{tabular}{r p{9.2cm}}
+    \textbf{Instance:} & $\Pi_t$ Boolean formula $\phi$, natural number $k$. \\
+    \textbf{Parameter:} & $k$ \\
+    \textbf{Question:} & Is $\phi$ $k$-satisfiable?
+  \end{tabular}
+\end{definition}
 
 \begin{theorem}\label{thm:picsatgc}
-  Suppose $d$ is a positive integer, $t$ is a positive integer greater than one, and $i$ is a circuit-computable nondecreasing function.
-  $\PiCSAT$ is complete for $\GC[i(n) \log n, \Pi_t \LOGTIME]$ under $\NC^d$ many-one reductions.
+  Suppose $d$ and $t$ are integers greater than one and $i$ is a circuit-computable nondecreasing function.
+  The decision problem $i(n) \dash \PiCSAT$ is complete for $\GC[i(n) \log n, \Pi_t \LOGTIME]$ under $\NC^d$ many-one reductions.
 \end{theorem}
 \begin{proof}
-  \todo{Fill me in...}
+  The hardness proof is from \autocite[Theorem~4.4]{cc97lim} and \autocite[Theorem~4.7]{cc97lim}, and the membership proof is from \autocite[Theorem~4.1]{cc97npo}.
+  The hardness is proven with respect to the logarithmic space many-one reduction, which induces an $\NC^d$ many-one reduction for each $d$ greater than one.
 \end{proof}
 
 \begin{theorem}\label{thm:ppifsat}
-  Suppose $d$ is a positive integer and $t$ is a positive integer greater than one.
-  $\pPiFSAT$ is complete for $\para \WNC^d[t]$ under $\para \NC^d$ many-one reductions.
+  Suppose $d$ and $t$ are integers greater than one.
+  $\pPiFSAT$ is complete for $\para \WP[t]$ under $\para \NC^d$ many-one reductions.
 \end{theorem}
 \begin{proof}
-  \todo{Fill me in...}
+  This is proven in \autocite[Theorem~4.1]{df92} with respect to the $\para \L$ many-one reduction, which induces a $\para \NC^d$ many-one reduction for each $d$ greater than one.
 \end{proof}
+
+%% This is not satisfying because the closure of $\pPiFSAT$ under $\para \NC^d$ many-one reductions is probably $\para \WP[t]$.
+%% This actually gives us $\para \WNC^d[t] = \para \WP[t]$; more on this later.
 
 Since we will construct reductions between these problems, we need an efficient and highly parallel algorithm for transforming a circuit into an equivalent formula.
 The input variables must be identical in order to guarantee that the parameter values are identical.
@@ -145,20 +65,16 @@ The input variables must be identical in order to guarantee that the parameter v
 \end{proof}
 
 The following theorem is an adaptation of \autocite[Theorem~4.3]{cc97npo}.
-It is a translation of \autoref{thm:ncwnc} to the finite levels of the $\WP$ hierarchy:
-\begin{itemize}
-\item the collapse $\para \NC^d = \para \WNC^d[t]$ is weaker than $\para \NC^d = \para \WNC^d$,
-\item the inclusion $\GC[i(n) \log n, \Pi_t \LOGTIME] \subseteq \NC^d$ is weaker than the collapse $\NC^d = \NNC^d[i(n) \log n]$.
-\end{itemize}
-$\Pi_t \LOGTIME$ is a subclass of $\LH$, the logarithmic time hierarchy, which equals $\AC^0$ \autocite[Corollary~5.32]{immerman99}.
+It is somewhat similar to \autoref{thm:ncwnc}, but the inclusion $\GC[i(n) \log n, \Pi_t \LOGTIME] \subseteq \NC^d$ is weaker than the collapse $\NC^d = \NNC^d[i(n) \log n]$.
+The class $\Pi_t \LOGTIME$ is a subclass of $\LH$, the logarithmic time hierarchy, which equals $\AC^0$ \autocite[Corollary~5.32]{immerman99}.
 Since $\AC^0$ is a strict subset of $\NC^1$ \autocite{fss84}, $\Pi_t \LOGTIME$ is a strict subclass of $\NC^1$.
 Although, $\Pi_t \LOGTIME$ is strictly weaker than $\NC^1$, the addition of $\omega(\log n)$ nondeterministic bits seems to give it power beyond that of $\NC$, which seems able to simulate only $O(\log n)$ bits (by enumerating each string of that length in parallel).
 This theorem suggests that a collapse of the parameterized complexity classes yields a deterministic simulation of $\omega(\log n)$ bits, which would violate our intuition of nondeterminism.
-See similar comments after \autocite[Theorem~4.3]{cc97npo} and compare with the conclusion of \autoref{thm:wncp}.
+See similar comments after \autocite[Theorem~4.3]{cc97npo} and compare with the deterministic simulation in the right side of the biconditional in \autoref{thm:wncp}.
 
 \begin{theorem}\label{thm:ncwnct}
-  Suppose $d$ and $t$ are positive integers with $t$ greater than one.
-  $\para \NC^d = \para \WNC^d[t]$ if and only if there is a circuit-computable, unbounded, nondecreasing function $i$ such that %% $i(n) \leq n$ and
+  Suppose $d$ and $t$ are integers greater than one.
+  $\para \NC^d = \para \WP[t]$ if and only if there is a circuit-computable, unbounded, nondecreasing function $i$ such that %% $i(n) \leq n$ and
   $\GC[i(n) \log n, \Pi_t \LOGTIME] \subseteq \NC^d$.
 \end{theorem}
 \begin{proof}
@@ -166,7 +82,7 @@ See similar comments after \autocite[Theorem~4.3]{cc97npo} and compare with the 
   Assume there is a function $i$ such that $\GC[i(n) \log n, \Pi_t \LOGTIME] \subseteq \NC^d$.
   Since $\PiCSAT$ is in the class $\GC[i(n) \log n, \Pi_t \LOGTIME]$ by \autoref{thm:picsatgc}, it is now in $\NC^d$ as well.
 
-  Since $\pPiFSAT$ is complete for $\para \WNC^d[t]$ under $\para \NC^d$ many-one reductions by \autoref{thm:ppifsat}, it suffices to show that $\pPiFSAT$ is in $\para \NC^d$.
+  Since $\pPiFSAT$ is complete for $\para \WP[t]$ under $\para \NC^d$ many-one reductions by \autoref{thm:ppifsat}, it suffices to show that $\pPiFSAT$ is in $\para \NC^d$.
   Furthermore, by \autoref{lem:spreduction}, it suffices to show that there is a small parameter $\NC^d$ many-one reduction from $\pPiFSAT$ to $\PiCSAT$.
 
   Let $\{R_n\}$ be the family of circuits computing the function $\phi \mapsto C_\phi$, where $\phi$ is a $\Pi_t$-normalized Boolean formula and $C_\phi$ is the natural $\Pi_t$ Boolean circuit induced by that formula.
@@ -176,10 +92,9 @@ See similar comments after \autocite[Theorem~4.3]{cc97npo} and compare with the 
   However, we can transform a Boolean formula into an equivalent Polish notation (prefix) Boolean formula in alternating logarithmic time \autocite{buss87}, which is in $\NC^1$, and from there we can write the adjacency matrix of the tree given by the prefix Boolean formula with an $\NC^1$ algorithm.
 
   Now we prove the forward implication.
-  Assume $\para \NC^d = \para \WNC^d[t]$.
-  Since $\pPiFSAT$ is in $\para \WNC^d[t]$ by \autoref{thm:ppifsat}, it is now in $\para \NC^d$ as well.
+  Assume $\para \NC^d = \para \WP[t]$.
+  Since $\pPiFSAT$ is in $\para \WP[t]$ by \autoref{thm:ppifsat}, it is now in $\para \NC^d$ as well.
   We will use \autoref{lem:reducetonc} to show a reduction meeting the criteria of that lemma from $\PiCSAT$, which is complete for the class $\GC[i(n) \log n, \Pi_t \LOGTIME]$ under $\NC^d$ reductions by \autoref{thm:picsatgc}, to $\pPiFSAT$.
-  \todo{Move that lemma down here, since it's only used here now?}
 
   Let $\{C_{m, k'}\}$ be the deterministic circuit family deciding $\pPiFSAT$ and $f$ the circuit-computable function such that
   \begin{itemize}
@@ -203,11 +118,3 @@ See similar comments after \autocite[Theorem~4.3]{cc97npo} and compare with the 
   Thus the many-one reduction from \autoref{lem:circuittoformula} and the $\para \NC^d$ algorithm for $\pPiFSAT$ meet the conditions in the premise of \autoref{lem:reducetonc}.
   We conclude that $\PiCSAT$ is in $\NC^d$.
 \end{proof}
-
-\subsection{Is \texorpdfstring{$\para \WNC[t]$}{paraWNC[t]} in \texorpdfstring{$\para \P$}{paraP}?}
-
-\todo{Translate everything from \autoref{sec:wncp}.}
-
-\subsection{Does \texorpdfstring{$\para \WNC[t]$}{paraWNC[t]} equal \texorpdfstring{$\para \WP[t]$}{paraWP[t]}?}
-
-\todo{Translate everything from \autoref{sec:wncwp}.}
