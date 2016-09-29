@@ -53,6 +53,46 @@ Subsequent sections will examine the limits to parameterized parallel computatio
 
 \subsection{Definition of \texorpdfstring{$\para \NC$}{paraNC}}
 
+% % Foreword %
+%
+% %% Context (anyone - why now?) %%
+%
+% What is the current situation, and why is the need so important?
+%
+%
+% %% Need (readers - why you?) %%
+%
+% Why is this relevant to the reader, and why does something need to be done?
+% (Also reference relevant existing work.)
+%
+%
+% %% Task (author - why me?) %%
+%
+% What was undertaken to address the need?
+%
+%
+% %% Object (document - why this document?) %%
+%
+% What does this document cover?
+%
+%
+
+% % Summary %
+%
+% %% Findings (author - what?)
+%
+% What did the work reveal when performing the task?
+%
+%
+% %% Conclusion (readers - so what?)
+%
+% What did the findings mean for the audience?
+%
+%
+% %% Perspective (anyone - what now?)
+%
+% What should be done next?
+
 The $\para$ ``operator'' defined in \autocite{fg03} applies generically to an arbitrary complexity class as follows.
 If $\mathcal{C}$ is a class of decision problems, then $\para \mathcal{C}$ is the class of parameterized problems $(Q, \kappa)$ for which there is a decision problem $L \in \mathcal{C}$ and a computable function $f$ such that $x$ in $Q$ if and only if $(x, 1^{f(\kappa(x))}) \in L$.
 When $\mathcal{C} = \NC$ in particular, we get the following equivalent definition.
@@ -84,21 +124,68 @@ and thus $\log^2 (kn) = f(k) + O(\log^2 n)$ for some computable function $f$.
 \subsection{Example problem in \texorpdfstring{$\para \NC$}{paraNC}}
 \label{sec:parancexample}
 
-The parameterized vertex cover problem is in $\para \AC^0$ \autocite{bst15}, but the underlying decision problem is $\NP$-complete.
-We are interested in finding a problem in $\para \NC$ whose underlying decision problem is $\P$-complete.
-One way to do this is to choose $Q$ to be a $\P$-complete problem and $\kappa$ to be the ``degenerate'' parameterization function $\kappa(x) = |x|$.
+% % Foreword %
+%
+% %% Context (anyone - why now?) %%
+%
+% What is the current situation, and why is the need so important?
+%
+Useful complexity classes are nonempty and have interesting natural problems,
+%
+% %% Need (readers - why you?) %%
+%
+% Why is this relevant to the reader, and why does something need to be done?
+% (Also reference relevant existing work.)
+%
+so in an effort to show that $\para \NC$ has parameterized problems whose underlying decision problems are $\P$-complete,
+%
+% %% Task (author - why me?) %%
+%
+% What was undertaken to address the need?
+%
+we consider parameterizations of the canonical $\P$-complete problem, the circuit evaluation problem.
+%
+% %% Object (document - why this document?) %%
+%
+% What does this document cover?
+%
+%
+This section provides a non-degenerate parameterization of the circuit evaluation problem that makes it parallelizable.
 
-\begin{definition}[$p \dash s \dash \textsc{Circuit Evaluation}$]
-  \mbox{} \\
-  \begin{tabular}{r p{9.2cm}}
-    \textbf{Instance:} & Boolean circuit $C$ on $n$ inputs with size $m$ and depth $d$, binary string $x$ of length $n$. \\
-    \textbf{Parameter:} & $m$. \\
-    \textbf{Question:} & Does $C(x) = 1$?
-  \end{tabular}
-\end{definition}
+% % Summary %
+%
+% %% Findings (author - what?)
+%
+% What did the work reveal when performing the task?
+%
+We provide a $\para \NC$ problem based on a $\P$-complete problem with a degenerate parameterization (\autoref{thm:degen}), one with a nondegenerate parameterization (\autoref{thm:cvpdepth}), and one based on an optimization problem (\autoref{thm:onesdepth}).
+(Contrast these results with the parameterized vertex cover problem, which is in $\para \AC^0$ \autocite{bst15}, but whose underlying decision problem is $\NP$-complete.)
+%
+% %% Conclusion (readers - so what?)
+%
+% What did the findings mean for the audience?
+%
+Thus $\para \NC$ does indeed contain interesting problems
+%
+% %% Perspective (anyone - what now?)
+%
+% What should be done next?
+and we can use these as the starting point for studying the limits of parameterized parallelization.
 
-\begin{theorem}
-  $p \dash s \dash \textsc{Circuit Evaluation}$ is in $\para \NC$ and the underlying decision problem is $\P$-complete.
+We start by choosing $Q$ to be a $\P$-complete problem and $\kappa$ to be the ``degenerate'' parameterization function $\kappa(x) = |x|$.
+The \emph{circuit evaluation problem} is the problem of deciding whether, given a Boolean circuit and an input to that circuit, the output of the circuit is 1.
+
+%% \begin{definition}[$p \dash s \dash \textsc{Circuit Evaluation}$]
+%%   \mbox{} \\
+%%   \begin{tabular}{r p{9.2cm}}
+%%     \textbf{Instance:} & Boolean circuit $C$ on $n$ inputs with size $m$ and depth $d$, binary string $x$ of length $n$. \\
+%%     \textbf{Parameter:} & $m$. \\
+%%     \textbf{Question:} & Does $C(x) = 1$?
+%%   \end{tabular}
+%% \end{definition}
+
+\begin{theorem}\label{thm:degen}
+  The circuit evaluation problem parameterized by the size of the circuit is in $\para \NC$ and the underlying decision problem is $\P$-complete.
 \end{theorem}
 \begin{proof}
   The circuit evaluation problem is $\P$-complete by \autocite{ladner75}.
@@ -107,17 +194,17 @@ One way to do this is to choose $Q$ to be a $\P$-complete problem and $\kappa$ t
 
 To find a non-degenerate example, we can parameterize the circuit evaluation problem by depth instead of size.
 
-\begin{definition}[$p \dash d \dash \textsc{Circuit Evaluation}$]
-  \mbox{} \\
-  \begin{tabular}{r p{9.2cm}}
-    \textbf{Instance:} & Boolean circuit $C$ on $n$ inputs with size $m$ and depth $d$, binary string $x$ of length $n$. \\
-    \textbf{Parameter:} & $d$. \\
-    \textbf{Question:} & Does $C(x) = 1$?
-  \end{tabular}
-\end{definition}
+%% \begin{definition}[$p \dash d \dash \textsc{Circuit Evaluation}$]
+%%   \mbox{} \\
+%%   \begin{tabular}{r p{9.2cm}}
+%%     \textbf{Instance:} & Boolean circuit $C$ on $n$ inputs with size $m$ and depth $d$, binary string $x$ of length $n$. \\
+%%     \textbf{Parameter:} & $d$. \\
+%%     \textbf{Question:} & Does $C(x) = 1$?
+%%   \end{tabular}
+%% \end{definition}
 
 \begin{theorem}\label{thm:cvpdepth}
-  $p \dash d \dash \textsc{Circuit Evaluation}$ is in $\para \AC^{0 \uparrow}$ and the underlying decision problem is $\P$-complete.
+  The circuit evaluation problem parameterized by the depth of the circuit is in $\para \AC^{0 \uparrow}$ and the underlying decision problem is $\P$-complete.
 \end{theorem}
 \begin{proof}
   As stated in the proof of the previous theorem, the circuit evaluation problem is $\P$-complete.
@@ -127,22 +214,23 @@ To find a non-degenerate example, we can parameterize the circuit evaluation pro
 \end{proof}
 
 For a problem with a standard parameterization derived from an optimization problem (see \autoref{def:standard} below), consider the ``depth of ones'' problem.
+The \emph{depth of ones} problem is the problem of deciding, given a circuit, an input to the circuit, and a positive integer $k$, whether a 1 appears at depth at least $k$ when evaluating the circuit on the input.
 The circuit evaluation problem is a special case of the depth of ones problem if we choose $k$ to be the depth of the circuit $C$.
-
-\begin{definition}[$p \dash \textsc{Ones Depth}$]
-  \mbox{} \\
-  \begin{tabular}{r p{9.2cm}}
-    \textbf{Instance:} & Boolean circuit $C$ on $n$ inputs with size $m$ and depth $d$, binary string $x$ of length $n$, positive integer $k$. \\
-    \textbf{Parameter:} & $k$. \\
-    \textbf{Question:} & When evaluating $C(x)$, do ones propagate to depth at least $k$?
-  \end{tabular}
-\end{definition}
-
+%%
+%% \begin{definition}[$p \dash \textsc{Ones Depth}$]
+%%   \mbox{} \\
+%%   \begin{tabular}{r p{9.2cm}}
+%%     \textbf{Instance:} & Boolean circuit $C$ on $n$ inputs with size $m$ and depth $d$, binary string $x$ of length $n$, positive integer $k$. \\
+%%     \textbf{Parameter:} & $k$. \\
+%%     \textbf{Question:} & When evaluating $C(x)$, do ones propagate to depth at least $k$?
+%%   \end{tabular}
+%% \end{definition}
+%%
 As an optimization problem, the depth of ones problem is inapproximable up to any constant factor by any $\NC$ circuit, unless $\NC = \P$ \autocite{ks88}.
 Contrast this with the complexity of the corresponding parameterized problem.
 
-\begin{theorem}
-  $p \dash \textsc{Ones Depth}$ is in $\para \AC^{0 \uparrow}$ and the underlying decision problem is $\P$-complete.
+\begin{theorem}\label{thm:onesdepth}
+  The depth of ones problem parameterized by the depth parameter $k$ is in $\para \AC^{0 \uparrow}$ and the underlying decision problem is $\P$-complete.
 \end{theorem}
 \begin{proof}
   Computing the depth of ones in a circuit is $\P$-complete \autocite{ks88} (see also \autocite[Problem~A.1.10]{ghr95}).
@@ -153,6 +241,45 @@ Contrast this with the complexity of the corresponding parameterized problem.
 \end{proof}
 
 \subsection{Relationship between \texorpdfstring{$\para \NC$}{paraNC} and \texorpdfstring{$\NC$}{NC}}
+
+% % Foreword %
+%
+% %% Context (anyone - why now?) %%
+%
+% What is the current situation, and why is the need so important?
+%
+% %% Need (readers - why you?) %%
+%
+% Why is this relevant to the reader, and why does something need to be done?
+% (Also reference relevant existing work.)
+%
+%
+% %% Task (author - why me?) %%
+%
+% What was undertaken to address the need?
+%
+%
+% %% Object (document - why this document?) %%
+%
+% What does this document cover?
+%
+%
+
+% % Summary %
+%
+% %% Findings (author - what?)
+%
+% What did the work reveal when performing the task?
+%
+%
+% %% Conclusion (readers - so what?)
+%
+% What did the findings mean for the audience?
+%
+%
+% %% Perspective (anyone - what now?)
+%
+% What should be done next?
 
 The lemmas in this section allow us to transform, in certain circumstances, a highly parallel algorithm for a decision problem into a fixed-parameter parallelizable one for a parameterized problem, or vice versa.
 They will be used in later sections to provide evidence against the collapse of larger complexity classes to $\para \NC$.
@@ -307,6 +434,45 @@ Below, a ``nontrivial'' parameterized problem is one in which $\emptyset \subset
 \end{proof}
 
 \subsection{Approximable optimization problems}
+
+% % Foreword %
+%
+% %% Context (anyone - why now?) %%
+%
+% What is the current situation, and why is the need so important?
+%
+% %% Need (readers - why you?) %%
+%
+% Why is this relevant to the reader, and why does something need to be done?
+% (Also reference relevant existing work.)
+%
+%
+% %% Task (author - why me?) %%
+%
+% What was undertaken to address the need?
+%
+%
+% %% Object (document - why this document?) %%
+%
+% What does this document cover?
+%
+%
+
+% % Summary %
+%
+% %% Findings (author - what?)
+%
+% What did the work reveal when performing the task?
+%
+%
+% %% Conclusion (readers - so what?)
+%
+% What did the findings mean for the audience?
+%
+%
+% %% Perspective (anyone - what now?)
+%
+% What should be done next?
 
 Yet another way to do this is to find an optimization problem whose budget problem is $\P$-complete while admitting a highly parallel approximation scheme.
 
