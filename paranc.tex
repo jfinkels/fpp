@@ -201,12 +201,7 @@ We attempted to show that the closure equals $\para \NC$ but were unable to do s
   \]
   where $\{C_n^1\}$ is the family of circuits that decides $Q$ with uniform size and depth, $\{C_n^2\}$ is the family of $\NC^d$ circuits that decides $Q'$, and $n'$ is the number of output bits of $R_n$.
   The correctness of $A_{n, k}$ follows from the correctness of the subsequent circuits.
-  The circuit family is necessarily nonuniform: the computation of $i(n)$ and $k$ and the comparison of the two decides nonuniformly which circuit to select when defining $A_{n, k}$.\footnote{
-  All subsequent theorems that require nonuniform circuits are nonuniform because they rely on this lemma, and it is not clear whether this lemma can be made uniform.
-  Nonuniformity is necessary here, but only a \emph{single bit} of nonuniform advice is required to select the appropriate circuit for $A_{n, k}$, given the length $n$ and the parameterization $k$ of the input.
-  If the circuit $A_{n, k}$ were implemented with a selector for $i(n) < k$ and both branches as subcircuits, then the overall depth of the circuit would be bounded above by the larger of the depths of the two subcircuits.
-  For large values of $k$, this could be too great a depth to qualify as $\para \NC$.
-}
+  The circuit family is necessarily nonuniform: the computation of $i(n)$ and $k$ and the comparison of the two decides nonuniformly which circuit to select when defining $A_{n, k}$.
 
   If $i(n) \geq k$, then the size and depth of the circuit are polynomial and polylogarithmic in $n$, respectively, because the size and depth of $C_{n'}^2$ and $R_n$ are.
   For the case when $i(n) < k$, consider the upper inverse $f_i$ of $i$ guaranteed by \autoref{lem:upperinverse}.
@@ -220,6 +215,16 @@ We attempted to show that the closure equals $\para \NC$ but were unable to do s
   Thus in either case, there is a sufficiently large circuit-computable function $f$ such the size of $A_{n, k}$ is bounded above by $f(k) n^{O(1)}$ and the depth $f(k) + O(\log^d n)$.
 \end{proof}
 
+As an aside, let us consider the nonuniformity requirement in this lemma.
+All subsequent theorems that require nonuniform circuits are nonuniform because they rely on this lemma, and it is not clear whether this lemma can be made uniform.
+Nonuniformity is necessary here, but only a \emph{single bit} of nonuniform advice is required to select the appropriate circuit for $A_{n, k}$, given the length $n$ and the parameterization $k$ of the input.
+If the circuit $A_{n, k}$ were implemented with a selector for $i(n) < k$ and both branches as subcircuits, then the overall depth of the circuit would be bounded above by the larger of the depths of the two subcircuits.
+For large values of $k$, this could be too great a depth to qualify as $\para \NC$.
+
+On the other hand, if the function $i$ were computable by, for example, a deterministic logarithmic space Turing machine, then we would be able to conclude that $(Q, \kappa)$ is in $\para \L$-uniform $\para \NC$ (assuming we have an appropriate definition for such a class).
+In this paper, $i$ will not have that restriction, so we suggest considering parameterized uniformity in future research.
+
+We continue with a corollary of the previous lemma.
 The following corollary highlights the special case of the preceding lemma in which the reduction is the identity function.
 
 \begin{corollary}\label{cor:sprself}
