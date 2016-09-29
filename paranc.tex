@@ -1,8 +1,55 @@
 \section{Fixed-parameter parallelizability}
 \label{sec:pcompletefpp}
 
-The $\P$-complete problems are considered tractable but inherently sequential; adding more processors does not provide any significant reduction in the time required to find a solution, even thought they can be solved in polynomial time.
-But can the lack of parallelizability for these problems depend on a parameterization of the problem, thereby isolating some of the ``sequential-ness'' of the problem in the value of the parameter?
+% % Foreword %
+%
+% %% Context (anyone - why now?) %%
+%
+% What is the current situation, and why is the need so important?
+%
+Classical computational complexity has a well-developed theory of parallel versus sequential computation.
+Those computational problems that are $\P$-complete are inherently sequential, whereas those in the class $\NC$ admit highly parallel algorithms.
+Even though they can be solved in polynomial time, adding more processors does not provide any significant reduction in the time required to find a solution for $\P$-complete problems.
+% %% Need (readers - why you?) %%
+%
+% Why is this relevant to the reader, and why does something need to be done?
+% (Also reference relevant existing work.)
+%
+Can the lack of parallelizability for $\P$-complete problems depend on the parameterization of the problem, thereby isolating some of the ``sequential-ness'' of the problem in the value of the parameter?
+In other words, can parameterization of problems that have traditionally been considered inherently sequential afford us a new avenue for parallelization?
+
+%
+% %% Task (author - why me?) %%
+%
+% What was undertaken to address the need?
+%
+Specifically, we would like to determine whether there are problems that are inherently sequential in the classical sense but parallelizable under some parameterization.
+%
+% %% Object (document - why this document?) %%
+%
+% What does this document cover?
+%
+This section combines and adapts the definitions of parallelization from classical complexity theory and the definitions of parameterized complexity theory for highly parallel problems.
+%
+
+% % Summary %
+%
+% %% Findings (author - what?)
+%
+% What did the work reveal when performing the task?
+%
+We provide the definition of $\para \NC$, demonstrate the relationship between $\para \NC$ and $\NC$, and prove some sufficient conditions for membership in $\para \NC$.
+%
+% %% Conclusion (readers - so what?)
+%
+% What did the findings mean for the audience?
+%
+These results demonstrate that the idea of parameterized parallelizability is both meaningful and interesting for seemingly inherently sequential problems.
+%
+% %% Perspective (anyone - what now?)
+%
+% What should be done next?
+Subsequent sections will examine the limits to parameterized parallel computation.
 
 \subsection{Definition of \texorpdfstring{$\para \NC$}{paraNC}}
 
@@ -35,6 +82,7 @@ Thus a formula like $\log^2 (kn)$, which may appear in the analysis of certain s
 and thus $\log^2 (kn) = f(k) + O(\log^2 n)$ for some computable function $f$.
 
 \subsection{Example problem in \texorpdfstring{$\para \NC$}{paraNC}}
+\label{sec:parancexample}
 
 The parameterized vertex cover problem is in $\para \AC^0$ \autocite{bst15}, but the underlying decision problem is $\NP$-complete.
 We are interested in finding a problem in $\para \NC$ whose underlying decision problem is $\P$-complete.

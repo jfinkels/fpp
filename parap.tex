@@ -1,8 +1,53 @@
 \section{Fixed-parameter tractability}
 
-%% What we really care about is the parameterized parallel complexity of problems in $\para \NC$, and specifically those with underlying decision problems that are $\P$-complete.
-%% The $\WP$ hierarchy does not capture this.
-%% This is similar to the way $\NNC[\polylog]$ allows us to consider efficient highly parallel verification but does not capture polynomial-time decision.
+% % Foreword %
+%
+% %% Context (anyone - why now?) %%
+%
+% What is the current situation, and why is the need so important?
+%
+In classical complexity, there are limits to parallel computation; for some computational problems, adding more processors does not help solve the problem significantly more quickly.
+%
+% %% Need (readers - why you?) %%
+%
+% Why is this relevant to the reader, and why does something need to be done?
+% (Also reference relevant existing work.)
+%
+With the definition of parameterized parallel computation given in the previous section, we now must ask whether there are similar limitations for parameterized problems.
+%
+% %% Task (author - why me?) %%
+%
+% What was undertaken to address the need?
+%
+We adapt our understanding of classical complexity to answer this question in the affirmative.
+%
+% %% Object (document - why this document?) %%
+%
+% What does this document cover?
+%
+%
+This section demonstrates that under an appropriate parameterization, the natural inherently sequential classical problems become inherently sequential parameterized problems.
+
+% % Summary %
+%
+% %% Findings (author - what?)
+%
+% What did the work reveal when performing the task?
+%
+We prove the existence of $\para \P$-complete problems, which are inherently sequential parameterized problems.
+These problems are parameterized versions of the well-known bounded halting problem for deterministic Turing machines and the Boolean circuit evaluation problem.
+This means that there are parameterized problems for which adding more processors provides no significant speedup in (parallel) time required to find a solution.
+%
+% %% Conclusion (readers - so what?)
+%
+% What did the findings mean for the audience?
+%
+Contrast this parameterized inherent sequentiality with the highly parallelizable parameterized versions of $\P$-complete problems in the previous section.
+%
+% %% Perspective (anyone - what now?)
+%
+% What should be done next?
+In light of this, we recommend that researchers consider $\para \P$-completeness when determining membership of a parameterized problem in $\para \P$ (also known as $\FPT$).
 
 \subsection{Definition of \texorpdfstring{$\para \P$}{paraP}}
 
@@ -49,6 +94,7 @@ The first two slices of the problem are in $\NC$, whereas all other slices are $
 \todo{A reduction to place this problem in $\para \EP$ does not seem possible, since it seems hard to encode the degree of a subgraph in that way?}
 
 \subsection{Completeness in \texorpdfstring{$\para \P$}{paraP}}
+\label{sec:parapcompleteness}
 
 We define $\P$-completeness so that problems that are $\P$-complete are unlikely to see a significant decrease in time complexity when parallelism is allowed, under the assumption that $\NC \neq \P$.
 Let us define $\para \P$-completeness similarly, so that $\para \P$-complete problems are unlikely to see a significant decrease in ``parameterized'' time complexity when ``parameterized'' parallelism is allowed, under the assumption that $\para \NC \neq \para \P$.

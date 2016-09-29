@@ -1,8 +1,52 @@
 \section{The \texorpdfstring{$\para \WP$}{paraWP} hierarchy}
 
-Attempts to define $\para \WNC[t]$ in a way similar to the definition of $\para \WP[t]$ (more commonly known as $\W[t]$) elude us.
-Both the finite model theory definition of $\para \WNC[t]$ and the definition as the closure of a reasonable parameterized problem yield a complexity class that is equivalent to $\para \WP[t]$.
+% % Foreword %
+%
+% %% Context (anyone - why now?) %%
+%
+% What is the current situation, and why is the need so important?
+%
+There is a hierarchy of classes between $\para \P$ and $\para \WP$, denoted $\para \WP[t]$ (also known as $\W[t]$) for each positive integer $t$.
+%
+% %% Need (readers - why you?) %%
+%
+% Why is this relevant to the reader, and why does something need to be done?
+% (Also reference relevant existing work.)
+%
+It would be nice to have a similar hierarchy between $\para \NC$ and $\para \WNC$.
+However, attempts to create a definition for $\para \WNC[t]$ similar to the definition of $\para \WP[t]$ elude us.
+%
+% %% Task (author - why me?) %%
+%
+% What was undertaken to address the need?
+%
+Both the finite model theory definition of $\para \WNC[t]$ that we considered and the definition as the closure of a reasonable parameterized problem yield a complexity class that is equivalent to $\para \WP[t]$.
+%
+% %% Object (document - why this document?) %%
+%
+% What does this document cover?
+%
 Thus the main theorem in this section concerns the relationship between $\para \NC$ and $\para \WP[t]$ instead of $\para \WNC[t]$.
+
+% % Summary %
+%
+% %% Findings (author - what?)
+%
+% What did the work reveal when performing the task?
+%
+We show the equivalence of two collapses, $\para \NC = \para \WP[t]$ and $\GC[\omega(\log n), \Pi_T \LOGTIME] \subseteq \NC$.
+This is similar to \autocite[Theorem~4.3]{cc97npo}, which is identical but with $\P$ in place of $\NC$; our result features more severe collapses.
+%
+% %% Conclusion (readers - so what?)
+%
+% What did the findings mean for the audience?
+%
+This theorem adds more evidence that parameterized classes are closely related to classes of decision problems with limited nondeterminism.
+%
+% %% Perspective (anyone - what now?)
+%
+% What should be done next?
+
 
 \begin{definition}[{$p \dash \PiCSAT$ \autocite[Theorem~4.1]{cc97npo}}]
   \mbox{} \\
@@ -76,6 +120,7 @@ See similar comments after \autocite[Theorem~4.3]{cc97npo} and compare with the 
   Suppose $d$ and $t$ are integers greater than one.
   $\para \NC^d = \para \WP[t]$ if and only if there is a circuit-computable, unbounded, nondecreasing function $i$ such that %% $i(n) \leq n$ and
   $\GC[i(n) \log n, \Pi_t \LOGTIME] \subseteq \NC^d$.
+  \todo{Should also include para WP[t] in para WNC if and only if GC[i(n) log n, Pi LOGTIME] is in NNC[i(n) log n]}
 \end{theorem}
 \begin{proof}
   First, we prove the reverse implication.
