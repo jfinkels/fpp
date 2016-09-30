@@ -34,6 +34,13 @@ This section demonstrates that under an appropriate parameterization, the natura
 %
 % What did the work reveal when performing the task?
 %
+The definition of $\para \P$ (also known as $\FPT$) is analogous to that of $\para \NC$.
+Unlike for $\para \NC$, however, there are numerous examples of natural parameterized problems in $\para \P$; see the listing in \autocite{cesati06}, for example.
+
+\begin{definition}
+  A parameterized problem $(Q, \kappa)$ is in $\para \P$ if there is a deterministic Turing machine $M$, a polynomial $p$, and a computable function $f$ such that $M$ decides $Q$ within $f(\kappa(x)) p(n)$ steps.
+\end{definition}
+
 We prove the existence of $\para \P$-complete problems, which are inherently sequential parameterized problems.
 These problems are parameterized versions of the well-known bounded halting problem for deterministic Turing machines and the Boolean circuit evaluation problem.
 This means that there are parameterized problems for which adding more processors provides no significant speedup in (parallel) time required to find a solution.
@@ -49,60 +56,91 @@ Contrast this parameterized inherent sequentiality with the highly parallelizabl
 % What should be done next?
 In light of this, we recommend that researchers consider $\para \P$-completeness when determining membership of a parameterized problem in $\para \P$ (also known as $\FPT$).
 
-\subsection{Definition of \texorpdfstring{$\para \P$}{paraP}}
+%% Consider the parameterized high degree subgraph problem.
 
-The definition of $\para \P$ is analogous to that of $\para \NC$.
-(For historical reasons, this class is usually known as $\FPT$.)
+%% \begin{definition}[$p \dash \textsc{High Degree Subgraph}$, aka $\pHDS$]
+%%   \mbox{} \\
+%%   \begin{tabular}{r p{9.2cm}}
+%%     \textbf{Instance:} & undirected graph $G$, positive integer $d$. \\
+%%     \textbf{Parameter:} & $d$. \\
+%%     \textbf{Question:} & Does $G$ have a vertex-induced subgraph of minimum degree at least $d$?
+%%   \end{tabular}
+%% \end{definition}
 
-\begin{definition}
-  A parameterized problem $(Q, \kappa)$ is in $\para \P$ if there is a deterministic Turing machine $M$, a polynomial $p$, and a computable function $f$ such that $M$ decides $Q$ within $f(\kappa(x)) p(n)$ steps.
-\end{definition}
+%% The underlying decision problem is in $\P$, so the parameterized problem is fixed-parameter tractable.
 
-\subsection{Example problem in \texorpdfstring{$\para \P$}{paraP}}
+%% \begin{theorem}[{\autocite{am84}}]
+%%   $\pHDS$ is in $\para \P$.
+%% \end{theorem}
 
-Consider the parameterized high degree subgraph problem.
+%% The first two slices of the problem are in $\NC$, whereas all other slices are $\P$-complete.
 
-\begin{definition}[$p \dash \textsc{High Degree Subgraph}$, aka $\pHDS$]
-  \mbox{} \\
-  \begin{tabular}{r p{9.2cm}}
-    \textbf{Instance:} & undirected graph $G$, positive integer $d$. \\
-    \textbf{Parameter:} & $d$. \\
-    \textbf{Question:} & Does $G$ have a vertex-induced subgraph of minimum degree at least $d$?
-  \end{tabular}
-\end{definition}
+%% \begin{theorem}[{\autocite{am84}}]
+%%   \mbox{}
+%%   \begin{enumerate}
+%%   \item Both $pHDS_1$ and $\pHDS_2$ are in $\NC$.
+%%   \item For each positive integer $d$ greater than two, $\pHDS_d$ is $\P$-complete.
+%%   \end{enumerate}
+%% \end{theorem}
 
-The underlying decision problem is in $\P$, so the parameterized problem is fixed-parameter tractable.
+%% %% As a maximization problem, the problem is approximable to within a certain constant factor, but inapproximable beyond that factor (unless $\NC = \P$) \autocite{am84}.
 
-\begin{theorem}[{\autocite{am84}}]
-  $\pHDS$ is in $\para \P$.
-\end{theorem}
+%% \todo{The proof that the high degree subgraph problem is $\P$-complete does not translate to proving that the parameterized high degree subgraph problem is $\para \P$-complete; for that reduction to work, the parameterization would need to be on the size of the graph, not the degree $d$.}
 
-The first two slices of the problem are in $\NC$, whereas all other slices are $\P$-complete.
-
-\begin{theorem}[{\autocite{am84}}]
-  \mbox{}
-  \begin{enumerate}
-  \item Both $pHDS_1$ and $\pHDS_2$ are in $\NC$.
-  \item For each positive integer $d$ greater than two, $\pHDS_d$ is $\P$-complete.
-  \end{enumerate}
-\end{theorem}
-
-%% As a maximization problem, the problem is approximable to within a certain constant factor, but inapproximable beyond that factor (unless $\NC = \P$) \autocite{am84}.
-
-\todo{The proof that the high degree subgraph problem is $\P$-complete does not translate to proving that the parameterized high degree subgraph problem is $\para \P$-complete; for that reduction to work, the parameterization would need to be on the size of the graph, not the degree $d$.}
-
-\todo{A reduction to place this problem in $\para \EP$ does not seem possible, since it seems hard to encode the degree of a subgraph in that way?}
+%% \todo{A reduction to place this problem in $\para \EP$ does not seem possible, since it seems hard to encode the degree of a subgraph in that way?}
 
 \subsection{Completeness in \texorpdfstring{$\para \P$}{paraP}}
 \label{sec:parapcompleteness}
 
+% % Foreword %
+%
+% %% Context (anyone - why now?) %%
+%
+% What is the current situation, and why is the need so important?
+%
 We define $\P$-completeness so that problems that are $\P$-complete are unlikely to see a significant decrease in time complexity when parallelism is allowed, under the assumption that $\NC \neq \P$.
 Let us define $\para \P$-completeness similarly, so that $\para \P$-complete problems are unlikely to see a significant decrease in ``parameterized'' time complexity when ``parameterized'' parallelism is allowed, under the assumption that $\para \NC \neq \para \P$.
+%
+% %% Need (readers - why you?) %%
+%
+% Why is this relevant to the reader, and why does something need to be done?
+% (Also reference relevant existing work.)
+%
 We already know that each $\P$-complete problem induces a $\para \P$-complete problem with a trivial parameterization \autocite[Proposition~14]{fg03}, however we are interested in natural problems with non-trivial parameterizations.
-This subsection proves the existence of nontrivial parameterized problems that are not in $\para \P$ (under the assumption $\para \NC \neq \para \P$) and whose underlying decision problems are $\P$-complete, complementing \autoref{sec:pcompletefpp}, which proves the existence of parameterized problems in $\para \NC$ whose underlying decision problems are $\P$-complete.
-Furthermore, this fills a hole left by \autocite{est15}.
+%
+% %% Task (author - why me?) %%
+%
+% What was undertaken to address the need?
+%
+We prove the existence of nontrivial inherently sequential parameterized problems that are not in $\para \NC$ (under the assumption $\para \NC \neq \para \P$) and whose underlying decision problems are $\P$-complete, complementing \autoref{sec:pcompletefpp}, which proves the existence of parameterized problems in $\para \NC$ whose underlying decision problems are $\P$-complete.
+%
+% %% Object (document - why this document?) %%
+%
+% What does this document cover?
+%
+%
 
-The assumption $\para \NC \neq \para \P$ is reasonable because it is equivalent to the inequality $\NC \neq \P$.
+% % Summary %
+%
+% %% Findings (author - what?)
+%
+% What did the work reveal when performing the task?
+%
+Specifically, we show that parameterized versions of the circuit evaluation problem and the bounded halting problem are $\para \P$-complete
+% %% Conclusion (readers - so what?)
+%
+% What did the findings mean for the audience?
+%
+This means that the classical $\P$-complete problems do in fact become $\para \P$-complete, but it is important to choose the correct parameterization (which is not obvious in some cases).
+Furthermore, this complements the work of \autocite{est15}, in which the authors show complete problems for several other parameterized complexity classes.
+%
+% %% Perspective (anyone - what now?)
+%
+% What should be done next?
+These results provide fundamental limits to parallelizability for parameterized problems.
+
+We can really only say that our $\para \P$-complete problems are inherently sequential under the assumption that $\para \NC \neq \para \P$.
+This assumption is reasonable because it is equivalent to the inequality $\NC \neq \P$.
 
 \begin{proposition}
   $\para \NC = \para \P$ if and only if $\NC = \P$.
@@ -148,7 +186,7 @@ The following problem is adapted from \textsc{Short Deterministic Turing Machine
   Therefore we conclude that $\pBHP$ is $\para \P$-complete.
 \end{proof}
 
-The following problem is a modification of the problem \textsc{BS-BD-CVP} from \autocite{cd98}.
+The following problem is a modification of \textsc{BS-BD-CVP} from \autocite{cd98}.
 
 \begin{definition}[$p\dash\textsc{Small Circuit Evaluation}$, aka $\pSCE$]
   \mbox{} \\
@@ -237,7 +275,54 @@ In the next subsection, we try a different approach.
 
 \subsection{Parameterized complexity of efficient verification}
 
-Consider the parameterized weighted circuit satisfiability and circuit evaluation problems.
+% % Foreword %
+%
+% %% Context (anyone - why now?) %%
+%
+% What is the current situation, and why is the need so important?
+%
+There is a nice relationship between the circuit satisfiability (decision) problem and the circuit evaluation problem: an algorithm for the latter is a verification procedure for the former, given a satisfying assignment.
+The relationship between these two problems in particular reflect the general relationship between $\NP$ and $\P$.
+%
+% %% Need (readers - why you?) %%
+%
+% Why is this relevant to the reader, and why does something need to be done?
+% (Also reference relevant existing work.)
+%
+Does the same sort of relationship hold for the parameterized versions of these classes, $\para \WP$ and $\para \P$?
+%
+% %% Task (author - why me?) %%
+%
+% What was undertaken to address the need?
+%
+We define a new parameterized complexity class to address this question.
+%
+% %% Object (document - why this document?) %%
+%
+% What does this document cover?
+%
+%
+
+% % Summary %
+%
+% %% Findings (author - what?)
+%
+% What did the work reveal when performing the task?
+%
+We show that our parameterized complexity class, $\para \EP$, the verification class of $\para \WP$, is a subclass of $\para \P$.
+%
+% %% Conclusion (readers - so what?)
+%
+% What did the findings mean for the audience?
+%
+We are unable to show that is equal to $\para \P$, so our intuition does not yet match our definitions.
+%
+% %% Perspective (anyone - what now?)
+%
+% What should be done next?
+What remains is to show a natural problem in this class and to determine whether it equals $\para \P$ or not.
+
+We start by considering the parameterized weighted circuit satisfiability and circuit evaluation problems.
 A circuit is \emph{$k$-satisfiable} if there is a satisfying assignment of Hamming weight exactly $k$.
 
 \begin{definition}[$p \dash \textsc{Circuit } k \dash \textsc{Satisfiability}$, aka $\pCkSAT$]
@@ -331,7 +416,7 @@ Following the above pattern, we define a new class as the closure of the paramet
 \para \EP = \cl{\pWCE}^{\leq_m^{\para \NC}}
 \]
 (``E'' for evaluation).
-\todo{This is a name conflict with an existing class called $\EP$.}
+%% \todo{This is a name conflict with an existing class called $\EP$.}
 
 Since the underlying decision problem, the problem of evaluating a circuit on a given input, is in $\P$, the parameterized problem $\pWCE$ is trivially in $\para \P$.
 Since $\para \NC$ reductions compose, $\para \NC$ is a subset of $\para \P$, and $\para \P$ is closed under $\para \P$ reductions, we conclude that $\para \EP$ is a subset of $\para \P$.
@@ -342,8 +427,8 @@ Since $\para \NC$ reductions compose, $\para \NC$ is a subset of $\para \P$, and
 
 Is $\para \EP = \para \P$?
 The standard simulation of a deterministic Turing machine by a circuit, as in \autocite{ladner75}, for example, fails to provide a $\para \NC$ many-one reduction to the parameterized weighted circuit evaluation problem, since the natural reduction would be of the form $x \mapsto (C, x, \|x\|_1)$, but the parameter value $\|x\|_1$ is not necessarily bounded by a function of $\kappa(x)$.
-\todo{Show something bad happens if $\para \EP = \para \P$.}
-
-\todo{Show a problem that is known to be in $\para \P$ (for example one of the deterministic Turing machine computation problems maybe) is actually in $\para \EP$.}
-
 The same issue prevents us from showing that $\para \NC \subseteq \para \EP$.
+
+%% \todo{Show something bad happens if $\para \EP = \para \P$.}
+
+%% \todo{Show a problem that is known to be in $\para \P$ (for example one of the deterministic Turing machine computation problems maybe) is actually in $\para \EP$.}
