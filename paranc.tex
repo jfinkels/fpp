@@ -248,22 +248,26 @@ Contrast this with the complexity of the corresponding parameterized problem.
 %
 % What is the current situation, and why is the need so important?
 %
+How do the parallelizable parameterized problems relate to classical parallelizable computational problems?
+%
 % %% Need (readers - why you?) %%
 %
 % Why is this relevant to the reader, and why does something need to be done?
 % (Also reference relevant existing work.)
 %
+In order to determine the conditions under which a parameterized parallel algorithm implies a classical parallel algorithm (and vice versa),
 %
 % %% Task (author - why me?) %%
 %
 % What was undertaken to address the need?
 %
+we consolidate and adapt some results that appear scattered across several parameterized complexity papers and books.
 %
 % %% Object (document - why this document?) %%
 %
 % What does this document cover?
 %
-%
+This section provides a generic technique for constructing a classical parallel algorithm from a parameterized one, and vice versa.
 
 % % Summary %
 %
@@ -271,18 +275,20 @@ Contrast this with the complexity of the corresponding parameterized problem.
 %
 % What did the work reveal when performing the task?
 %
+\todo{Add a ``Findings'' sentence here.}
 %
 % %% Conclusion (readers - so what?)
 %
 % What did the findings mean for the audience?
 %
+These give explicit techniques for transforming a parameterized parallel algorithm into a classical parallel algorith and vice versa.
 %
 % %% Perspective (anyone - what now?)
 %
 % What should be done next?
-
-The lemmas in this section allow us to transform, in certain circumstances, a highly parallel algorithm for a decision problem into a fixed-parameter parallelizable one for a parameterized problem, or vice versa.
 They will be used in later sections to provide evidence against the collapse of larger complexity classes to $\para \NC$.
+
+We begin with a lemma that allows us to construct a function that behaves like an upper bound on the inverse of another function.
 
 \begin{lemma}\label{lem:upperinverse}
   For each nondecreasing, unbounded, circuit-computable function $i$, there is a function $f_i$ such that $f_i(i(n)) \geq n$ for each $n \geq f(1)$.
@@ -441,21 +447,27 @@ Below, a ``nontrivial'' parameterized problem is one in which $\emptyset \subset
 %
 % What is the current situation, and why is the need so important?
 %
+\autoref{thm:onesdepth} shows an inherently sequential optimization problem with that is in $\para \NC$ when parameterized.
+%
 % %% Need (readers - why you?) %%
 %
 % Why is this relevant to the reader, and why does something need to be done?
 % (Also reference relevant existing work.)
 %
+Let us explore the possibility of parameterized parallel algorithms from optimization problems more generally.
+(This has been done before only for efficient algorithm for intractable optimization problems.)
 %
 % %% Task (author - why me?) %%
 %
 % What was undertaken to address the need?
 %
+We show how a certain kind of approximation scheme for an optimization problem induces a highly parallel algorithm for the standard parameterized problem derived from the optimization problem.
 %
 % %% Object (document - why this document?) %%
 %
 % What does this document cover?
 %
+This section provides the necessary definitions and generic theorems for this framework.
 %
 
 % % Summary %
@@ -464,17 +476,22 @@ Below, a ``nontrivial'' parameterized problem is one in which $\emptyset \subset
 %
 % What did the work reveal when performing the task?
 %
+We prove that an approximation scheme with appropriate size and depth bounds implies a $\para \NC$ algorithm (\autoref{thm:encasfpp}), and show how this applies to the maximum flow problem under a derandomization assumption (\autoref{thm:maxflow}).
 %
 % %% Conclusion (readers - so what?)
 %
 % What did the findings mean for the audience?
 %
+This means that both existing and newly discovered approximation schemes for optimization problems may present an alternate method of parallelization (via parameterization).
 %
 % %% Perspective (anyone - what now?)
 %
 % What should be done next?
+One thing we are unable to show in this section is an optimization problem whose budget problem is $\P$-complete and whose standard parameterization is in $\para \NC$ but for which no $\ENCAS$ exists, so we postpone that for future work.
 
-Yet another way to do this is to find an optimization problem whose budget problem is $\P$-complete while admitting a highly parallel approximation scheme.
+%% Yet another way to do this is to find an optimization problem whose budget problem is $\P$-complete while admitting a highly parallel approximation scheme.
+
+We start with the necessary definitions for optimization problems and approximation schemes.
 
 \begin{definition}
   An \emph{optimization problem} $O$ is a four-tuple $(I, S, m, t)$, where $I$ is the set of instances, $S$ is the set of pairs $(x, w)$ where $w$ is a solution for $x$, the function $m$ computes the \emph{measure} (or \emph{objective value}) for such a pair, and $t$ is either $\min$ or $\max$.
@@ -567,7 +584,7 @@ This theorem is an adaptation of \autocite[Theorem~1.32]{fg06}.
 \end{proof}
 
 The converse does not hold: the minimum vertex cover problem is a counterexample because it is in $\para \NC$ \autocite[Theorem~4.5]{bst15}.
-\todo{Show an example of an optimization problem whose budget problem is $\P$-complete and whose standard parameterization is in $\para \NC$ but for which no $\ENCAS$ exists.}
+%% \todo{Show an example of an optimization problem whose budget problem is $\P$-complete and whose standard parameterization is in $\para \NC$ but for which no $\ENCAS$ exists.}
 
 Our goal now reduces to finding an optimization problem in $\ENCAS$ whose budget problem is $\P$-complete.
 %% There exist problems that are $\P$-complete and have randomized $\FNCAS$ algorithms, so under a derandomization assumption, we can show a problem that fits the requirement.
@@ -584,7 +601,7 @@ Our goal now reduces to finding an optimization problem in $\ENCAS$ whose budget
 
 %% edge flows can have weights exponential in n
 
-\begin{theorem}
+\begin{theorem}\label{thm:maxflow}
   If $\NC = \RNC$, then the budget problem for \textsc{Maximum Flow} is $\P$-complete and the standard parameterization is in $\para \NC$.
 \end{theorem}
 \begin{proof}
@@ -595,6 +612,6 @@ Our goal now reduces to finding an optimization problem in $\ENCAS$ whose budget
   Finally, the standard parameterization is in $\para \NC$ by \autoref{thm:encasfpp}.
 \end{proof}
 
-\todo{Can the randomization part of the RNC algorithm for MaxFlow be absorbed in the fixed-parameter part of the algorithm?}
+%% \todo{Can the randomization part of the RNC algorithm for MaxFlow be absorbed in the fixed-parameter part of the algorithm?}
 
 % The positive linear programming problem is only in NCAS, not FNCAS.
