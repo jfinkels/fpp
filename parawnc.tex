@@ -53,6 +53,46 @@ We stop short of providing a general theorem that supercedes all of these theore
 
 \subsection{Definition of \texorpdfstring{$\para \WNC$}{paraWNC}}
 
+% % Foreword %
+%
+% %% Context (anyone - why now?) %%
+%
+% What is the current situation, and why is the need so important?
+%
+%
+% %% Need (readers - why you?) %%
+%
+% Why is this relevant to the reader, and why does something need to be done?
+% (Also reference relevant existing work.)
+%
+%
+% %% Task (author - why me?) %%
+%
+% What was undertaken to address the need?
+%
+%
+% %% Object (document - why this document?) %%
+%
+% What does this document cover?
+%
+
+%
+% % Summary %
+%
+% %% Findings (author - what?)
+%
+% What did the work reveal when performing the task?
+%
+%
+% %% Conclusion (readers - so what?)
+%
+% What did the findings mean for the audience?
+%
+%
+% %% Perspective (anyone - what now?)
+%
+% What should be done next?
+
 The $\para \W$ ``operator'' defined in \autocite[Definition~3.1]{est15} applies generically to an arbitrary complexity class as follows.
 If $\mathcal{C}$ is a class of decision problems, then $\para \W \mathcal{C}$ is the class of parameterized problems $(Q, \kappa)$ for which there is a $\mathcal{C}$ machine $M$ and computable functions $f$ and $h$ such that $x$ in $Q$ if and only if there is a string $w$ of length $h(\kappa(x)) \log |x|$ such that $M$ accepts on input $(x, 1^{f(\kappa(x))})$ and nondetermistic input $w$; access to the nondeterministic input is two-way.
 In a loose sense, for most classes $\mathcal{C}$, deterministic $\mathcal{C}$ is to nondeterministic $\mathcal{C}$ as $\para \mathcal{C}$ is to $\para \W \mathcal{C}$.
@@ -70,17 +110,114 @@ When $\mathcal{C} = \NC$ in particular, we get the following equivalent definiti
   \end{itemize}
 \end{definition}
 
+\autoref{prop:ncp} already showed us that $\para \NC = \para \P$ if and only if $\NC = \P$.
+We conjecture that a similar equivalence holds for the nondeterministic versions of these classes as well.
+
+\begin{conjecture}
+  Suppose $d$ is a positive integer.
+  $\para \WNC^d = \para \WP$ if and only if there is a nondecreasing, unbounded, circuit-computable function $i$ such that $\NNC^d[i(n) \log n] = \NP[i(n) \log n]$.
+\end{conjecture}
+
 \subsection{Example problems in \texorpdfstring{$\para \WNC$}{paraWNC}}
 \label{sec:rankinwp}
 
+% % Foreword %
+%
+% %% Context (anyone - why now?) %%
+%
+% What is the current situation, and why is the need so important?
+%
 What kind of problems are in the class $\para \WNC$?
-Some problems are given in \autocite{est15}, we provide a few more in this section.
+%
+% %% Need (readers - why you?) %%
+%
+% Why is this relevant to the reader, and why does something need to be done?
+% (Also reference relevant existing work.)
+%
+Some problems in $\para \WNC^1$ are given in \autocite{est15};
+%
+% %% Task (author - why me?) %%
+%
+% What was undertaken to address the need?
+%
+we provide a few more problems in each class $\para \WNC^d$.
+%
+% %% Object (document - why this document?) %%
+%
+% What does this document cover?
+%
+This section exhibits parameterized problems that are in $\para \WNC^1$, $\para \WNC^2$, and, more generally, $\para \WNC^d$ for each positive integer $d$.
+
+% % Summary %
+%
+% %% Findings (author - what?)
+%
+% What did the work reveal when performing the task?
+%
+Specifically, we prove that the group rank problem is in $\para \WL$, a subset of $\para \WNC^2$.
+We also prove that the weighted $\NC^d$ circuit satisfiability problem is in $\para \WNC^d$ and give an alternate proof that the weighted formula satisfiability problem is in $\para \WNC^1$.
+%
+% %% Conclusion (readers - so what?)
+%
+% What did the findings mean for the audience?
+%
+Along with the membership of the weighted circuit satisfiability problem in $\para \WP$, we now have an example problem in each parameterized complexity class in the inclusion chain
+$$
+\para \WNC^1 \subseteq \para \WNC^2 \dotsb \subseteq \para \WP.
+$$
+%
+% %% Perspective (anyone - what now?)
+%
+% What should be done next?
+\todo{Need a ``perspectives'' sentence here.}
 
 \subsubsection{Small generating set problems}
 
+% % Foreword %
+%
+% %% Context (anyone - why now?) %%
+%
+% What is the current situation, and why is the need so important?
+%
 The parameterized semigroup rank problem is in $\para \WNL$ \autocite[Theorem~3.12]{est15}, which is contained in $\para \WNC^2$.
-Let us consider the parameterized group rank problem, a restriction of the parameterized semigroup rank problem.
-We can show that this problem is in $\para \WL$, which is also in $\para \WNC^2$.
+%
+% %% Need (readers - why you?) %%
+%
+% Why is this relevant to the reader, and why does something need to be done?
+% (Also reference relevant existing work.)
+%
+The group rank problem, a restricted version of the semigroup rank problem, is equally, if not more, useful in applications, so we would like to understand the parameterized complexity of that problem as well.
+%
+% %% Task (author - why me?) %%
+%
+% What was undertaken to address the need?
+%
+We show that the problem is in $\para \WL$.
+%
+% %% Object (document - why this document?) %%
+%
+% What does this document cover?
+%
+%
+% % Summary %
+%
+% %% Findings (author - what?)
+%
+% What did the work reveal when performing the task?
+%
+%
+% %% Conclusion (readers - so what?)
+%
+% What did the findings mean for the audience?
+%
+Although we are unable to show that the problem is in $\para \WNC^1$, membership in $\para \WL$ still implies membership in $\para \WNC^2$, so for this problem, parameterized verification is considered highly parallel.
+%
+% %% Perspective (anyone - what now?)
+%
+% What should be done next?
+
+%% Let us consider the parameterized group rank problem, a restriction of the parameterized semigroup rank problem.
+%% We can show that this problem is in $\para \WL$, which is also in $\para \WNC^2$.
 
 \begin{definition}[$\pgrouprank$]
   \mbox{} \\
@@ -91,7 +228,7 @@ We can show that this problem is in $\para \WL$, which is also in $\para \WNC^2$
   \end{tabular}
 \end{definition}
 
-This problem is highly parallelizable, given that a witness of size $O(k \log n)$ is provided.
+%% This problem is highly parallelizable, given that a witness of size $O(k \log n)$ is provided.
 
 \begin{theorem}\label{thm:pgrouprank}
   $\pgrouprank$ is in $\para \WL$.
@@ -107,13 +244,60 @@ This problem is highly parallelizable, given that a witness of size $O(k \log n)
   We conclude that this parameterized problem is in $\para \WL$.
 \end{proof}
 
-\todo{
-  The parameterized feedback vertex set problem is in $\para \WL$ and in $\D[f \poly, f \log]$ \autocite{est15}.
-  Is there a relationship between these two problems?
-  Is the group rank problem in $\D[f \poly, f \log]$?
-}
+%% \todo{
+%%   The parameterized feedback vertex set problem is in $\para \WL$ and in $\D[f \poly, f \log]$ \autocite{est15}.
+%%   Is there a relationship between these two problems?
+%%   Is the group rank problem in $\D[f \poly, f \log]$?
+%% }
 
 \subsubsection{Weighted circuit satisfiability problems}
+
+% % Foreword %
+%
+% %% Context (anyone - why now?) %%
+%
+% What is the current situation, and why is the need so important?
+%
+We know that $\pFSAT$ is in $\para \WNC^1$ and that $\pCSAT$ is in $\para \WP$.
+%
+% %% Need (readers - why you?) %%
+%
+% Why is this relevant to the reader, and why does something need to be done?
+% (Also reference relevant existing work.)
+%
+We would like to show that there problems in each parameterized class $\para \WNC^d$ between $\para \WNC^1$ and $\para \WP$.
+%
+% %% Task (author - why me?) %%
+%
+% What was undertaken to address the need?
+%
+To this end, we interpolate between Boolean formulas and Boolean circuits to construct parameterized weighted satisfiability problems.
+%
+% %% Object (document - why this document?) %%
+%
+% What does this document cover?
+%
+This section demonstrates that interpolation and proves membership of each problem in $\para \WNC^d$.
+
+%
+% % Summary %
+%
+% %% Findings (author - what?)
+%
+% What did the work reveal when performing the task?
+%
+We show that the problem of deciding whether a $\log^d n$ depth circuit is satisfiable by an input of Hamming weight $k$ is in $\para \WNC^d$ when parameterized by $k$.
+%
+% %% Conclusion (readers - so what?)
+%
+% What did the findings mean for the audience?
+%
+These are the first defined problems in these parameterized complexity classes.
+%
+% %% Perspective (anyone - what now?)
+%
+% What should be done next?
+In a later section, we will show that these problems are complete as well.
 
 Let $\|x\|_1$ denote the Hamming weight (that is, the number of ones) of a binary string.
 This problem is the restriction of $\pCSAT$ to bounded depth circuits.
@@ -217,8 +401,51 @@ The weight $k$ can be at most the number of inputs to the circuit, which is in t
 
 \subsubsection{Weighted formula satisfiability problems}
 
-This technique also provides an alternate proof that parameterized weighted Boolean formula satisfiability problem, denoted $\pFSAT$, is in $\para \WNC^1$, implicit in \autocite[Theorem~3.6]{est15}.
-The proof directly implements the decoder function of \autoref{def:coding} as a Boolean formula.
+% % Foreword %
+%
+% %% Context (anyone - why now?) %%
+%
+% What is the current situation, and why is the need so important?
+%
+\autoref{lem:pkncsatmem} demonstrates a parameterized highly parallel algorithm for certain circuit satisfiability problems.
+%
+% %% Need (readers - why you?) %%
+%
+% Why is this relevant to the reader, and why does something need to be done?
+% (Also reference relevant existing work.)
+%
+This technique can be adapted to work for a simpler computational model, Boolean formulas, as well.
+In fact, this provides an alternate proof that parameterized weighted Boolean formula satisfiability problem, denoted $\pFSAT$, is in $\para \WNC^1$, implicit in \autocite[Theorem~3.6]{est15}.
+%
+% %% Task (author - why me?) %%
+%
+% What was undertaken to address the need?
+%
+We adapt the components of the algorithm from circuits to formulas.
+%
+% %% Object (document - why this document?) %%
+%
+% What does this document cover?
+%
+
+%
+% % Summary %
+%
+% %% Findings (author - what?)
+%
+% What did the work reveal when performing the task?
+%
+Specifically, we show how to implement the decoder function of \autoref{def:coding} as a Boolean formula, and how that can be used to decide whether a Boolean formula has a satisfying assignment of a given weight.
+%
+% %% Conclusion (readers - so what?)
+%
+% What did the findings mean for the audience?
+%
+This is interesting because we have used an algorithm designed for circuits on formulas in an unexpected way.
+%
+% %% Perspective (anyone - what now?)
+%
+% What should be done next?
 
 \begin{lemma}[{\autocite[Theorem~3.6]{est15}}]\label{lem:pfsatmem}
   $\pFSAT$ is in $\para \WNC^1$.
@@ -269,18 +496,71 @@ The same proof works for the problems of deciding whether a circuit or a formula
 \subsection{Completeness in \texorpdfstring{$\para \WNC$}{paraWNC}}
 \label{sec:parawnccompleteness}
 
+% % Foreword %
+%
+% %% Context (anyone - why now?) %%
+%
+% What is the current situation, and why is the need so important?
+%
 We saw that the parameterized weighted Boolean formula satisfiability problem, $\pFSAT$, is in $\para \WNC^1$ in \autoref{lem:pfsatmem}.
 In fact, it is complete for $\para \WNC^1$ under $\para \FO$ many-one reductions \autocite[Theorem~3.6]{est15}.
 \todo{Can we use the ``template on top of a verification language'' to prove completeness in complexity classes of decision problems with limited nondeterminism as well?}
 The parameterized weighted Boolean circuit satisfiability problem, denoted $\pCSAT$, is the same problem with Boolean circuits instead of Boolean formulas; this problem is complete for $\para \WP$ under $\para \FO$ many-one reductions by a similar proof.
-It makes sense to expect, then, that the problems $\pNCSAT$ may be complete for the classes $\para \WNC^d$, for each positive integer $d$.
+%
+% %% Need (readers - why you?) %%
+%
+% Why is this relevant to the reader, and why does something need to be done?
+% (Also reference relevant existing work.)
+%
+It makes sense to expect, then, that for each positive integer $d$ the parameterized problem $\pNCSAT$ may be complete for the class $\para \WNC^d$.
+%
+% %% Task (author - why me?) %%
+%
+% What was undertaken to address the need?
+%
+We adapt the strategy used to prove completeness of $\pCSAT$ to prove completeness of $\pNCSAT$.
+%
+% %% Object (document - why this document?) %%
+%
+% What does this document cover?
+%
+This section describes the strategy and shows how it applies to both $\pNCSAT$ and $\pFSAT$.
+
+%
+% % Summary %
+%
+% %% Findings (author - what?)
+%
+% What did the work reveal when performing the task?
+%
+Specifically, we use the strategy from \autocite[Theorem~3.6]{cc97lim}, which relies on the ``$k \log n$ trick'' (see also \autocite[Corollary~3.13]{fg06}, or the origin \autocite{adf95}).
+There the authors prove only that the decision problem underlying $\pNCSAT$ is complete for $\NNC^d[k \log n]$.
+%
+% %% Conclusion (readers - so what?)
+%
+% What did the findings mean for the audience?
+%
+Now we have a full interpolation for the inclusion chain
+\[
+\para \WNC^1 \subseteq \para \WNC^2 \subseteq \dotsb \subseteq \para \WP,
+\]
+via the chain of parameterized reductions between corresponding complete problems
+\[
+\pFSAT \leq p \dash k \dash \NC^2 \textsc{CSat} \leq \dotsb \leq p \dash \textsc{CSat}.
+\]
+Whether the $\pNCSAT$ problems are complete under $\para \FO$ many-one reductions remains open.
+%
+% %% Perspective (anyone - what now?)
+%
+% What should be done next?
+In any case, as we will see in the next section (and repeatedly throughout this paper), parameterized complexity and limited nondeterminism in decision complexity are closely related.
 
 %% One strategy for proving complete problems for the $\para \WNC^d$ classes might be to adapt the proof of the $\para \WNC^1$-completeness of $\pFSAT$.
 %% Since Boolean formulas are equivalent to Boolean circuits of logarithmic depth \todo{add citation}, the $\pFSAT$ can be viewed as $p \dash k \dash \NC^1 \textsc{CSat}$.
 %% However, the proof of \autocite[Theorem~3.6]{est15} does not translate directly to the setting of bounded depth circuit satisfiability (their reduction would yield a circuit of depth greater than polylogarithmic in the number of inputs).
-In order to prove completeness for these problems, we use the strategy from \autocite[Theorem~3.6]{cc97lim}, which relies on the ``$k \log n$ trick'' (see \autocite[Corollary~3.13]{fg06}, or the origin \autocite{adf95}).
-There the authors prove that the decision problem underlying $\pNCSAT$ is complete for $\NNC^d[k \log n]$.
-As we will see in the next section (and repeatedly throughout this paper), parameterized complexity and limited nondeterminism in decision complexity are closely related.
+%% In order to prove completeness for these problems, we use the strategy from \autocite[Theorem~3.6]{cc97lim}, which relies on the ``$k \log n$ trick'' (see \autocite[Corollary~3.13]{fg06}, or the origin \autocite{adf95}).
+%% There the authors prove that the decision problem underlying $\pNCSAT$ is complete for $\NNC^d[k \log n]$.
+%% As we will see in the next section (and repeatedly throughout this paper), parameterized complexity and limited nondeterminism in decision complexity are closely related.
 
 \begin{theorem}\label{thm:parawncdcomplete}
   For each positive integer $d$, we have $\pNCSAT$ is complete for $\para \WNC^d$ under $\para \NC^1$ many-one reductions.
@@ -379,16 +659,6 @@ However, we can prove only completeness under the $\para \NC^1$ reduction instea
   Since furthermore the parameter is unchanged by the reduction, the $\NC^1$-computable function trivially induces a $\para \NC^1$ reduction.
 \end{proof}
 
-Now we have a full interpolation for the inclusion chain
-\[
-\para \WNC^1 \subseteq \para \WNC^2 \subseteq \dotsb \subseteq \para \WP,
-\]
-via the chain of parameterized reductions between corresponding complete problems
-\[
-\pFSAT \leq p \dash k \dash \NC^2 \textsc{CSat} \leq \dotsb \leq p \dash \textsc{CSat}.
-\]
-Whether the $\pNCSAT$ problems are complete under $\para \FO$ many-one reductions remains open.
-
 Finally, we extend \autocite[Corollary~3.7]{est15} using this new family of complete problems.
 That theorem states that $\NC^1 = \P$ implies $\W[\SAT] = \W[\P] (= \para \WP)$, so we wish to generalize it to allow for an interpolation between $\NC^1$ and $\P$.
 This connects a collapse in parameterized complexity classes to one in classical complexity classes.
@@ -406,13 +676,56 @@ This connects a collapse in parameterized complexity classes to one in classical
 \subsection{Does \texorpdfstring{$\para \NC$}{paraNC} equal \texorpdfstring{$\para \WNC$}{paraWNC}?}
 \label{sec:ncwnc}
 
-The main theorem in this section, \autoref{thm:ncwnc}, provides evidence that the parameterized complexity classes $\para \NC$ and $\para \WNC$ are distinct.
+% % Foreword %
+%
+% %% Context (anyone - why now?) %%
+%
+% What is the current situation, and why is the need so important?
+%
+We now have complete problems in the parameterized complexity classes that are the analogs of the nondeterministic $\NC$ hierarchy.
+%
+% %% Need (readers - why you?) %%
+%
+% Why is this relevant to the reader, and why does something need to be done?
+% (Also reference relevant existing work.)
+%
+With complete problems, the guiding question now becomes whether a deterministic simulation of these nondeterministic classes causes a complexity theoretic collapse elsewhere.
+%
+% %% Task (author - why me?) %%
+%
+% What was undertaken to address the need?
+%
+We demonstrate how a collapse in parameterized complexity classes is equivalent to a collapse in classical complexity classes.
+%
+% %% Object (document - why this document?) %%
+%
+% What does this document cover?
+%
+
+%
+% % Summary %
+%
+% %% Findings (author - what?)
+%
+% What did the work reveal when performing the task?
+%
+The main theorem in this section, \autoref{thm:ncwnc}, proves that $\para \NC = \para \WNC$ if and only if $\NC$ can deterministically simulate $\omega(\log n)$ nondeterministic bits.
+%
+% %% Conclusion (readers - so what?)
+%
+% What did the findings mean for the audience?
+%
 Compare it with the following similar theorems (here $\beta$ indicates one-way access to the witness as opposed to $\W$, which indicates two-way access).
 \begin{itemize}
 \item $\para \P = \para \WP$ if and only if $\P = \NP[\omega(\log n)]$ \autocite[Theorem~3.29]{fg06}.
 \item $\para \L = \para \beta \L$ if and only if $\L = \NL[\omega(\log n)]$ \autocite[Theorem~15]{cm14}.
 \end{itemize}
-\todo{Can we generalize all of these theorems?}
+If you believe that nondeterminism is hard to simulate deterministically, then this provides evidence that the parameterized complexity classes $\para \NC$ and $\para \WNC$ are distinct.
+%
+% %% Perspective (anyone - what now?)
+%
+% What should be done next?
+We conjecture that these theorems can be generalized to generic theorem that subsumes all of them.
 
 This lemma is an adaptation of \autocite[Lemma~3.24]{fg06}.
 It is the ``opposite'' of \autoref{lem:upperinverse}.
@@ -479,9 +792,52 @@ As a corollary, we can relate the completeness of parameterized or decision prob
 \subsection{Is \texorpdfstring{$\para \WNC$}{paraWNC} in \texorpdfstring{$\para \P$}{paraP}?}
 \label{sec:wncp}
 
+% % Foreword %
+%
+% %% Context (anyone - why now?) %%
+%
+% What is the current situation, and why is the need so important?
+%
 The previous section demonstrates that it is unlikely that $\para \WNC$ is contained in $\para \NC$.
+%
+% %% Need (readers - why you?) %%
+%
+% Why is this relevant to the reader, and why does something need to be done?
+% (Also reference relevant existing work.)
+%
+This leaves open the possibility that $\para \WNC$ is contained in a larger (but still deterministic) class.
+%
+% %% Task (author - why me?) %%
+%
+% What was undertaken to address the need?
+%
+%% We show that containment in $\para \P$ remains unlikely.
+%
+% %% Object (document - why this document?) %%
+%
+% What does this document cover?
+%
+%
+%
+% % Summary %
+%
+% %% Findings (author - what?)
+%
+% What did the work reveal when performing the task?
+%
 By relaxing the collapses in \autoref{thm:ncwnc}, we show that it is also unlikely that $\para \WNC$ is contained in $\para \P$.
 However, the collapses in this theorem are weaker.
+%
+% %% Conclusion (readers - so what?)
+%
+% What did the findings mean for the audience?
+%
+This is as we expect: a less efficient deterministic simulation of nondeterminism causes less severe consequences in classical complexity theory.
+%
+% %% Perspective (anyone - what now?)
+%
+% What should be done next?
+Though we do not show it here, this idea can certainly be generalized as well.
 
 \begin{theorem}\label{thm:wncp}
   Suppose $d$ is a positive integer.
@@ -492,7 +848,7 @@ However, the collapses in this theorem are weaker.
   It uses versions of \autoref{cor:sprself} and \autoref{cor:reducetoself} with similar changes.
 \end{proof}
 
-An alternate approach is to demonstrate related collapses in parameterized complexity classes.
+An alternate approach to showing that $\para \WNC^d \subseteq \para \P$ is unlikely is to demonstrate related collapses in parameterized complexity classes.
 We extend \autocite[Corollary~3.8]{est15}, which states that $\para \WNC^1 \subseteq \para \P$ if and only if $\para \P = \W[\SAT]$.
 As before, we wish to generalize this equivalence to allow for an interpolation between $\NC^1$ and $\P$.
 
@@ -508,22 +864,3 @@ As before, we wish to generalize this equivalence to allow for an interpolation 
   Since $\pNCSAT$ is complete for $\para \WNC^d$ under $\para \NC^d$ many-one reductions, every problem in $\para \WNC^d$ reduces to $\pNCSAT$ under $\para \NC^d$ many-one reductions, and hence under $\para \P$ many-one reductions as well.
   Thus $\para \WNC^d \subseteq \para \P$.
 \end{proof}
-
-\subsection{Does \texorpdfstring{$\para \WNC$}{paraWNC} equal \texorpdfstring{$\para \WP$}{paraWP}?}
-\label{sec:wncwp}
-
-\begin{conjecture}
-  Suppose $d$ is a positive integer.
-  $\para \WNC^d = \para \WP$ if and only if there is a nondecreasing, unbounded, circuit-computable function $i$ such that $\NNC^d[i(n) \log n] = \NP[i(n) \log n]$.
-\end{conjecture}
-\begin{justification}
-  It seems that
-  \[
-  \pCkSAT \leq_m^{\para \NC^d} \pNCSAT
-  \]
-  should imply
-  \[
-  \iCSAT \leq_m^{\NC^d} \iNCSAT.
-  \]
-  However, the problem is the nondeterminism bounds: on one side, the bound is $f(k) \log n$ and on the other $i(n) \log n$.
-\end{justification}
