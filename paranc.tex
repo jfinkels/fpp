@@ -275,7 +275,9 @@ This section provides a generic technique for constructing a classical parallel 
 %
 % What did the work reveal when performing the task?
 %
-\todo{Add a ``Findings'' sentence here.}
+Specifically, we show two main lemmas.
+\autoref{lem:spreduction} shows how to construct a parameterized parallel algorithm from a parameter-restricted reduction to a highly parallel decision problem.
+\autoref{lem:reducetonc} shows how to construct a classical parallel algorithm for from a parameter-restricted reduction to a parameterized parallel problem.
 %
 % %% Conclusion (readers - so what?)
 %
@@ -532,11 +534,11 @@ An approximation scheme induces a family of functions, $\{A_k\}_{k \in \mathbb{N
 This definition is adapted from \autocite[Definition~1.31]{fg06}
 
 \begin{definition}
-  An optimization problem $O$ is in $\ENCAS$ if there is a circuit family $\{A_{n, k}\}$ and circuit-computable functions $f$ and $g$ such that
+  An optimization problem $O$ is in $\ENCAS$ if there is a circuit family $\{A_{n, k}\}$ and a circuit-computable function $f$ such that
   \begin{itemize}
   \item $\{A_{n, k}\}$ is an approximation scheme for $O$,
   \item $\size(A_{n, k}) \leq f(k) n^{O(1)}$,
-  \item $\depth(A_{n, k}) \leq g(k) \log^{O(1)} n$.
+  \item $\depth(A_{n, k}) \leq f(k) + \log^{O(1)} n$.
   \end{itemize}
 \end{definition}
 
@@ -544,7 +546,8 @@ This definition is adapted from \autocite[Definition~1.31]{fg06}
   $\FNCAS \subseteq \ENCAS \subseteq \NCAS$.
 \end{proposition}
 
-\todo{Positive linear programming is in $\NCAS$, is it also in $\ENCAS$?}
+%% \todo{Positive linear programming is in $\NCAS$, is it also in $\ENCAS$?}
+%% positive linear programming has a depth bound of about f(k) \log^3 n, so no.
 
 This theorem is an adaptation of \autocite[Theorem~1.32]{fg06}.
 
