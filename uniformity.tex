@@ -1,0 +1,33 @@
+\newcommand{\uniform}[1]{#1 \dash \text{uniform }}
+
+\section{Uniformity for parameterized classes}
+
+We have considered only nonuniform parameterized circuit classes.
+Can we introduce uniformity?
+
+\begin{definition}
+  Suppose $\mathcal{C}$ and $\mathcal{D}$ are complexity classes.
+  A parameterized problem $(Q, \kappa)$ is in $\uniform{\para \mathcal{C}} \para \mathcal{D}$ if there is a $\mathcal{C}$ transducer $T$ and a computable function $f$ such that for each string $x$ of length $n$,
+  \begin{itemize}
+  \item $T(1^n, 1^{f(\kappa(x))})$ outputs the encoding of a $\mathcal{D}$ machine $M$,
+  \item $x \in Q$ if and only if $M(x, 1^{f(\kappa(x))})$ accepts.
+  \end{itemize}
+\end{definition}
+
+\begin{proposition}
+  Let $\mathcal{C}$ and $\mathcal{D}$ be complexity classes.
+  For any parameterization $\kappa$,
+  \begin{align*}
+    (\uniform{\mathcal{C}} \mathcal{D}) \times \{\kappa\}
+    & \subseteq
+    \uniform{\para \mathcal{C}} \mathcal{D} \cap \uniform{\mathcal{C}} \para \mathcal{D} \\
+    & \subseteq
+    \uniform{\para \mathcal{C}} \mathcal{D} \cup \uniform{\mathcal{C}} \para \mathcal{D} \\
+    & \subseteq
+    \uniform{\para \mathcal{C}} \para \mathcal{D} \\
+    & \subseteq
+    \text{nonuniform } \para \mathcal{D}. \\
+  \end{align*}
+\end{proposition}
+
+All the results in this work are for nonuniform $\para \NC$, etc., but we would like the results to hold for, say, $\uniform{\para \L} \para \NC$.
